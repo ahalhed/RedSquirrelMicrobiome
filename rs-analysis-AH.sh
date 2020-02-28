@@ -2,6 +2,7 @@
 # Species: North American Red Squirrel
 # Sample: Fecal samples
 # 16S rRNA
+# working with qiime2-2019.10
 
 # script starts here
 # ________________________________________
