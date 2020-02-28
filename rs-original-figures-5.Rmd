@@ -1,0 +1,290 @@
+---
+title: "Figures"
+author: "Alicia Halhed"
+date: "02/01/2020"
+output: html_document
+---
+
+The figures created in this script are (approximate) replicates of those published in Ren et al (2017) to represent red squirrel microbiome data using a 5% subset of the original data. I will recreate this eventually rerun this script with the full data set.
+
+### Set up
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Some packages used in this script are called only over the needed function(s). The ones used frequently are attached here.
+```{r}
+# attach required packages
+library(tidyverse)
+```
+
+
+### Create a Phyloseq Object
+This object is created with the 5% subset of the data (this made the data more manageable to work with locally).
+```{r}
+rs_ps <- qiime2R::qza_to_phyloseq(features = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/rs-QIIME2-AH/sampled5/table.qza", 
+                             tree = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/rs-QIIME2-AH/sampled5/rooted_tree.qza", 
+                             taxonomy = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/rs-QIIME2-AH/sampled5/GG-taxonomy.qza",
+                             metadata = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/exploration/RS_metadata_sub2.tsv")
+```
+
+
+### Figure 1
+I will need to group the bars by season and adjust the colours/legend to correspond to the figures in the paper
+A. Phylum
+```{r}
+rs_glom_phy <- tax_glom(rs_ps, "Phylum", NArm = TRUE)
+rs_ra_phy <- transform_sample_counts(rs_glom_phy, function(x){x / sum(x)})
+#psmelt(rs_ra_phy)
+#psmelt(rs_ra_gen)$Phylum %>% unique #10 Phyla
+```
+
+```{r}
+ggplot(data = psmelt(rs_ra_phy), 
+       aes(x = Sample, y = Abundance, fill = Phylum, na.rm = TRUE)) +
+    geom_bar(stat = "identity", position = "stack") + 
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) #+ 
+  scale_fill_manual(breaks = c("Firmicutes", "Bacteroidetes", "Actinobacteria", "Proteobacteria", "Verrucomicrobia"),
+                    values = c("brown", "navy", "orange2", "chartreuse4", "purple", "green", "lightskyblue", "red", "cadetblue", "plum2", "purple1", "seagreen1", "salmon"))
+```
+
+B. Genus
+```{r}
+rs_glom_gen <- tax_glom(rs_ps, "Genus", NArm = TRUE)
+rs_ra_gen <- transform_sample_counts(rs_glom_gen, function(x){x / sum(x)})
+rs_melt_gen <- psmelt(rs_ra_gen) #103 genera
+View(rs_melt_gen)
+```
+
+```{r}
+ggplot(data = rs_melt_gen, 
+       aes(x = Sample, y = Abundance, fill = Genus, na.rm = FALSE)) +
+    geom_bar(stat = "identity", position = "stack") + 
+  theme(axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(), 
+        legend.position = "none")
+```
+
+
+### Figure 2
+Prevalence
+```{r}
+# apparently the taxonomy columns are factors... account for this in the loop
+sapply(rs_melt_gen, class)
+# creating a new data frame with genus, sample, and presence/absence (1/0) information
+# start with an empty matrix
+rs_prev_gen <- matrix(NA, ncol = 3, nrow = nrow(rs_melt_gen))
+# populate the matrix
+for (row in 1:nrow(rs_melt_gen)) {
+    abundance <- rs_melt_gen[row, "Abundance"]
+    genus <- as.character(rs_melt_gen[row, "Genus"])
+    sample <- rs_melt_gen[row, "Sample"]
+    rs_prev_gen[row, ] <- c(genus, sample, ifelse(abundance == 0, 0, 1))
+}
+# label the matrix according to the contents of the columns
+colnames(rs_prev_gen) <- c("Genus", "Sample", "Presence")
+# coerce the matrix to a data frame
+rs_prev_gen <- rs_prev_gen %>% as.data.frame
+View(rs_prev_gen)
+```
+
+```{r}
+# pull out the sample ID's from the Sample name columns
+rs_prev_gen$SampleID <- word(rs_prev_gen$Sample, 2, 2, sep = fixed("."))
+# number of samples that a genus actually occurs in
+rs_prev_gen[rs_prev_gen$Presence == 1, ] %>% 
+  select(SampleID, Genus) %>% 
+  group_by(SampleID, Genus) %>% table %>%
+  colSums() %>% as.data.frame() -> rs_prevalence
+colnames(rs_prevalence) <- c("Present")
+# create new column with the prevalence information where 909 is the total number of samples (that any given genus could occur in)
+rs_prevalence[, "Prevalence"] <- rs_prevalence[, "Present"] / 909
+```
+
+Average relative abundance
+```{r}
+rs_ara <- aggregate(rs_melt_gen$Abundance, by=list(Genus=rs_melt_gen$Genus), FUN=mean) %>%
+  remove_rownames %>% column_to_rownames(var = "Genus")
+colnames(rs_ara) <- c("Abundance")
+rs_2fig <- merge(rs_ara, rs_prevalence, by=0, all=TRUE)
+View(rs_2fig)
+```
+
+Scatterplot (abundance on y, prevalence on x)... still need to improve this
+```{r}
+# divide abundance by two because my original one seems to be double what the paper says
+# not sure why Clostridium is at like 2.5 Prev and Ruminococcus is just over one
+ggplot(rs_2fig, aes(x = Prevalence, y = Abundance/2)) + 
+  geom_point() + theme_bw() +
+  scale_fill_manual(breaks = c("Best", "Suggested", "Worst"))
+```
+
+### Figure 3
+```{r}
+# Abundace of Coprococcus, Oscillospira by season in a scatter
+rs_3fig <- rs_melt_gen %>%
+  select(Genus, Abundance, Season, Year, Month) %>%
+  subset(Genus %in% c("g__Coprococcus", "g__Oscillospira"))
+rs_3fig$Date <- paste0(rs_3fig$Year, "-", rs_3fig$Month)
+rs_3fig <- plyr::ddply(rs_3fig, c("Date", "Genus"), summarise, 
+                       SE = sd(Abundance)/sqrt(length(Abundance)), Abundance = mean(Abundance))
+View(rs_3fig)
+#rs_3fig %>% group_by(Genus, Date, Season) %>% by(rs_3fig, Abundance, mean)
+```
+
+```{r}
+ggplot(rs_3fig, aes(x=Date, y=Abundance, colour = Genus, group = Genus)) + 
+  geom_line() + geom_point() + 
+  geom_errorbar(aes(ymin=Abundance-SE, ymax=Abundance+SE), width=0.2) +
+  theme(legend.position=c(0.25,0.85))
+```
+
+### Figure 4
+
+```{r, QIIME2 Jaccard}
+# This Jaccard distance matrix was calculated non-phylogenetically in QIIME2 
+# See the rs-analysis-AH.sh file (in the rs-QIIME2-AH folder) for the code that created this distance matrix
+# I will need to adjust this to get away from reshape2 (it's depricated)
+rs_q2_jaccard <- qiime2R::read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/rs-QIIME2-AH/sampled5/core-metrics-phylogenetic5/jaccard_distance_matrix.qza")$data %>%
+  as.matrix %>% reshape2::melt() %>% rename("Var1" = "Sample1", "Var2" = "Sample2", "value" = "Jaccard") #as.data.frame 
+View(rs_q2_jaccard)
+```
+
+```{r}
+# subtract sample 2 X from sample 1 X, print to a new column
+# subtract sample 2 Y from sample 1 Y, print to a new column
+# need to take grid into account
+rs_q2_jaccard2 <- inner_join(rs_q2_jaccard, rs_metadata, by = c("Sample1" = "SampleID")) %>%
+  select('Sample1', 'Grid', 'Location X', 'Location Y', 'Sample2', 'Jaccard') %>%
+  rename('Grid1' = 'Grid', 'X1' = 'Location X', 'Y1' = 'Location Y') %>% 
+  inner_join(rs_metadata, by = c("Sample2" = "SampleID")) %>%
+  select('Sample1', 'Grid1', 'X1', 'Y1', 'Sample2', 'Grid', 'Location X', 'Location Y', 'Jaccard') %>%
+  rename('Grid2' = 'Grid', 'X2' = 'Location X', 'Y2' = 'Location Y')
+rs_q2_jaccard2$Similarity <- 1 - rs_q2_jaccard2$Jaccard
+```
+
+```{r}
+# add column with physical distance (sqrt calculates within grid distance and whole number is distance between grids)
+# physical distance (in metres) determined based on the grid map in the supplementary data file()
+rs_q2_jaccard2$Distance <-  ifelse(rs_q2_jaccard2$Grid1 == rs_q2_jaccard2$Grid2, 
+       sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'KL' & rs_q2_jaccard2$Grid2 == "AG" | rs_q2_jaccard2$Grid1 == 'AG' & rs_q2_jaccard2$Grid2 == "KL", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 4700),
+  ifelse(rs_q2_jaccard2$Grid1 == 'CH' & rs_q2_jaccard2$Grid2 == "AG" | rs_q2_jaccard2$Grid1 == 'AG' & rs_q2_jaccard2$Grid2 == "CH", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 1900), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'CH' & rs_q2_jaccard2$Grid2 == "KL" | rs_q2_jaccard2$Grid1 == 'KL' & rs_q2_jaccard2$Grid2 == "CH", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 4000), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'LL' & rs_q2_jaccard2$Grid2 == "KL" | rs_q2_jaccard2$Grid1 == 'KL' & rs_q2_jaccard2$Grid2 == "LL", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 2700), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'SU' & rs_q2_jaccard2$Grid2 == "KL" | rs_q2_jaccard2$Grid1 == 'KL' & rs_q2_jaccard2$Grid2 == "SU", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 200),
+  ifelse(rs_q2_jaccard2$Grid1 == 'JO' & rs_q2_jaccard2$Grid2 == "KL" | rs_q2_jaccard2$Grid1 == 'KL' & rs_q2_jaccard2$Grid2 == "JO", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 2800), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'JO' & rs_q2_jaccard2$Grid2 == "SU" | rs_q2_jaccard2$Grid1 == 'SU' & rs_q2_jaccard2$Grid2 == "JO", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 2500), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'LL' & rs_q2_jaccard2$Grid2 == "SU" | rs_q2_jaccard2$Grid1 == 'SU' & rs_q2_jaccard2$Grid2 == "LL", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 1500), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'CH' & rs_q2_jaccard2$Grid2 == "SU" | rs_q2_jaccard2$Grid1 == 'SU' & rs_q2_jaccard2$Grid2 == "CH", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 4300), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'AG' & rs_q2_jaccard2$Grid2 == "SU" | rs_q2_jaccard2$Grid1 == 'SU' & rs_q2_jaccard2$Grid2 == "AG", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 5100), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'AG' & rs_q2_jaccard2$Grid2 == "LL" | rs_q2_jaccard2$Grid1 == 'LL' & rs_q2_jaccard2$Grid2 == "AG", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 3400), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'AG' & rs_q2_jaccard2$Grid2 == "JO" | rs_q2_jaccard2$Grid1 == 'JO' & rs_q2_jaccard2$Grid2 == "AG", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 8000), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'CH' & rs_q2_jaccard2$Grid2 == "JO" | rs_q2_jaccard2$Grid1 == 'JO' & rs_q2_jaccard2$Grid2 == "CH", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 7000), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'LL' & rs_q2_jaccard2$Grid2 == "JO" | rs_q2_jaccard2$Grid1 == 'JO' & rs_q2_jaccard2$Grid2 == "LL", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 4200), 
+  ifelse(rs_q2_jaccard2$Grid1 == 'LL' & rs_q2_jaccard2$Grid2 == "CH" | rs_q2_jaccard2$Grid1 == 'CH' & rs_q2_jaccard2$Grid2 == "LL", 
+         (sqrt((as.numeric(rs_q2_jaccard2$X1) - as.numeric(rs_q2_jaccard2$X2))^2 + 
+  (as.numeric(rs_q2_jaccard2$Y1) - as.numeric(rs_q2_jaccard2$Y2))^2) + 2400), 
+  NA))))))))))))))))
+```
+
+Create a scatter plot of the similarity values by distance.
+```{r}
+# first remove the similarity value is 1 (comparison to itself) then create a plot
+rs_4fig <- rs_q2_jaccard2 %>% filter(Similarity < 1) %>%
+  ggplot(aes(x = Distance, y = Similarity)) + geom_point()
+# view the plot
+rs_4fig
+```
+
+```{r}
+# the original figure had lines between groups; I will add those here (work in progress)
+rs_4fig + geom_abline()
+```
+
+
+### Figure 5
+Box plot of Jaccard distances grouped by relationship between individuals. Groupings are (includes multiple sampling): self, mother-offspring, father-offspring, full-sibling, half-sibling, unrelated.
+How will I deal with individuals whose parentage is unknown?
+```{r}
+rs_5fig <- rs_q2_jaccard
+# extract squirrel IDs so I can match relationships by squirrel ID in the meta data
+rs_5fig$SquirrelID1 <- word(rs_5fig$Sample1, 2, sep = "\\.")
+rs_5fig$SquirrelID2 <- word(rs_5fig$Sample2, 2, sep = "\\.")
+# merge with metadata, retaining only the parentage information
+# doing this twice, once for both of the samples being compared
+rs_5fig <- merge(rs_5fig, rs_metadata_full, by.x = "Sample1", by.y = "SampleID") %>%
+  select(Sample1, SquirrelID1, SireID, DamID, Sample2, SquirrelID2, Jaccard) %>%
+  rename(SireID1 = SireID, DamID1 = DamID) %>%
+  merge(rs_metadata_full, by.x = "Sample2", by.y = "SampleID") %>%
+  select(Sample1, SquirrelID1, SireID1, DamID1, Sample2, SquirrelID2, SireID, DamID, Jaccard) %>%
+  rename(SireID2 = SireID, DamID2 = DamID)
+View(rs_5fig)
+```
+
+```{r}
+# create a new column with the relationship between individuals
+# if there is an NA in either of the DamID/SireID columns, then the relationship cannot be determined (so is therefore an NA)
+rs_5fig$Relationship <- ifelse(rs_5fig$SquirrelID1 == rs_5fig$SquirrelID2, "self", 
+  ifelse(rs_5fig$SquirrelID1 == rs_5fig$DamID2 | rs_5fig$SquirrelID2 == rs_5fig$DamID1, "mother-offspring", 
+    ifelse(rs_5fig$SquirrelID1 == rs_5fig$SireID2 | rs_5fig$SquirrelID2 == rs_5fig$SireID1, "father-offspring", 
+      ifelse(rs_5fig$DamID1 == rs_5fig$DamID2 & rs_5fig$SireID1 == rs_5fig$SireID2, "full-sibling",
+        ifelse(rs_5fig$DamID1 == rs_5fig$DamID2 | rs_5fig$SireID1 == rs_5fig$SireID2, "half-sibling",
+          "unrelated")))))
+```
+
+```{r}
+# remove rows where the relationship is unknown and the distance is 0 (meaning it is comparing a sample to itself)
+rs_5fig_na <- rs_5fig %>% 
+  drop_na(Relationship) %>%
+  filter(Jaccard > 0)
+# make a boxplot
+# the relatinoships have been reordered to match the ones in the paper
+rs_boxplot <- ggplot(rs_5fig_na, aes(x = Relationship, y = Jaccard)) + geom_boxplot() + 
+  scale_x_discrete(limits=c("self","mother-offspring","father-offspring", "full-sibling", "half-sibling", "unrelated"))
+# let's look at what we have
+rs_boxplot
+```
+
+The original figure in the paper includes significance values above the plot. While I am not sure if this was done in R or manually after the fact, I will add them in here using R. The `ggpubr` package allows the addition of statistical significance to plots.
+```{r}
+# all the comparisons to make (including all possible combinations here)
+rs_comparisons <- list(c("self", "mother-offspring"), c("self", "father-offspring"), c("self", "full-sibling"), c("self", "half-sibling"), c("self", "unrelated"), c("mother-offspring", "father-offspring"), c("mother-offspring", "full-sibling"), c("mother-offspring", "half-sibling"), c("mother-offspring", "unrelated"), c("father-offspring", "full-sibling"), c("father-offspring", "half-sibling"), c("father-offspring", "unrelated"), c("full-sibling", "half-sibling"), c("full-sibling", "unrelated"), c("half-sibling", "unrelated"))
+# add the comparisons to the plot
+# this one gives the p-values
+rs_boxplot + ggpubr::stat_compare_means(comparisons = rs_comparisons)
+# this one gives the significance level but not numerical value
+rs_boxplot + ggsignif::geom_signif(comparisons = rs_comparisons, 
+                                   map_signif_level=TRUE,
+                                   step_increase = 0.25)
+```
+

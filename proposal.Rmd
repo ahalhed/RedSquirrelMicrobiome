@@ -1,0 +1,261 @@
+---
+title: "Artificial plots for Proposal"
+author: "Alicia Halhed"
+date: "30/01/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This script is for the creation of some artificial plots to include in proposal
+```{r}
+setwd("/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal")
+library(tidyverse)
+```
+
+# Summary Plot
+```{r}
+# update theme for all plots and labels for plots in this section
+theme_set(theme_bw() + theme(axis.text.y = element_blank(), axis.text.x = element_blank()))
+l <- labs(x ="Axis 1", y = "Axis 2")
+```
+
+```{r}
+# Create some fake data - try to avoid rerunning
+fakes <- data.frame(grid = c("A", "A", "A", "A", "A", "A", "A", "A", "A", "A",
+                                 "B", "B", "B", "B", "B", "B", "B", "B", "B", "B",
+                                 "C", "C", "C", "C", "C", "C", "C", "C", "C", "C",
+                                 "D", "D", "D", "D", "D", "D", "D", "D", "D", "D"), 
+                    x = c(rnorm(10, mean = 1, sd = 0.5), rnorm(10, mean = 5, sd = 0.5), 
+                          rnorm(10, mean = 2.5, sd = 0.5), rnorm(10, mean = 4.5, sd = 0.5)), 
+                    y = c(rnorm(10, mean = 9, sd = 0.5), rnorm(10, mean = 6, sd = 0.5), 
+                          rnorm(10, mean = 7, sd = 0.5), rnorm(10, mean = 10, sd = 0.5)),
+                    id = c(sample(1:6, 10, replace = TRUE), sample(7:12, 10, replace = TRUE), 
+                           sample(13:18, 10, replace = TRUE), sample(19:24, 10, replace = TRUE)))
+```
+
+```{r}
+# without travellers
+A <- ggplot(fakes, aes(x=x, y=y, col=grid)) + 
+  geom_point() + # points are samples
+  stat_ellipse(type = "norm") + # groups the grids together
+  xlab("Axis 1") + ylab("Axis 2") + # names
+  geom_line(aes(group=id)) + l # l is the labels
+A
+```
+
+```{r}
+# add parentage relationships (blue boxes)
+B <- A + annotate("rect", xmin=2.4, xmax=2.7, ymin=7.1, ymax=7.33, alpha=.5, fill="blue") +
+  annotate("rect", xmin=4.58, xmax=4.8, ymin=9.8, ymax=10.15, alpha=.5, fill="blue") +
+  annotate("rect", xmin=4.85, xmax=5.3, ymin=5.2, ymax=5.45, alpha=.5, fill="blue")
+B
+```
+
+```{r}
+# add some "travellers"
+movement <- data.frame(grid = c(fakes$grid, "2", "3", "3", "3", "1"), 
+                    x = c(fakes$x, 4.84321, 3.76541, 4.156432, 1.75, 1.4564), 
+                    y = c(fakes$y, 5.5078564, 6.256432, 6.24324, 7.5, 7.9658432),
+                    id = c(fakes$id, 7, 7, 7, 13, 13))
+```
+
+
+```{r}
+# with travellers
+C <- ggplot(movement, aes(x=x, y=y, col=grid)) + 
+  geom_point() + # points are samples
+  stat_ellipse(type = "norm") + # groups the grids together
+  geom_line(aes(group=id)) + l # l is the labels
+C
+```
+
+
+
+```{r}
+# add food relationships
+food <- fakes # switch fakes to movement if wanting to include dispersal
+food$diet <- ifelse(food$x < 1 & food$y > 8 | food$x > 5 & food$y < 6.25, "seeds", 
+                    ifelse(food$y > 6.25  & food$y < 9.7 & food$x > 4.8, "berries", 
+                           ifelse(food$y > 7.5 & food$x < 4.5, "beetles", 
+                                  ifelse(food$y < 7.5 & food$x < 4.25, "bread",
+                                         "unknown"))))
+```
+
+```{r}
+# with food
+D <- ggplot(food, aes(x=x, y=y,col=grid, shape = diet)) + 
+  stat_ellipse(type = "norm", aes(group=grid)) + # groups the grids together
+  geom_point(aes(size=3)) + guides(size=FALSE) + # points are samples
+  geom_line(aes(group=id)) + l # l is the labels
+D
+```
+
+
+```{r}
+full <- ggpubr::ggarrange(A + guides(col=FALSE), D,
+                          B + guides(col=FALSE),
+                          C + guides(col=FALSE),
+                          labels = c("1", "2", "3", "4"),
+                          ncol = 2, nrow = 2,
+                          common.legend = TRUE)
+full
+```
+
+# Food Figure
+```{r}
+theme_set(theme_bw() + theme(axis.text.y = element_blank()))
+```
+
+Boxplot of different food sources ... less variation within food sources than in general
+```{r}
+# avoid rerunning this chunk
+fig2 <- data.frame(food = as.character(c(replicate(500, "all"),
+                                replicate(21, "beetles"),
+                                replicate(21, "berries"),
+                                replicate(21, "bread"),
+                                replicate(21, "seeds"))),
+                   dissimilarity = c(rnorm(500, mean = 11, sd = 3), 
+                             rnorm(21, mean = 5, sd = 1.5), 
+                             rnorm(21, mean = 4.75, sd = 0.75), 
+                             rnorm(21, mean = 5.25, sd = 1.05), 
+                             rnorm(21, mean = 5.5, sd = 1.75)))
+
+```
+
+```{r}
+plot_food <- ggplot(fig2, aes(y=dissimilarity, x = food)) + 
+  geom_boxplot() +
+  theme(axis.title.x=element_blank())
+plot_food
+```
+
+# Figure 3
+Boxplot of different parent offspring relationship ... less variation within pairs sources than in general within an environment
+```{r}
+fig3 <- data.frame(group = c(replicate(100, "Habitat1"),
+                                replicate(21, "Pair1a"),
+                                replicate(21, "Pair1b"),
+                                replicate(100, "Habitat2"),
+                                replicate(21, "Pair2a"),
+                                replicate(21, "Pair2b")),
+                   dissimilarity = c(rnorm(100, mean = 12, sd = 4), 
+                             rnorm(21, mean = 5, sd = 1.5), 
+                             rnorm(21, mean = 5.75, sd = 1), 
+                             rnorm(100, mean = 10, sd = 3),
+                             rnorm(21, mean = 5.5, sd = 1.5), 
+                             rnorm(21, mean = 5.25, sd = 1.7)))
+```
+
+```{r}
+plot_parent <- ggplot(fig3, aes(y = dissimilarity, x = group)) + 
+  geom_boxplot() +
+  theme(axis.title.x=element_blank())
+plot_parent
+```
+
+Putting food and parent plots into a single thing
+```{r}
+boxes <- ggpubr::ggarrange(plot_food, plot_parent,
+                  labels = c("Shared Diet", "Parent-Offspring Pairs"),
+                  ncol = 2, hjust = -c(1.25, 0.5), vjust = 2,
+                  font.label = list(size = 12))
+boxes
+```
+
+# Figure 4
+Line graph within dissimilarities of an individual over time (becoming increasingly less similar to origin and more similar to new environment)
+```{r}
+# for a single individual
+fig4 <- data.frame(time = c(replicate(2, 1:10)),
+                   location = c(replicate(10, "original"),
+                                replicate(10, "new")),
+                   diss = c(sort(sample(4:15, 10, replace=F), decreasing = FALSE),
+                            sort(sample(4:15, 10, replace=F), decreasing = TRUE))) %>%
+  rbind(., data.frame(time = .$time + 0.5, 
+                    location = .$location, 
+                    diss = .$diss))
+```
+```{r}
+# single individuals
+sing4 <- ggplot(fig4, aes(x = time, y = diss, group = location, col = location)) +
+  geom_line()
+sing4
+```
+
+```{r}
+# for multiple individuals
+datalist <- list()
+for (i in 1:10){
+  datalist[[i]] <- data.frame(time = c(replicate(2, 1:10)),
+                   location = c(replicate(10, "original"),
+                                replicate(10, "new")),
+                   diss = c(sort(sample(4:30, 10, replace=F), decreasing = FALSE),
+                            sort(sample(4:30, 10, replace=F), decreasing = TRUE)),
+                   individual = i) %>%
+  rbind(., data.frame(time = .$time + 0.5, 
+                    location = .$location, 
+                    diss = .$diss,
+                    individual = .$individual))
+}
+df4 <- bind_rows(datalist)
+rm(datalist)
+```
+
+
+```{r}
+mult4 <- ggplot(df4, aes(x = time, y = diss, col = location,
+                         group = interaction(location, individual))) +
+  geom_line()
+mult4
+```
+
+```{r}
+lines <- ggpubr::ggarrange(sing4, mult4,
+                  labels = c("Single individual", "Multiple individuals"),
+                  ncol = 2, common.legend = TRUE, legend = "bottom",
+                  vjust = 2, hjust = -c(0.7, 0.67), 
+                  font.label = list(size = 12))
+lines
+```
+
+# Save the figures
+```{r}
+# save "ordinations"
+ggsave("full.jpeg", plot = full, device = "jpeg", 
+       path = "/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal", 
+       dpi = "retina")
+```
+
+```{r}
+# individual "ordinations"
+ggsave("figure3-1.jpeg", plot = A, device = "jpeg", 
+       path = "/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal/Figure", 
+       dpi = "retina", height = 5)
+ggsave("figure3-2.jpeg", plot = D, device = "jpeg", 
+       path = "/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal/Figure", 
+       dpi = "retina", height = 5)
+ggsave("figure3-3.jpeg", plot = B, device = "jpeg", 
+       path = "/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal/Figure", 
+       dpi = "retina", height = 5)
+ggsave("figure3-4.jpeg", plot = C, device = "jpeg", 
+       path = "/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal/Figure", 
+       dpi = "retina", height = 5)
+```
+
+```{r}
+# save boxplots
+ggsave("boxes.jpeg", plot = boxes, device = "jpeg", 
+       path = "/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal", 
+       dpi = "retina", height = 3)
+```
+
+```{r}
+# save line plots
+ggsave("dispersal.jpeg", plot = lines, device = "jpeg", 
+       path = "/Users/aliciahalhed/OneDrive - University of Guelph/Alicia's Thesis/Proposal", 
+       dpi = "retina", height = 3)
+```
+

@@ -1,0 +1,174 @@
+---
+title: "Test Script"
+author: "Alicia Halhed"
+date: "20/11/2019"
+output: html_document
+---
+## Microbiome
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/")
+```
+```{r}
+#BiocManager::install('microbiome')
+library(microbiome)
+library(tidyverse)
+library(phyloseq)
+#also need tibble, phyloseq (dependency of microbiome)
+library(tibble)
+library(vegan)
+library(reshape)
+```
+
+
+```{r, Metadata}
+rs_metadata <- readxl::read_xlsx("metadata-ren-etal-2017.xlsx")
+View(rs_metadata)
+```
+
+Sample the data. Want even proportion from each grid
+```{r}
+rs_metadata %>% group_by(Grid) %>% sample_frac(.05) -> rs_metadata_sample
+View(rs_metadata_sample)
+```
+
+
+
+```{r, OTUs}
+# Since the IDs were in a comment line in the text file, I added a new line there (in the text file) to allow R to read them in as column names
+rs_otu <- read.table("otu-ren-etal-2017.txt", sep="\t",
+                     header = TRUE, row.names = "ID")
+View(rs_otu) # so the taxonomy grouping is in a column at the end of the data and the denovo number is the row name
+
+# Make taxonomy the row names
+rs_otu %>% select(-c(taxonomy)) -> rs_otu_tax #no taxonomy column
+rs_otu_tax1 <- remove_rownames(rs_otu_tax)
+rownames(rs_otu_tax1) <- make.names(rs_otu$taxonomy, unique=TRUE)
+
+View(rs_otu_tax)
+```
+
+Sample OTUs to retain columns that match the data in the sampled metadate
+```{r}
+sample(ncol(rs_otu_tax1), 45)
+```
+
+
+```{r Tree}
+rs_tax <- rs_otu %>% select(taxonomy)
+rs_tax <- separate(data = rs_tax, col = taxonomy, 
+                   into = c("kingdom", "phylum", "class", "order", "family", "genus", "species"), sep = "\\;")
+View(rs_tax)
+#get rid of the *_ things
+rs_tax1 <- rs_tax
+rs_tax1$kingdom <- str_remove(rs_tax1$kingdom, "[a-zA-Z]+\\_+\\_")
+rs_tax1$phylum <- str_remove(rs_tax1$phylum, "[a-zA-Z]+\\_+\\_")
+rs_tax1$class <- str_remove(rs_tax1$class, "[a-zA-Z]+\\_+\\_")
+rs_tax1$order <- str_remove(rs_tax1$order, "[a-zA-Z]+\\_+\\_")
+rs_tax1$family <- str_remove(rs_tax1$family, "[a-zA-Z]+\\_+\\_")
+rs_tax1$genus <- str_remove(rs_tax1$genus, "[a-zA-Z]+\\_+\\_")
+rs_tax1$species <- str_remove(rs_tax1$species, "[a-zA-Z]+\\_+\\_")
+rs_tax1[ rs_tax1 == " "] <- NA
+
+rs_tax2 <- rs_tax1 %>% as.matrix %>% tax_table
+```
+
+
+```{r}
+rs_otu_table <- otu_table(rs_otu_tax, taxa_are_rows = TRUE)
+rs_tax_table <- tax_table(as.matrix(rs_tax))
+# make phyloseq object
+rs_phylo <- phyloseq(rs_otu_table, rs_tax_table)
+
+# create tree
+library(ape)
+random_tree <- rtree(ntaxa(rs_phylo), rooted=TRUE, tip.label=taxa_names(rs_phylo))
+plot(random_tree)
+
+rs_tree <- 
+
+rs_phylo1 <- phyloseq(rs_otu_table, rs_tax_table, random_tree)
+#to separate out ID
+#rownames_to_column(, var = "SampleID") %>% separate(data = ,col = SampleID, into = c("sample", "squirrel-id", "sex", "age", "grid", "year"), sep = "\\.")
+```
+
+
+```{r}
+rs_core <- core(rs_phylo, detection = 0.8, prevalence = 0.8)
+```
+
+```{r, Global Indicators}
+rs_global <- alpha(rs_phylo) %>% rownames_to_column(var="SampleID")
+rs_full <- right_join(rs_metadata, rs_global, by = "SampleID")
+View(rs_full)
+```
+
+```{r, Evenness}
+rs_even <- evenness(rs_phylo) #%>% rownames_to_column(var="SampleID")
+View(rs_even)
+
+#rs_full1 <- right_join(rs_metadata, rs_even, by = "SampleID")
+boxplot(rs_even)
+
+```
+
+```{r, Diversity}
+rs_diversity <- diversity(rs_phylo) #%>% rownames_to_column(var="SampleID")
+View(rs_diversity)
+
+#rs_full2 <- right_join(rs_full1, rs_diversity, by = "SampleID")
+```
+
+Beta diversity with four distance matrices: Jaccard, Bray-Curtis, unweighted UniFrac, weighted UniFrac
+https://rstudio-pubs-static.s3.amazonaws.com/268156_d3ea37937f4f4469839ab6fa2c483842.html#beta-diversity
+
+```{r}
+
+```
+
+
+
+```{r}
+#jaccard
+rs_jaccard <- vegdist(rs_otu_tax1, method = "jaccard")
+#Bray-Curtis
+
+#unweighted UniFrac
+
+#weighted UniFrac
+#UniFrac(rs_phylo1, weighted = TRUE)
+```
+
+PCoA on all beta diversity matrices
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Squirrel BOLD data
+```{r}
+library(tidyverse)
+```
+
+
+
+```{r}
+rs_bold <- read_tsv("bold_data.txt")
+View(rs_bold)
+colnames(rs_bold) %>% sort
+```
+
+
