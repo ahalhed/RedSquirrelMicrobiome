@@ -98,3 +98,18 @@ qiime longitudinal linear-mixed-effects \
 # exporting to biom/tsv
 qiime tools export --input-path OTU-table-dn-99.qza --output-path ./exported
 biom convert -i feature-table.biom -o feature-table.tsv --to-tsv
+
+#!/bin/bash
+#SBATCH --account=def-cottenie
+#SBATCH --time=02:00:00
+#SBATCH --mem-per-cpu 8G
+#SBATCH --job-name=tableVis
+#SBATCH --output=./output/%x-%j.out
+
+#script starts here
+#----------------------------------
+# sampling depth
+qiime feature-table summarize \
+  --i-table table.qza \
+  --o-visualization table.qzv \
+  --m-sample-metadata-file ./input/RS_meta.tsv
