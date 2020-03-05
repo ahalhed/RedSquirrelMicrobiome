@@ -5,6 +5,9 @@ date: "26/02/2020"
 output: html_document
 ---
 
+So... I went back to the paper to see what they did for their OTUs... they used uclust at 97% identity... so that's why the OTU look so different.
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
