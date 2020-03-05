@@ -174,6 +174,11 @@ rs_q2_shannon$data %>%
   compare_means(shannon ~ Unique.Locations, data = ., method = "wilcox.test")
 ```
 ```{r}
+# which means to compare
+comparisons <- list(c("1", "2"), c("1", "3"), 
+                    c("1", "4"), c("1", "5"), 
+                    c("1", "6"), c("1", "7"), 
+                    c("1", "8"), c("1", "9"))
 # shannon diversity by number of sites sampled at
  shannon_box <- rs_q2_shannon$data %>%
   as.data.frame() %>%
@@ -185,7 +190,10 @@ rs_q2_shannon$data %>%
   theme_bw() +
   xlab("Number of Sampling Locations") +
   ylab("Shannon Diversity") +
-  ggtitle("Shannon Diversity by Number of Sampling Locations")
+  ggtitle("Shannon Diversity by Number of Sampling Locations") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
 shannon_box
 ```
 
@@ -205,6 +213,11 @@ evenness$data %>%
   compare_means(pielou_e ~ Unique.Locations, data = ., method = "kruskal.test")
 ```
 ```{r}
+# which means to compare
+comparisons <- list(c("1", "2"), c("1", "3"), 
+                    c("1", "4"), c("1", "5"), 
+                    c("1", "6"), c("1", "7"), 
+                    c("1", "8"), c("1", "9"))
 # pielou's evenness diversity by number of sites sampled at
 evenness$data %>%
   rownames_to_column("SampleID") %>%
@@ -215,7 +228,10 @@ evenness$data %>%
   theme_bw() + 
   xlab("Number of Sampling Locations") +
   ylab("Pielou's Evenness") +
-  ggtitle("Pielou's Evenness by Number of Sampling Locations")
+  ggtitle("Pielou's Evenness by Number of Sampling Locations") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
 ```
 
 
@@ -228,6 +244,11 @@ faith_pd$data %>%
   compare_means(faith_pd ~ Unique.Locations, data = ., method = "wilcox.test")
 ```
 ```{r}
+# which means to compare
+comparisons <- list(c("1", "2"), c("1", "3"), 
+                    c("1", "4"), c("1", "5"), 
+                    c("1", "6"), c("1", "7"), 
+                    c("1", "8"), c("1", "9"))
 # faith's pd diversity by number of sites sampled at
 faith_pd$data %>%
   rownames_to_column("SampleID") %>%
@@ -238,7 +259,10 @@ faith_pd$data %>%
   theme_bw() +
   xlab("Number of Sampling Locations") +
   ylab("Faith's PD") +
-  ggtitle("Faith's PD by Number of Sampling Locations")
+  ggtitle("Faith's PD by Number of Sampling Locations") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
 ```
 
 ### Distances between groups
@@ -464,13 +488,21 @@ df_bray_loc <- dm_phylo_bray$data %>%
 View(df_bray_loc)
 ```
 ```{r}
+# means to compare
+comparisons <- list(c("1-1", "1-2"), c("1-1", "1-3"), 
+                    c("1-1", "1-4"), c("1-1", "1-5"), 
+                    c("1-1", "1-6"), c("1-1", "1-7"), 
+                    c("1-1", "1-8"), c("1-1", "1-9"))
 df_bray_loc %>%
   filter(Distance != 0) %>%
   filter(Unique.Locations1 == 1) %>%
   ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
   geom_boxplot() + theme_bw()  +
   xlab("Pairs Compared") +
-  ylab("Bray-Curtis Distance")
+  ylab("Bray-Curtis Distance") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
 ```
 ## Ordination
 ### In R ordinations

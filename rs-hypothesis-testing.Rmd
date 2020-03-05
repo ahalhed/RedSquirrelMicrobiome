@@ -75,26 +75,7 @@ View(merged_richness)
 rm(q2.evenness, q2.faith_pd, q2.otus, q2.shannonnp, q2.shannonp)
 ```
 
-## Hypothesis 1 - Environment
-Group individuals by grid/location
-```{r}
-
-```
-
-## Hypothesis 2 - Diet
-Group individuals by food supplementation
-```{r}
-
-```
-
-## Hypothesis 3 - Parental care
-Group individuals by DamID and SireID
-```{r}
-
-```
-
-
-## Hypothesis 4 - Dispersal
+## Number of Times Dispersed
 Group individuals by number of different locations sampled.
 
 Maybe something with comparing first and last location sampled. Account for time difference?
@@ -120,7 +101,7 @@ rs_sub_meta <- rs_q2_metadata %>%
 dm_phylo_bray <- read_qza("../core-metrics-phylogenetic/bray_curtis_distance_matrix.qza")
 dm_phylo_jaccard <- read_qza("../core-metrics-phylogenetic/jaccard_distance_matrix.qza")
 ```
-### Jaccard plot
+### Jaccard sampling locations plot
 The original paper compared the Jaccard distance between related individuals. I am doing that with the number of sampling locations.
 ```{r}
 df_jaccar_loc <- dm_phylo_jaccard$data %>% 
@@ -156,6 +137,7 @@ comparisons <- list(c("1-1", "1-2"), c("1-1", "1-3"),
                     c("1-1", "1-6"), c("1-1", "1-7"), 
                     c("1-1", "1-8"), c("1-1", "1-9"))
 # plot
+# should I be accounting for year/season?
 df_jaccar_loc %>%
   filter(Distance != 0) %>%
   filter(Unique.Locations1 == 1) %>%
@@ -163,10 +145,10 @@ df_jaccar_loc %>%
   geom_boxplot() + theme_bw()  +
   xlab("Pairs Compared") +
   ylab("Jaccard Distance") +
-  stat_compare_means(comparisons = comparisons,
+  stat_compare_means(comparisons = comparisons, # put significance points
                      symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
                                         symbols = c("****", "***", "**", "*", "ns"))) +
-  stat_compare_means(label.y = 1.2) +
+  stat_compare_means(label.y = 1.1, label.x = 7) +
   stat_summary(fun.y=mean, geom="point", shape=20, size=1, color="red", fill="red")
 ```
 What are the means on that jaccard plot?
@@ -181,20 +163,132 @@ df_jaccar_loc %>%
 ### Some stats
 ```{r}
 # full data (all samples)
-vegan::anosim(dm_phylo_bray$data, dispersal_metadata$Unique.Locations, permutations = 1000)
+vegan::anosim(dm_phylo_bray$data, 
+              dispersal_metadata$Unique.Locations, 
+              permutations = 1000) %>%
+  summary
 # only the most recently collected
 # subset a distance matrix?
-vegan::anosim(dm_phylo_bray$data, rs_sub_meta$Unique.Locations, permutations = 1000)
+vegan::anosim(dm_phylo_bray$data, 
+              rs_sub_meta$Unique.Locations, 
+              permutations = 1000)
 ```
 ```{r}
 # full data (all samples)
 vegan::adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
               data = dispersal_metadata, 
-              permutations = 1000)
+              permutations = 1000) %>%
+  summary
 # only the most recently collected
+# subset a distance matrix?
 vegan::adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
               data = rs_sub_meta, 
-              permutations = 1000)
+              permutations = 1000) %>%
+  summary
 ```
 
 
+
+## Immediate Neighbours
+```{r}
+df_jaccar_neighbours <- dm_phylo_jaccard$data %>% 
+  as.matrix %>% as.data.frame %>% # put the jaccard dm into a data frame
+  rownames_to_column(var = "SampleID1") %>%
+  # format the data frame
+  pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
+  unique() %>% # this removes the duplications of the data
+  left_join(rs_q2_metadata %>% # join with the metadata for first sample
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID1" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations, 
+         SampleID2, Distance, Grid,
+         "Location X", "Location Y") %>%
+  rename("Unique.Locations1"="Unique.Locations", 
+         "LocationX1" = "Location X", 
+         "LocationY1" = "Location Y",
+         "Grid1" = "Grid") %>%
+  left_join(rs_q2_metadata %>% # join with the metadata for second sample
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID2" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations1, Grid1, LocationX1, LocationY1,
+         SampleID2, Unique.Locations, Grid,
+         "Location X", "Location Y", Distance) %>%
+  rename("Unique.Locations2"="Unique.Locations", 
+         "LocationX2" = "Location X", 
+         "LocationY2" = "Location Y",
+         "Grid2" = "Grid")
+View(df_jaccar_neighbours)
+df_jaccar_neighbours$Grid1 %>% table
+```
+
+```{r}
+# add information about neighbours
+df_jaccar_neighbours$Neighbour <- ifelse(
+  df_jaccar_neighbours$SampleID1 == df_jaccar_neighbours$SampleID2,
+  "Same Sample", 
+  ifelse(
+    df_jaccar_neighbours$Grid1 != df_jaccar_neighbours$Grid2,
+    "Different Grid",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 1 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 1 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 0.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 0.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 1 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 1 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 0.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 0.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 == df_jaccar_neighbours$LocationY2),
+      "Immediate Neighbour",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 2 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 2 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 1.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 1.5 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 2 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 2 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 1.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 1.5 == df_jaccar_neighbours$LocationY2),
+      "Near Neighbour",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 3 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 3 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 2.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 2.5 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 3 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 3 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 2.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 2.5 == df_jaccar_neighbours$LocationY2),
+      "Neighbour",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 4 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 4 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 3.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 3.5 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 4 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 4 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 3.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 3.5 == df_jaccar_neighbours$LocationY2),
+      "Far Neighbour", "Same Grid"
+    ))))))
+```
+
+```{r}
+# order by distance
+df_jaccar_neighbours$Neighbour <- factor(df_jaccar_neighbours$Neighbour,
+    levels = c('Immediate Neighbour', 'Near Neighbour', 'Neighbour', 'Far Neighbour', 'Same Grid', 'Different Grid'),ordered = TRUE)
+# plot
+df_jaccar_neighbours %>%
+  filter(Distance != 0) %>%
+  ggplot(aes(x=Neighbour, y=Distance, group=Neighbour)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Neighbour") +
+  ylab("Jaccard Distance")
+```
