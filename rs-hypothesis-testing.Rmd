@@ -124,23 +124,27 @@ dm_phylo_jaccard <- read_qza("../core-metrics-phylogenetic/jaccard_distance_matr
 The original paper compared the Jaccard distance between related individuals. I am doing that with the number of sampling locations.
 ```{r}
 df_jaccar_loc <- dm_phylo_jaccard$data %>% 
-  as.matrix %>% as.data.frame %>%
+  as.matrix %>% as.data.frame %>% # put the jaccard dm into a data frame
   rownames_to_column(var = "SampleID1") %>%
+  # format the data frame
   pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
   unique() %>% # this removes the duplications of the data
-  left_join(rs_q2_metadata %>% 
+  left_join(rs_q2_metadata %>% # join with the metadata for first sample
               group_by(Squirrel.ID) %>% 
               mutate(Unique.Locations = n_distinct(Location)),
             by = c("SampleID1" = "SampleID")) %>%
-  select(SampleID1, Unique.Locations, SampleID2, Distance) %>%
+  select(SampleID1, Unique.Locations, 
+         SampleID2, Distance) %>%
   rename("Unique.Locations1"="Unique.Locations") %>%
-  left_join(rs_q2_metadata %>% 
+  left_join(rs_q2_metadata %>% # join with the metadata for second sample
               group_by(Squirrel.ID) %>% 
               mutate(Unique.Locations = n_distinct(Location)),
             by = c("SampleID2" = "SampleID")) %>%
-  select(SampleID1, Unique.Locations1, SampleID2, Unique.Locations, Distance) %>%
+  select(SampleID1, Unique.Locations1, SampleID2, 
+         Unique.Locations, Distance) %>%
   rename("Unique.Locations2"="Unique.Locations") %>%
-  unite(Pairs, c(Unique.Locations1, Unique.Locations2), remove=FALSE, sep = "-") %>%
+  unite(Pairs, c(Unique.Locations1, Unique.Locations2), 
+        remove=FALSE, sep = "-") %>%
   subset(SampleID1 %in% rs_sub_meta$SampleID) %>%
   subset(SampleID2 %in% rs_sub_meta$SampleID)
 View(df_jaccar_loc)
@@ -165,6 +169,15 @@ df_jaccar_loc %>%
   stat_compare_means(label.y = 1.2) +
   stat_summary(fun.y=mean, geom="point", shape=20, size=1, color="red", fill="red")
 ```
+What are the means on that jaccard plot?
+```{r}
+df_jaccar_loc %>%
+  group_by(Pairs) %>%
+  summarise_at(vars(Distance), 
+               funs(mean(., na.rm=TRUE))) %>%
+  head(9)
+```
+
 ### Some stats
 ```{r}
 # full data (all samples)
