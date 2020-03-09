@@ -225,6 +225,33 @@ df_jaccar_neighbours$Grid1 %>% table
 
 ```{r}
 # add information about neighbours
+# distance between X points
+df_jaccar_neighbours$Distance.X <- ifelse(
+  df_jaccar_neighbours$Grid1 != df_jaccar_neighbours$Grid2,
+    NA, # not calculating distance between different grids (only within grids)
+  ifelse(df_jaccar_neighbours$LocationX1<0 & df_jaccar_neighbours$LocationX2>0,
+  abs(df_jaccar_neighbours$LocationX2 - df_jaccar_neighbours$LocationX1),
+  ifelse(
+    df_jaccar_neighbours$LocationX1>0 & df_jaccar_neighbours$LocationX2<0,
+  abs(df_jaccar_neighbours$LocationX1 - df_jaccar_neighbours$LocationX2), 
+  abs(df_jaccar_neighbours$LocationX1 - df_jaccar_neighbours$LocationX2)
+  )))
+# distance between X points
+df_jaccar_neighbours$Distance.Y <- ifelse(
+  df_jaccar_neighbours$Grid1 != df_jaccar_neighbours$Grid2,
+    NA, # not calculating distance between different grids (only within grids)
+  ifelse(df_jaccar_neighbours$LocationY1<0 & df_jaccar_neighbours$LocationY2>0,
+  abs(df_jaccar_neighbours$LocationY2 - df_jaccar_neighbours$LocationY1),
+  ifelse(
+    df_jaccar_neighbours$LocationY1>0 & df_jaccar_neighbours$LocationY2<0,
+  abs(df_jaccar_neighbours$LocationY1 - df_jaccar_neighbours$LocationY2), 
+  abs(df_jaccar_neighbours$LocationY1 - df_jaccar_neighbours$LocationY2)
+  )))
+```
+
+
+```{r}
+# add information about neighbours
 df_jaccar_neighbours$Neighbour <- ifelse(
   df_jaccar_neighbours$SampleID1 == df_jaccar_neighbours$SampleID2,
   "Same Sample", 
