@@ -508,7 +508,7 @@ df_bray_loc %>%
 ### In R ordinations
 
 ```{r}
-# multivariate ordination for the full data set
+# multivariate ordination for the full data set (bray-curtis)
 ord_ps_NMDS_bray <- ordinate(ps, "NMDS", dm_phylo_bray$data)
 ord_ps_RDA_bray <- ordinate(ps, "RDA", dm_phylo_bray$data)
 ord_ps_DCA_bray <- ordinate(ps, "DCA", dm_phylo_bray$data)
@@ -540,7 +540,7 @@ plot_ordination(ps, ord_ps_DCA_bray) +
 ```
 
 ```{r}
-# multivariate ordination for the full data set
+# multivariate ordination for the full data set (jaccard)
 ord_ps_NMDS_jaccard <- ordinate(ps, "NMDS", dm_phylo_jaccard$data)
 ord_ps_RDA_jaccard <- ordinate(ps, "RDA", dm_phylo_jaccard$data)
 ord_ps_DCA_jaccard <- ordinate(ps, "DCA", dm_phylo_jaccard$data)

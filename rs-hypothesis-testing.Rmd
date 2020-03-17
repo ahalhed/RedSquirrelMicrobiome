@@ -21,6 +21,7 @@ library(qiime2R)
 library(tidyverse)
 library(phyloseq)
 library(ggpubr)
+library(vegan)
 ```
 
 ## Phyloseq
@@ -163,33 +164,26 @@ df_jaccar_loc %>%
 ### Some stats
 ```{r}
 # full data (all samples)
-vegan::anosim(dm_phylo_bray$data, 
+jaccard_location_anosim <- anosim(dm_phylo_bray$data, 
               dispersal_metadata$Unique.Locations, 
-              permutations = 1000) %>%
-  summary
-# only the most recently collected
-# subset a distance matrix?
-vegan::anosim(dm_phylo_bray$data, 
-              rs_sub_meta$Unique.Locations, 
               permutations = 1000)
+summary(jaccard_location_anosim)
+plot(jaccard_location_anosim)
 ```
 ```{r}
 # full data (all samples)
-vegan::adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
+jaccard_location_adonis <- adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
               data = dispersal_metadata, 
-              permutations = 1000) %>%
-  summary
-# only the most recently collected
-# subset a distance matrix?
-vegan::adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
-              data = rs_sub_meta, 
-              permutations = 1000) %>%
-  summary
+              permutations = 1000)
+summary(jaccard_location_adonis)
+# need to figure out how to get the plot to work (and how to look at the)
+plot(jaccard_location_adonis)
 ```
 
 
 
 ## Immediate Neighbours
+### Boxplots
 ```{r}
 df_jaccar_neighbours <- dm_phylo_jaccard$data %>% 
   as.matrix %>% as.data.frame %>% # put the jaccard dm into a data frame
@@ -249,9 +243,8 @@ df_jaccar_neighbours$Distance.Y <- ifelse(
   )))
 ```
 
-
 ```{r}
-# add information about neighbours
+# add information about neighbours (level dependent on distance apart)
 df_jaccar_neighbours$Neighbour <- ifelse(
   df_jaccar_neighbours$SampleID1 == df_jaccar_neighbours$SampleID2,
   "Same Sample", 
@@ -307,10 +300,11 @@ df_jaccar_neighbours$Neighbour <- ifelse(
     ))))))
 ```
 
+
 ```{r}
 # order by distance
 df_jaccar_neighbours$Neighbour <- factor(df_jaccar_neighbours$Neighbour,
-    levels = c('Immediate Neighbour', 'Near Neighbour', 'Neighbour', 'Far Neighbour', 'Same Grid', 'Different Grid'),ordered = TRUE)
+    levels = c('Sample Sample', 'Immediate Neighbour', 'Near Neighbour', 'Neighbour', 'Far Neighbour', 'Same Grid', 'Different Grid'),ordered = TRUE)
 # plot
 df_jaccar_neighbours %>%
   filter(Distance != 0) %>%
@@ -318,4 +312,23 @@ df_jaccar_neighbours %>%
   geom_boxplot() + theme_bw()  +
   xlab("Neighbour") +
   ylab("Jaccard Distance")
+```
+
+### Some stats
+```{r}
+# jaccard
+# how to take into account the neighbour thing? 
+# 
+vegan::anosim(df_jaccar_neighbours$Distance, 
+              df_jaccar_neighbours$Neighbour, 
+              permutations = 1000) %>%
+  summary
+```
+
+```{r}
+# full data (all samples)
+vegan::adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
+              data = dispersal_metadata, 
+              permutations = 1000) %>%
+  summary
 ```
