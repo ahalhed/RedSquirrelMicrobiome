@@ -28,36 +28,46 @@ rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/
 # load in PCoA
 rs_PCoA_jaccard <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/jaccard_pcoa_results.qza")
 ```
-
-### Panel 3-1 
-Ordination of grids
 ```{r}
 # combine PCoA with metadata
 rs_PCoA_V <- left_join(rs_PCoA_jaccard$data$Vectors, rs_q2_metadata)
 ```
 
+### Panel 3-1 
+Ordination of grids
+
 ```{r}
 # axes 1 and 2
-rs_PCoA_plot <- ggplot(rs_PCoA_V, 
+rs_3_1 <- ggplot(rs_PCoA_V, 
                        aes(x=PC1, y=PC2, col = Grid, group = Squirrel.ID)) + 
   geom_point() + # points are samples
   theme_bw()
-rs_PCoA_plot
+rs_3_1
 # add individual lines
-rs_PCoA_plot + geom_line() # lines are individuals
+rs_3_1 + geom_line() # lines are individuals
 # add ellipses by grid
-rs_PCoA_plot + stat_ellipse(aes(group=Grid))
+rs_3_1 + stat_ellipse(aes(group=Grid))
 # add ellipses by grid and individual lines
 # panel by year
-rs_PCoA_plot + 
+rs_3_1 + 
   geom_line() + 
   stat_ellipse(aes(group=Grid)) +
   facet_grid(Season~Year)
-
 ```
 
 ### Panel 3-2 
 Ordination of grids with diet
+```{r}
+# axes 1 and 2
+rs_3_2 <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2,
+                                      group = Squirrel.ID, 
+                                      shape = Grid)) + 
+  geom_point() + # points are samples
+  theme_bw() + 
+  stat_ellipse(aes(group=FoodSupplement,
+                   colour=FoodSupplement)) #+ stat_ellipse(aes(group=Grid,colour=Grid))
+rs_3_2
+```
 
 ### Panel 3-3 
 Ordination of grids with parent-offspring relationships
