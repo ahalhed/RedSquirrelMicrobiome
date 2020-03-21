@@ -20,7 +20,7 @@ library(qiime2R)
 
 ```{r}
 # get the metadata
-rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/original/metadata_all_samples.tsv", sep = "\t", header = TRUE)
 ```
 
 ## Proposal Figure 3
