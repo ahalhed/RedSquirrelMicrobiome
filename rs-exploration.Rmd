@@ -505,14 +505,3 @@ rs_jaccard <- qiime2R::read_qza("~/OneDrive - University of Guelph/Alicia's Thes
 ```{r}
 qgraph::qgraph(rs_jaccard$data, layout='spring', vsize=3)
 ```
-
-
-
-
-
-
-
-
-
-
-
