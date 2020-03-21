@@ -71,19 +71,202 @@ rs_3_2
 
 ### Panel 3-3 
 Ordination of grids with parent-offspring relationships
+```{r, message=FALSE, warning=FALSE}
+# Sire
+# axes 1 and 2
+rs_3_3S <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, col = as.character(SireID))) + 
+  geom_point() + # points are samples
+  guides(col = F) +
+  theme_bw()
+rs_3_3S
+# add facetting by grid and year
+rs_3_3S + facet_grid(Year~Grid)
+# add ellipse
+rs_3_3S + stat_ellipse(aes(group=as.character(SireID), colour=as.character(SireID)))
+# add ellipse with facetting
+rs_3_3S + facet_grid(Year~Grid) +
+  stat_ellipse(aes(group=as.character(SireID), 
+                   colour=as.character(SireID)))
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Dame
+# axes 1 and 2
+rs_3_3 <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, col = as.character(DamID))) + 
+  geom_point() + # points are samples
+  guides(col = F) +
+  theme_bw()
+rs_3_3
+# add facetting by grid and year
+rs_3_3 + facet_grid(Year~Grid)
+# add ellipse
+rs_3_3 + stat_ellipse(aes(group=as.character(DamID), colour=as.character(DamID)))
+# add ellipse with facetting
+rs_3_3 + facet_grid(Year~Grid) +
+  stat_ellipse(aes(group=as.character(DamID), 
+                   colour=as.character(DamID)))
+```
+
 
 ### Panel 3-4
-Ordination of grids with movement between grids
-
+Ordination of grids with movement between grids.
+Since I don't really have movement between grids, going to colour points by their X Y location and facet by replicate (grid/year).
+```{r, message=FALSE, warning=FALSE}
+# axes 1 and 2
+ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, col = Location)) + 
+  geom_point() + # points are samples
+  facet_grid(Year~Grid) +
+  guides(col=FALSE) +
+  theme_bw()
+```
 ## Proposal Figure 4
+```{r}
+rs_jaccard <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/jaccard_distance_matrix.qza")$data %>% 
+  as.matrix %>% as.data.frame %>%
+  rownames_to_column("sampleid1") %>%
+  pivot_longer(-sampleid1, names_to = "sampleid2", values_to = "Jaccard") %>%
+  unique() %>% left_join(., rs_q2_metadata, 
+                        by = c("sampleid1" = "SampleID")) %>%
+  # .x for sample 1, .y for sample 2
+  left_join(., rs_q2_metadata, by = c("sampleid2" = "SampleID"))
+View(rs_jaccard)
+```
+
+```{r}
+# create a new column with the relationship between individuals
+# if there is an NA in either of the DamID/SireID columns, then the relationship cannot be determined (so is therefore an NA)
+rs_jaccard$Relationship <- ifelse(rs_jaccard$Squirrel.ID.x == rs_jaccard$Squirrel.ID.y, "self",
+  ifelse(rs_jaccard$Squirrel.ID.x == rs_jaccard$DamID.y | rs_jaccard$Squirrel.ID.y == rs_jaccard$DamID.x, 
+         "mother-offspring",
+    ifelse(rs_jaccard$Squirrel.ID.x == rs_jaccard$SireID.y | rs_jaccard$Squirrel.ID.y == rs_jaccard$SireID.x, 
+           "father-offspring", 
+      ifelse(rs_jaccard$DamID.x == rs_jaccard$DamID.y & rs_jaccard$SireID.x == rs_jaccard$SireID.y, 
+             "full-sibling",
+        ifelse(rs_jaccard$DamID.x == rs_jaccard$DamID.y | rs_jaccard$SireID.x == rs_jaccard$SireID.y, 
+               "half-sibling",
+          "unrelated")))))
+```
+
+```{r}
+# create a new grid column
+rs_jaccard$Grid <- ifelse(rs_jaccard$Grid.x == rs_jaccard$Grid.y, "Same Grid", "Different Grid")
+# create a new, more specific grid column
+rs_jaccard$GridS <- ifelse(rs_jaccard$Grid.x == "KL" & rs_jaccard$Grid.x == rs_jaccard$Grid.y, "KL",
+                           ifelse(rs_jaccard$Grid.x == "AG" & rs_jaccard$Grid.x == rs_jaccard$Grid.y, "AG",
+                                  ifelse(rs_jaccard$Grid.x == "JO" & rs_jaccard$Grid.x == rs_jaccard$Grid.y, "JO",
+                                         ifelse(rs_jaccard$Grid.x == "LL" & rs_jaccard$Grid.x == rs_jaccard$Grid.y, "LL",
+                                                ifelse(rs_jaccard$Grid.x == "CH" & rs_jaccard$Grid.x == rs_jaccard$Grid.y, "CH",
+                                                       "Different Grid")))))
+```
+
+```{r}
+# cread a new year column
+rs_jaccard$Year <- ifelse(rs_jaccard$Year.x == rs_jaccard$Year.y, "Same Year", "Different Year")
+# cread a new, more specific year column
+rs_jaccard$YearS <- ifelse(rs_jaccard$Year.x == 2008 & rs_jaccard$Year.x == rs_jaccard$Year.y, 2008, 
+                          ifelse(rs_jaccard$Year.x == 2009 & rs_jaccard$Year.x == rs_jaccard$Year.y, 2009,
+                                 ifelse(rs_jaccard$Year.x == 2010 & rs_jaccard$Year.x == rs_jaccard$Year.y, 2010,
+                                        "Different Year")))
+```
+
+```{r}
+# new food supplement column
+rs_jaccard$FoodSupplement <- ifelse(rs_jaccard$FoodSupplement.x == "No" & rs_jaccard$FoodSupplement.x == rs_jaccard$FoodSupplement.y, "No", 
+                                    ifelse(rs_jaccard$FoodSupplement.x == "Yes" & rs_jaccard$FoodSupplement.x == rs_jaccard$FoodSupplement.y, "Yes", "Either"))
+```
 
 ### Left Panel
 Boxplot of dissimilarity of shared diets
+```{r}
+# remove rows where the relationship is unknown and the distance is 0 (meaning it is comparing a sample to itself)
+rs_4L <- rs_jaccard %>% filter(Jaccard > 0) %>%
+  # make a boxplot
+  ggplot(., aes(x = FoodSupplement, y = Jaccard)) + 
+  geom_boxplot() + 
+  # modify theme and tick text
+  theme_bw() +
+  # reorder x axis
+  scale_x_discrete(limits=c("Either","Yes","No"))
+rs_4L
+# add general facet (grid, year)
+rs_4L + facet_grid(Year~Grid)
+# add specific facet (grid, year)
+rs_4L + facet_grid(YearS~GridS)
+```
 
 ### Right Panel
-Boxplot of dissimilarity of parent-offspring pairs vs whole grid
+Boxplot of dissimilarity of parent-offspring pairs vs whole grid (this is very similar to what the original paper had - I have just adjusted the facetting they had)
 
+```{r}
+# remove rows where the relationship is unknown and the distance is 0 (meaning it is comparing a sample to itself)
+rs_jaccard %>% 
+  drop_na(Relationship) %>%
+  filter(Jaccard > 0) %>%
+  # make a boxplot
+  ggplot(., aes(x = Relationship, y = Jaccard)) + 
+  geom_boxplot() + facet_grid(Year~Grid) +
+  # modify theme and tick text
+  theme_bw() + theme(axis.text.x = element_text(angle = 34, hjust = 1)) +
+  # the relatinoships have been reordered to match the ones in the paper
+  scale_x_discrete(limits=c("self","mother-offspring","father-offspring", "full-sibling", "half-sibling", "unrelated"))
+```
 
 ## Proposal Figure 5
 Line graph of dissimilarity between the focal individual and others sampled from the same location over time
 I am going to focus on individuals sampled at two locations (ideally multiple times at both locations)
+
+```{r}
+# add location information
+rs_jaccard$Location <- ifelse(rs_jaccard$sampleid1 == rs_jaccard$sampleid2, "Same Sample",
+                              ifelse(rs_jaccard$Grid.x != rs_jaccard$Grid.y, "Different Grid",
+                                ifelse(rs_jaccard$Squirrel.ID.x == rs_jaccard$Squirrel.ID.y &
+                                       rs_jaccard$`Location X.x` == rs_jaccard$`Location X.y` &
+                                       rs_jaccard$`Location Y.x` == rs_jaccard$`Location Y.y`,
+                                     "Same Squirrel, Same Location",
+                                     ifelse(rs_jaccard$Squirrel.ID.x != rs_jaccard$Squirrel.ID.y &
+                                       rs_jaccard$`Location X.x` == rs_jaccard$`Location X.y` &
+                                       rs_jaccard$`Location Y.x` == rs_jaccard$`Location Y.y`,
+                                     "Different Squirrel, Same Location",
+                                     ifelse(rs_jaccard$Squirrel.ID.x != rs_jaccard$Squirrel.ID.y &
+                                       rs_jaccard$`Location X.x` != rs_jaccard$`Location X.y` |
+                                       rs_jaccard$`Location Y.x` != rs_jaccard$`Location Y.y`,
+                                     "Different Squirrel, Different Location",
+                                     ifelse(rs_jaccard$Squirrel.ID.x == rs_jaccard$Squirrel.ID.y &
+                                       rs_jaccard$`Location X.x` != rs_jaccard$`Location X.y` |
+                                       rs_jaccard$`Location Y.x` != rs_jaccard$`Location Y.y`,
+                                     "Same Squirrel, Different Location", NA))))))
+# add date information
+rs_jaccard$CollectionDate <- ifelse(rs_jaccard$CollectionDate.x == rs_jaccard$CollectionDate.y,
+                                    "Same Date", "Different Date")
+# look at data
+View(rs_jaccard)
+```
+
+```{r}
+rs_5 <- rs_jaccard %>% filter(Jaccard > 0) %>%
+  group_by(Squirrel.ID.x, Location, CollectionDate, CollectionDate.x) %>%
+  # find mean distance from squirrel to others samples
+  summarise_at(vars(Jaccard), funs(mean(., na.rm=TRUE)))  %>%
+  # extract year and day/month information
+  mutate("Year" = word(CollectionDate.x, 1, sep = "-"),
+         "Date" = word(CollectionDate.x, 2, 3, sep = "-"))
+View(rs_5)
+```
+
+```{r}
+# look at plot, facetted by collection date and location
+ggplot(rs_5, aes(x = CollectionDate.x, y = Jaccard, group = Squirrel.ID.x)) +
+  geom_line() + theme_bw() + facet_grid(Location~CollectionDate)
+```
+
+```{r}
+rs_5 %>%
+  # only interested in distances to other individuals at the same location
+  filter(., Location %in% "Different Squirrel, Same Location") %>%
+  # wanted to take into account same date, but greatly reduces sample numbers
+  #filter(., CollectionDate %in% "Same Date") %>%
+  ggplot(., aes(x = CollectionDate.x, y = Jaccard, group = Squirrel.ID.x)) +
+  geom_line() + theme_bw() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
