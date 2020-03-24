@@ -31,6 +31,7 @@ rs_PCoA_jaccard <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/r
 ```{r}
 # combine PCoA with metadata
 rs_PCoA_V <- left_join(rs_PCoA_jaccard$data$Vectors, rs_q2_metadata)
+View(rs_PCoA_V)
 ```
 
 ### Panel 3-1 
@@ -48,7 +49,7 @@ rs_3_1 + geom_line() # lines are individuals
 # add ellipses by grid
 rs_3_1 + stat_ellipse(aes(group=Grid))
 # add ellipses by grid and individual lines
-# panel by year
+# panel by season and year
 rs_3_1 + 
   geom_line() + 
   stat_ellipse(aes(group=Grid)) +
@@ -59,13 +60,13 @@ rs_3_1 +
 Ordination of grids with diet
 ```{r}
 # axes 1 and 2
-rs_3_2 <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2,
-                                      group = Squirrel.ID, 
-                                      shape = Grid)) + 
+rs_3_2 <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, group = Squirrel.ID, shape = FoodSupplement)) + #, shape = Grid
   geom_point() + # points are samples
-  theme_bw() + 
-  stat_ellipse(aes(group=FoodSupplement,
-                   colour=FoodSupplement)) #+ stat_ellipse(aes(group=Grid,colour=Grid))
+  # add lines connecting individuals?
+  #geom_line() +
+  theme_bw() + facet_grid(Year~.) +
+  # each grid is an ellipse, coloured by food supplementation
+  stat_ellipse(aes(group=Grid, colour=FoodSupplement)) 
 rs_3_2
 ```
 
@@ -81,7 +82,7 @@ rs_3_3S <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, col = as.character(SireID))) +
 rs_3_3S
 # add facetting by grid and year
 rs_3_3S + facet_grid(Year~Grid)
-# add ellipse
+# add ellipse (specific sires)
 rs_3_3S + stat_ellipse(aes(group=as.character(SireID), colour=as.character(SireID)))
 # add ellipse with facetting
 rs_3_3S + facet_grid(Year~Grid) +
@@ -99,7 +100,7 @@ rs_3_3 <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, col = as.character(DamID))) +
 rs_3_3
 # add facetting by grid and year
 rs_3_3 + facet_grid(Year~Grid)
-# add ellipse
+# add ellipse (specific dams)
 rs_3_3 + stat_ellipse(aes(group=as.character(DamID), colour=as.character(DamID)))
 # add ellipse with facetting
 rs_3_3 + facet_grid(Year~Grid) +
@@ -112,8 +113,10 @@ rs_3_3 + facet_grid(Year~Grid) +
 Ordination of grids with movement between grids.
 Since I don't really have movement between grids, going to colour points by their X Y location and facet by replicate (grid/year).
 ```{r, message=FALSE, warning=FALSE}
-# axes 1 and 2
-ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, col = Location)) + 
+rs_PCoA_V %>%
+  mutate("Location" = paste(Location.X, Location.Y, sep = ", ")) %>%
+  # axes 1 and 2
+  ggplot(., aes(x=PC1, y=PC2, col = Location)) + 
   geom_point() + # points are samples
   facet_grid(Year~Grid) +
   guides(col=FALSE) +
@@ -218,22 +221,22 @@ I am going to focus on individuals sampled at two locations (ideally multiple ti
 ```{r}
 # add location information
 rs_jaccard$Location <- ifelse(rs_jaccard$sampleid1 == rs_jaccard$sampleid2, "Same Sample",
-                              ifelse(rs_jaccard$Grid.x != rs_jaccard$Grid.y, "Different Grid",
-                                ifelse(rs_jaccard$Squirrel.ID.x == rs_jaccard$Squirrel.ID.y &
-                                       rs_jaccard$`Location X.x` == rs_jaccard$`Location X.y` &
-                                       rs_jaccard$`Location Y.x` == rs_jaccard$`Location Y.y`,
+                                ifelse(rs_jaccard$`Grid.x` != rs_jaccard$`Grid.y`, "Different Grid",
+                                  ifelse(rs_jaccard$`Squirrel.ID.x` == rs_jaccard$`Squirrel.ID.y` &
+                                           rs_jaccard$`Location.X.x` == rs_jaccard$`Location.X.y` &
+                                           rs_jaccard$`Location.Y.x` == rs_jaccard$`Location.Y.y`,
                                      "Same Squirrel, Same Location",
                                      ifelse(rs_jaccard$Squirrel.ID.x != rs_jaccard$Squirrel.ID.y &
-                                       rs_jaccard$`Location X.x` == rs_jaccard$`Location X.y` &
-                                       rs_jaccard$`Location Y.x` == rs_jaccard$`Location Y.y`,
+                                              rs_jaccard$`Location.X.x` == rs_jaccard$`Location.X.y` &
+                                              rs_jaccard$`Location.Y.x` == rs_jaccard$`Location.Y.y`,
                                      "Different Squirrel, Same Location",
                                      ifelse(rs_jaccard$Squirrel.ID.x != rs_jaccard$Squirrel.ID.y &
-                                       rs_jaccard$`Location X.x` != rs_jaccard$`Location X.y` |
-                                       rs_jaccard$`Location Y.x` != rs_jaccard$`Location Y.y`,
+                                              rs_jaccard$`Location.X.x` != rs_jaccard$`Location.X.y` |
+                                              rs_jaccard$`Location.Y.x` != rs_jaccard$`Location.Y.y`,
                                      "Different Squirrel, Different Location",
                                      ifelse(rs_jaccard$Squirrel.ID.x == rs_jaccard$Squirrel.ID.y &
-                                       rs_jaccard$`Location X.x` != rs_jaccard$`Location X.y` |
-                                       rs_jaccard$`Location Y.x` != rs_jaccard$`Location Y.y`,
+                                              rs_jaccard$`Location.X.x` != rs_jaccard$`Location.X.y` |
+                                              rs_jaccard$`Location.Y.x` != rs_jaccard$`Location.Y.y`,
                                      "Same Squirrel, Different Location", NA))))))
 # add date information
 rs_jaccard$CollectionDate <- ifelse(rs_jaccard$CollectionDate.x == rs_jaccard$CollectionDate.y,
@@ -246,16 +249,17 @@ View(rs_jaccard)
 rs_5 <- rs_jaccard %>% filter(Jaccard > 0) %>%
   group_by(Squirrel.ID.x, Location, CollectionDate, CollectionDate.x) %>%
   # find mean distance from squirrel to others samples
-  summarise_at(vars(Jaccard), funs(mean(., na.rm=TRUE)))  %>%
+  summarise_at(vars(Jaccard), ~ mean(., na.rm=TRUE))  %>%
   # extract year and day/month information
   mutate("Year" = word(CollectionDate.x, 1, sep = "-"),
-         "Date" = word(CollectionDate.x, 2, 3, sep = "-"))
+         "Month" = word(CollectionDate.x, 2, sep = "-"),
+         "Day" = word(CollectionDate.x, 3, sep = "-"))
 View(rs_5)
 ```
 
 ```{r}
 # look at plot, facetted by collection date and location
-ggplot(rs_5, aes(x = CollectionDate.x, y = Jaccard, group = Squirrel.ID.x)) +
+ggplot(rs_5, aes(x = CollectionDate.x, y = Jaccard, group = Squirrel.ID.x, col = Squirrel.ID.x)) +
   geom_line() + theme_bw() + facet_grid(Location~CollectionDate)
 ```
 
@@ -265,8 +269,8 @@ rs_5 %>%
   filter(., Location %in% "Different Squirrel, Same Location") %>%
   # wanted to take into account same date, but greatly reduces sample numbers
   #filter(., CollectionDate %in% "Same Date") %>%
-  ggplot(., aes(x = CollectionDate.x, y = Jaccard, group = Squirrel.ID.x)) +
-  geom_line() + theme_bw() + 
+  ggplot(., aes(x = CollectionDate.x, y = Jaccard, group = Squirrel.ID.x, col = Squirrel.ID.x)) +
+  geom_line() + theme_bw() + #facet_grid(Month~.) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
