@@ -84,20 +84,27 @@ max_dist <- function(dm) {
   m <- apply(summ, 1, max)
   return(m)
 }
-
-# numeric metadata
+rs_q2_metadata
+# numeric metadata (depends on dplyr)
 Grid_numeric <- function(metadata, grid, year) {
-  df1 <- subset(metadata, Grid == grid)
-  df2 <- column_to_rownames(remove_rownames(df1), var = "SampleID")
-  df3 <- subset(df2, Year == year)
-  df4 <- Filter(is.numeric, df3)
+  df1 <- subset(metadata, Grid == grid) %>%
+    remove_rownames() %>%
+    column_to_rownames(., var = "SampleID") %>%
+    subset(., Year == year)
+  df2 <- df1 %>%
+    # want sex and food supplement to be numeric
+    # male 0, female 1; no 0, yes 1
+    mutate(Sex = as.integer(recode(Sex, "Male" = 0, "Female" = 1)),
+           FoodSupplement = as.integer(recode(FoodSupplement, 
+                                   "No" = 0, "Yes" = 1)))
+  df3 <- Filter(is.numeric, df2)
   drop <- c("Location X", "Location Y", "Date")
-  df5 <- df4[,!(names(df4) %in% drop)]
-  return(df5)
+  df4 <- df3[,!(names(df3) %in% drop)]
+  return(df4)
 }
 
 # weighted PCNM for CCA
-PCNM_CCA <- function(XY, ps) {
+PCNM_CCA <- function(XY, ps, env) {
   rn <- rownames(XY)
   # relies on dplyr and phyloseq
   otu <- otu_table(ps) %>% as.matrix %>% 
@@ -108,7 +115,7 @@ PCNM_CCA <- function(XY, ps) {
   rs <- rowSums(otu)/sum(otu)
   # relies on vegan
   pcnmw <- pcnm(dist(XY, method = "e"), w = rs)
-  ord <- cca(otu ~ scores(pcnmw))
+  ord <- cca(otu ~ scores(pcnmw) + Sex + Month + Age, env)
   return(ord)
 }
 
@@ -197,6 +204,7 @@ pcnm_all <- lapply(e_all, function(x) pcnm(x, 5))
 # weighted PCNM and CCA
 # ps is the full phyloseq object for the entire data set
 Wpcnm_all <- lapply(XY_all, function(x) PCNM_CCA(x, ps))
+PCNM_CCA(XY_all[[1]], ps, numeric_all[[1]])
 ```
 
 ```{r}
@@ -209,13 +217,14 @@ lapply(Wpcnm_all, summary)
 Variance partitioning (stuck on this for now)
 ```{r}
 OTU_vp(numeric_all[[1]], ps, Wpcnm_all[[1]])
-#
+# ...
 varpart(numeric_all[[1]])
 ```
 
 Spatial partitioning of CCA
 ```{r}
 # from vegan
+# section 14.4 in numerical ecology
 # multiscale ordination
 mso_1 <- mso(Wpcnm_all[[1]], XY_all[[1]])
 mso_2 <- mso(Wpcnm_all[[2]], XY_all[[2]])
@@ -227,6 +236,28 @@ mso_7 <- mso(Wpcnm_all[[7]], XY_all[[7]])
 mso_8 <- mso(Wpcnm_all[[8]], XY_all[[8]])
 ```
 
+```{r}
+# AG, JO, LL got peanut butter
+#par(mfrow=c(2,4))
+# 08 AG
+msoplot(mso_1, ylim = c(0, 43), main="2008 AG")
+# 08_CH
+msoplot(mso_2, ylim = c(0, 14), main="2008 CJ")
+# 08_JO
+msoplot(mso_3, ylim = c(0, 12), main="2008 JO")
+# 08_KL
+msoplot(mso_4, ylim = c(0, 45), main="2008 KL")
+# 09_KL
+msoplot(mso_5, ylim = c(0, 24), main="2009 KL")
+# 10_KL
+msoplot(mso_6, ylim = c(0, 40), main="2010 KL")
+# 08_LL
+msoplot(mso_7, ylim = c(0, 17), main="2008 LL")
+# 08_SU
+msoplot(mso_8, ylim = c(0, 12), main="2008 SU")
+```
+Notes from Numerical Ecology about these:
+* White squares (residuals) = non-significant variogram 
 
 ### Plotting
 #### Ordisurf and ordiplom
