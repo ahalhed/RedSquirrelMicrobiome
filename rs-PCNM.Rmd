@@ -47,50 +47,6 @@ dm_phylo_wu <- read_qza("../core-metrics-phylogenetic/weighted_unifrac_distance_
 dm_phylo_uu <- read_qza("../core-metrics-phylogenetic/unweighted_unifrac_distance_matrix.qza")
 ```
 
-# Example run with built in data
-Code from documentation for pcnm.
-```{r}
-## Example from Borcard & Legendre (2002)
-data(mite.xy)
-pcnm1 <- pcnm(dist(mite.xy))
-op <- par(mfrow=c(1,3))
-## Map of PCNMs in the sample plot
-ordisurf(mite.xy, scores(pcnm1, choi=1), bubble = 4, main = "PCNM 1")
-ordisurf(mite.xy, scores(pcnm1, choi=2), bubble = 4, main = "PCNM 2")
-ordisurf(mite.xy, scores(pcnm1, choi=3), bubble = 4, main = "PCNM 3")
-par(op)
-## Plot first PCNMs against each other
-ordisplom(pcnm1, choices=1:4)
-## Weighted PCNM for CCA
-data(mite)
-rs <- rowSums(mite)/sum(mite)
-pcnmw <- pcnm(dist(mite.xy), w = rs)
-ord <- cca(mite ~ scores(pcnmw))
-## Multiscale ordination: residual variance should have no distance
-## trend
-msoplot(mso(ord, mite.xy))
-# remove objects
-rm(mite.xy, pcnm1, op, mite, rs, pcnmw, ord)
-```
-
-Code from documentation for CCA
-```{r}
-data(varespec)
-data(varechem)
-## Common but bad way: use all variables you happen to have in your
-## environmental data matrix
-vare.cca <- cca(varespec, varechem)
-vare.cca
-plot(vare.cca)
-## Formula interface and a better model
-vare.cca <- cca(varespec ~ Al + P*(K + Baresoil), data=varechem)
-vare.cca
-plot(vare.cca)
-## Partialling out and negative components of variance
-cca(varespec ~ Ca, varechem)
-cca(varespec ~ Ca + Condition(pH), varechem)
-```
-
 # Squirrel data
 GUSTA ME talks about PCNM for microbiome data (https://mb3is.megx.net/gustame/spatial-analysis/pcnm).
 ## Preparation
@@ -238,13 +194,37 @@ PCNM
 # setting threshold to 5
 # unweighted
 pcnm_all <- lapply(e_all, function(x) pcnm(x, 5))
-# weighted for CCA
+# weighted PCNM and CCA
 # ps is the full phyloseq object for the entire data set
 Wpcnm_all <- lapply(XY_all, function(x) PCNM_CCA(x, ps))
 ```
-Variance partitioning
+
+```{r}
+# look at the PCNM values(this one is AG 2008)
+pcnm_all[[1]]$vectors
+# look at CCA summary (all)
+lapply(Wpcnm_all, summary)
+```
+
+Variance partitioning (stuck on this for now)
 ```{r}
 OTU_vp(numeric_all[[1]], ps, Wpcnm_all[[1]])
+#
+varpart(numeric_all[[1]])
+```
+
+Spatial partitioning of CCA
+```{r}
+# from vegan
+# multiscale ordination
+mso_1 <- mso(Wpcnm_all[[1]], XY_all[[1]])
+mso_2 <- mso(Wpcnm_all[[2]], XY_all[[2]])
+mso_3 <- mso(Wpcnm_all[[3]], XY_all[[3]])
+mso_4 <- mso(Wpcnm_all[[4]], XY_all[[4]])
+mso_5 <- mso(Wpcnm_all[[5]], XY_all[[5]])
+mso_6 <- mso(Wpcnm_all[[6]], XY_all[[6]])
+mso_7 <- mso(Wpcnm_all[[7]], XY_all[[7]])
+mso_8 <- mso(Wpcnm_all[[8]], XY_all[[8]])
 ```
 
 
