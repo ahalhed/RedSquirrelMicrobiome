@@ -80,6 +80,7 @@ XY_year <- function(metadata, grid, year) {
 # maximum distance
 max_dist <- function(dm) {
   df1 <- as.data.frame(as.matrix(dm))
+  # functions is soft deprecated (replace with functions or lambdas)
   summ <- summarise_each(df1, funs(max(df1, na.rm=TRUE)))
   m <- apply(summ, 1, max)
   return(m)
