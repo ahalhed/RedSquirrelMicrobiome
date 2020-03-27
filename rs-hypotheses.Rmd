@@ -64,7 +64,8 @@ rs_3_2 <- ggplot(rs_PCoA_V, aes(x=PC1, y=PC2, group = Squirrel.ID, shape = FoodS
   geom_point() + # points are samples
   # add lines connecting individuals?
   #geom_line() +
-  theme_bw() + facet_grid(Year~.) +
+  # just keep 2008
+  theme_bw() + #facet_grid(Year~.) +
   # each grid is an ellipse, coloured by food supplementation
   stat_ellipse(aes(group=Grid, colour=FoodSupplement)) 
 rs_3_2
@@ -106,6 +107,7 @@ rs_3_3 + stat_ellipse(aes(group=as.character(DamID), colour=as.character(DamID))
 rs_3_3 + facet_grid(Year~Grid) +
   stat_ellipse(aes(group=as.character(DamID), 
                    colour=as.character(DamID)))
+# parent offspring by line
 ```
 
 
