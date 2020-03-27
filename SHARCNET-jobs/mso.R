@@ -1,5 +1,5 @@
 # R script starts here
-load("rs-PCNM.RData")
+load("/home/ahalhed/red-squirrel-w2020/R-env/rs-PCNM.RData")
 library(vegan)
 library(phyloseq)
 library(tidyverse)
@@ -16,4 +16,4 @@ mso_7 <- mso(PCNM_CCA(XY_all[[7]], ps, numeric_all[[7]]), XY_all[[7]])
 mso_8 <- mso(PCNM_CCA(XY_all[[8]], ps, numeric_all[[8]]), XY_all[[8]])
 
 # save workspace
-save.image(file="rs-PCNM.RData")
+save.image(file="/home/ahalhed/red-squirrel-w2020/R-env/rs-PCNM.RData")
