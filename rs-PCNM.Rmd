@@ -85,7 +85,7 @@ max_dist <- function(dm) {
   m <- apply(summ, 1, max)
   return(m)
 }
-rs_q2_metadata
+
 # numeric metadata (depends on dplyr)
 Grid_numeric <- function(metadata, grid, year) {
   df1 <- subset(metadata, Grid == grid) %>%
@@ -156,6 +156,10 @@ XY_08_LL <- XY_year(rs_q2_metadata, "LL", 2008)
 XY_08_SU <- XY_year(rs_q2_metadata, "SU", 2008)
 # make a list of XY's
 XY_all <- list(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
+```
+```{r}
+# full XY
+XY <- rbind(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
 # remove unnescessary XY objects
 rm(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
 ```
@@ -179,6 +183,8 @@ numeric_08_SU <- Grid_numeric(rs_q2_metadata, "SU", 2008)
 # make a list of numeric's
 numeric_all <- list(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, 
                     numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
+# combine into a single df
+numeric_df <- rbind(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
 # remove unnescessary numeric objects
 rm(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, 
    numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
@@ -204,6 +210,8 @@ PCNM
 pcnm_all <- lapply(e_all, function(x) pcnm(x, 5))
 # weighted PCNM and CCA
 # ps is the full phyloseq object for the entire data set
+# this cca takes into account neighbours (weighted pcnm), time (grouped by year; month is in model),
+# space (grouped by grid too), and individual factors (sex and age in the model)
 Wpcnm_all <- mapply(function(x, y) PCNM_CCA(x, ps, y), XY_all, numeric_all)
 ```
 
@@ -219,6 +227,7 @@ Variance partitioning (stuck on this for now)
 OTU_vp(numeric_all[[1]], ps, Wpcnm_all[[1]])
 # ...
 varpart(numeric_all[[1]])
+variance_paritition_full <- varpart(numeric_df)
 ```
 
 Spatial partitioning of CCA
@@ -258,9 +267,26 @@ msoplot(mso_8, ylim = c(0, 12), main="2008 SU")
 ```
 Notes from Numerical Ecology about these:
 * White squares (residuals) = non-significant variogram 
+#### Full data set
+```{r}
+# for full data set
+e_dist <- dist(numeric_df, method = "e")
+# unweighted pcnm
+pcnm_full <- pcnm(e_dist, 5)
+# weighted pcnm and cca
+Wpcnm_full <- PCNM_CCA(XY, ps, numeric_df)
+summary(Wpcnm_full)
+#
+```
 
 ### Plotting
 #### Ordisurf and ordiplom
+Working in SHARCNET, I saved the ordisplom plots using this code (adding the figure numbers where the * is)
+```{r}
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/mso_*.pdf")
+# plot code here
+dev.off()
+```
 ```{r}
 # AG 2008
 # Map of PCNMs in the sample plot
@@ -268,7 +294,7 @@ ordisurf(XY_all[[1]], scores(pcnm_all[[1]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[1]], scores(pcnm_all[[1]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[1]], scores(pcnm_all[[1]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[1]], choices=1:4)
+ordisplom(pcnm_all[[1]], choices=1:4, main = "AG 2008")
 ```
 
 
@@ -279,7 +305,7 @@ ordisurf(XY_all[[2]], scores(pcnm_all[[2]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[2]], scores(pcnm_all[[2]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[2]], scores(pcnm_all[[2]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[2]], choices=1:4)
+ordisplom(pcnm_all[[2]], choices=1:4, main = "CH 2008")
 ```
 
 ```{r}
@@ -289,7 +315,7 @@ ordisurf(XY_all[[3]], scores(pcnm_all[[3]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[3]], scores(pcnm_all[[3]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[3]], scores(pcnm_all[[3]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[3]], choices=1:4)
+ordisplom(pcnm_all[[3]], choices=1:4, main = "JO 2008")
 ```
 
 ```{r}
@@ -299,7 +325,7 @@ ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[4]], choices=1:4)
+ordisplom(pcnm_all[[4]], choices=1:4, "KL 2008")
 ```
 
 ```{r}
@@ -309,7 +335,7 @@ ordisurf(XY_all[[5]], scores(pcnm_all[[5]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[5]], scores(pcnm_all[[5]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[5]], scores(pcnm_all[[5]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[5]], choices=1:4)
+ordisplom(pcnm_all[[5]], choices=1:4, main = "KL 2009")
 ```
 
 ```{r}
@@ -319,7 +345,7 @@ ordisurf(XY_all[[6]], scores(pcnm_all[[6]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[6]], scores(pcnm_all[[6]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[6]], scores(pcnm_all[[6]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[6]], choices=1:4)
+ordisplom(pcnm_all[[6]], choices=1:4, main = "KL 2010")
 ```
 
 ```{r}
@@ -329,7 +355,7 @@ ordisurf(XY_all[[7]], scores(pcnm_all[[7]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[7]], scores(pcnm_all[[7]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[7]], scores(pcnm_all[[7]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[7]], choices=1:4)
+ordisplom(pcnm_all[[7]], choices=1:4, main = "LL 2008")
 ```
 
 ```{r}
@@ -339,7 +365,7 @@ ordisurf(XY_all[[8]], scores(pcnm_all[[8]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[8]], scores(pcnm_all[[8]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[8]], scores(pcnm_all[[8]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[8]], choices=1:4)
+ordisplom(pcnm_all[[8]], choices=1:4, main = "SU 2008")
 ```
 
 

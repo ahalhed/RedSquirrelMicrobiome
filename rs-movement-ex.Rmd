@@ -29,10 +29,16 @@ library(ggpubr)
 ## Load in QIIME2 objects
 ```{r}
 # this was run on SHARCNET and the environment was downloaded locally due to high memory requirement
+# with local paths
 ps <- qza_to_phyloseq(features = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/filtered-table.qza",
                       tree = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/trees/rooted_tree.qza",
                       taxonomy = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
                       metadata = "RS_meta.tsv")
+# with SHARCNET paths
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
 ```
 
 ```{r}
