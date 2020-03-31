@@ -74,28 +74,28 @@ rs_3_1 +
 ```
 #### dbRDA (using phyloseq)
 this will actually take non-numeric metadata (but won't take missing data). avoids having to shift the format of the OTU data around, since it takes the phyloseq object. also doesn't randomly drop samples
-
 ```{r}
 # ordinate for bray-curtis
 # could also give it a distance matrix to save computing here (rs_dm_bray$data)
-ordinate(ps, "CAP", "bray", ~Year+Grid+Age+Sex) %>%
-  # plot
-  plot_ordination(ps, ., "samples", color="Grid",
+rs_ordi_bc <- ordinate(ps, "CAP", "bray", ~Year+Grid+Age+Sex)
+# plot
+plot_ordination(ps, rs_ordi_bc, "samples", color="Grid",
                   shape = "Sex") +
   stat_ellipse(aes(group=Grid)) +
   geom_line(aes(group=Squirrel.ID)) +
   theme_bw() +
   facet_grid(Season~Year)
 # ordinate for jaccard
-ordinate(ps, "CAP", "jaccard", ~Year+Grid+Age+Sex) %>%
-  # plot
-  plot_ordination(ps, ., "samples", color="Grid",
+rs_ordi_j <- ordinate(ps, "CAP", "jaccard", ~Year+Grid+Age+Sex)
+# plot
+plot_ordination(ps, rs_ordi_j, "samples", color="Grid",
                   shape = "Sex") +
   stat_ellipse(aes(group=Grid)) +
   geom_line(aes(group=Squirrel.ID)) +
   theme_bw() +
   facet_grid(Season~Year)
 ```
+
 ### Panel 3-2 
 Ordination of grids with diet
 ```{r}
