@@ -14,13 +14,30 @@ knitr::opts_chunk$set(echo = TRUE)
 # set working directory
 setwd("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/R-env")
 # attach required packages
-library(tidyverse)
+library(phyloseq)
 library(qiime2R)
+library(tidyverse)
 ```
 
 ```{r}
 # get the metadata
 rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/original/metadata_all_samples.tsv", sep = "\t", header = TRUE)
+```
+
+Load distance matrices (for dbRDA)
+```{r}
+# jaccard distances
+rs_dm_jaccard <- read_qza("/home/ahalhed/red-squirrel-w2020/core-metrics-phylogenetic/jaccard_distance_matrix.qza")
+# bray-curtis distances
+rs_dm_bray <- read_qza("/home/ahalhed/red-squirrel-w2020/core-metrics-phylogenetic/bray_curtis_distance_matrix.qza")
+```
+```{r}
+# these are SHARCNET paths
+# build phyloseq object
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
 ```
 
 ## Proposal Figure 3
@@ -36,7 +53,7 @@ View(rs_PCoA_V)
 
 ### Panel 3-1 
 Ordination of grids
-
+#### PCoA
 ```{r}
 # axes 1 and 2
 rs_3_1 <- ggplot(rs_PCoA_V, 
@@ -55,7 +72,30 @@ rs_3_1 +
   stat_ellipse(aes(group=Grid)) +
   facet_grid(Season~Year)
 ```
+#### dbRDA (using phyloseq)
+this will actually take non-numeric metadata (but won't take missing data). avoids having to shift the format of the OTU data around, since it takes the phyloseq object. also doesn't randomly drop samples
 
+```{r}
+# ordinate for bray-curtis
+# could also give it a distance matrix to save computing here (rs_dm_bray$data)
+ordinate(ps, "CAP", "bray", ~Year+Grid+Age+Sex) %>%
+  # plot
+  plot_ordination(ps, ., "samples", color="Grid",
+                  shape = "Sex") +
+  stat_ellipse(aes(group=Grid)) +
+  geom_line(aes(group=Squirrel.ID)) +
+  theme_bw() +
+  facet_grid(Season~Year)
+# ordinate for jaccard
+ordinate(ps, "CAP", "jaccard", ~Year+Grid+Age+Sex) %>%
+  # plot
+  plot_ordination(ps, ., "samples", color="Grid",
+                  shape = "Sex") +
+  stat_ellipse(aes(group=Grid)) +
+  geom_line(aes(group=Squirrel.ID)) +
+  theme_bw() +
+  facet_grid(Season~Year)
+```
 ### Panel 3-2 
 Ordination of grids with diet
 ```{r}

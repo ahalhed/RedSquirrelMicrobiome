@@ -29,11 +29,11 @@ View(rs_q2_metadata)
 ```
 
 ```{r}
-# this was run on SHARCNET and the environment was downloaded locally due to high memory requirement
-ps <- qza_to_phyloseq(features = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/filtered-table.qza",
-                      tree = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/trees/rooted_tree.qza",
-                      taxonomy = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
-                      metadata = "RS_meta.tsv")
+# build phyloseq object
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
 ```
 
 ```{r}
@@ -157,12 +157,6 @@ XY_08_SU <- XY_year(rs_q2_metadata, "SU", 2008)
 # make a list of XY's
 XY_all <- list(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
 ```
-```{r}
-# full XY
-XY <- rbind(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
-# remove unnescessary XY objects
-rm(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
-```
 
 Numeric Data for CCA
 ```{r}
@@ -183,11 +177,6 @@ numeric_08_SU <- Grid_numeric(rs_q2_metadata, "SU", 2008)
 # make a list of numeric's
 numeric_all <- list(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, 
                     numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
-# combine into a single df
-numeric_df <- rbind(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
-# remove unnescessary numeric objects
-rm(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, 
-   numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
 ```
 
 #### Computing
@@ -267,7 +256,23 @@ msoplot(mso_8, ylim = c(0, 12), main="2008 SU")
 ```
 Notes from Numerical Ecology about these:
 * White squares (residuals) = non-significant variogram 
+
 #### Full data set
+```{r}
+# full XY
+XY <- rbind(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
+# remove unnescessary XY objects
+rm(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
+```
+
+```{r}
+# combine numeric data into a single df
+numeric_df <- rbind(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
+# remove unnescessary numeric objects
+rm(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, 
+   numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
+```
+
 ```{r}
 # for full data set
 e_dist <- dist(numeric_df, method = "e")
@@ -325,7 +330,7 @@ ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=1), bubble = 4, main = "PCNM 1"
 ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=3), bubble = 4, main = "PCNM 3")
 # Plot first PCNMs against each other
-ordisplom(pcnm_all[[4]], choices=1:4, "KL 2008")
+ordisplom(pcnm_all[[4]], choices=1:4, main = "KL 2008")
 ```
 
 ```{r}
@@ -370,4 +375,17 @@ ordisplom(pcnm_all[[8]], choices=1:4, main = "SU 2008")
 
 
 
+
+
+#### Biplots
+For the full data set (not worrying about year here)
+```{r}
+# CCA-full for unscaled
+# need vegan loaded for plots to worked
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/CCA-scaled.pdf")
+par(mfrow=c(2,1))
+plot(Wpcnm_full, scaling ="species", main = "Scaled by Species", select = "Month")
+plot(Wpcnm_full, scaling = "sites", main = "Scaled by Sites")
+dev.off()
+```
 
