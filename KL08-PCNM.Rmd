@@ -17,7 +17,10 @@ setwd("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020")
 # attach required packages
 library(tidyverse)
 library(qiime2R)
+library(phyloseq)
 library(vegan)
+# set theme
+theme_set(theme_bw())
 ```
 
 ## Read in the Data
@@ -26,10 +29,11 @@ library(vegan)
 rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
 colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
 View(rs_q2_metadata)
+sample_data(ps)
 ```
 
 ```{r}
-# build phyloseq object
+# build phyloseq object (paths for SHARCNET)
 ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
                       tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
                       taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
@@ -82,11 +86,12 @@ Grid_numeric <- function(metadata, grid, year) {
 XY_08_KL <- XY_year(rs_q2_metadata, "KL", 2008)
 # numeric data for CCA
 numeric_08_KL <- Grid_numeric(rs_q2_metadata, "KL", 2008)
+XY_08_KL %>% View
 ```
 
 ```{r}
 # Compute Euclidean Distance
-e_08_KL <- dist(XY_08_KL, method = "e")
+e_08_KL <- dist(XY_08_KL)
 # checking what the highest values are in the dm
 # to help decide the Neighbour threshold
 max_dist(e_08_KL) #27.04163
@@ -94,9 +99,9 @@ max_dist(e_08_KL) #27.04163
 
 PCNM
 ```{r}
-# setting threshold to 5
+# setting threshold to 5 (got rid of this)
 # unweighted PCNM
-pcnm_08_KL <- pcnm(e_08_KL, 5)
+pcnm_08_KL <- pcnm(e_08_KL)
 # weighted PCNM
 # get OTUs (aka a community matrix)
 comm_08_KL <- otu_table(ps) %>% as.matrix %>% 
@@ -104,10 +109,16 @@ comm_08_KL <- otu_table(ps) %>% as.matrix %>%
     t %>% as.data.frame %>% 
     subset(., row.names(.) %in% rownames(XY_08_KL)) %>%
     .[ rowSums(.)>0, ]
+# sample ID's are rownames
+comm_08_KL
 # get the metadata subset
-meta_08_KL <- rs_q2_metadata %>% subset(., SampleID %in% rownames(XY_08_KL))
+meta_08_KL <- rs_q2_metadata %>% 
+  subset(., SampleID %in% rownames(XY_08_KL)) %>%
+  remove_rownames() %>% column_to_rownames(var = "SampleID") %>%
+  select_if(~ !any(is.na(.))) %>% 
+  select(Sex, Age, Month, Season, CollectionDate, BirthYear)
 # calculate weighted PCNM
-Wpcnm_08_KL <- pcnm(dist(XY_08_KL, method = "e"), 
+Wpcnm_08_KL <- pcnm(e_08_KL, 
                     w = rowSums(comm_08_KL)/sum(comm_08_KL))
 # CCA - might need to change explanatories
 cca_08_KL <- cca(comm_08_KL ~ scores(Wpcnm_08_KL) + Sex + Season + Age, meta_08_KL)
@@ -115,8 +126,8 @@ cca_08_KL <- cca(comm_08_KL ~ scores(Wpcnm_08_KL) + Sex + Season + Age, meta_08_
 
 ```{r}
 # look at the PCNM values
-pcnm_all_08_KL$vectors
-Wpcnm_all_08_KL$vectors
+pcnm_08_KL$vectors
+Wpcnm_08_KL$vectors
 # look at CCA summary
 # what is significance? most important?
 summary(cca_08_KL)
@@ -127,51 +138,100 @@ summary(cca_08_KL)
 # from vegan
 # section 14.4 in numerical ecology
 # multiscale ordination
-mso_08_KL <- mso(PCNM_CCA(XY_all[[1]], ps, numeric_all[[1]]), XY_all[[1]])
+mso_08_KL <- mso(cca_08_KL, XY_08_KL)
+# plot
+msoplot(mso_08_KL, ylim = c(0, 45), main="2008 KL")
 ```
 
 ```{r}
-# AG, JO, LL got peanut butter
-#par(mfrow=c(2,4))
-# 08 AG
-msoplot(mso_1, ylim = c(0, 43), main="2008 AG")
-# 08_CH
-msoplot(mso_2, ylim = c(0, 15), main="2008 CJ")
-# 08_JO
-msoplot(mso_3, ylim = c(0, 12), main="2008 JO")
-# 08_KL
-msoplot(mso_4, ylim = c(0, 45), main="2008 KL")
-# 09_KL
-msoplot(mso_5, ylim = c(0, 24), main="2009 KL")
-# 10_KL
-msoplot(mso_6, ylim = c(0, 41), main="2010 KL")
-# 08_LL
-msoplot(mso_7, ylim = c(0, 17), main="2008 LL")
-# 08_SU
-msoplot(mso_8, ylim = c(0, 12), main="2008 SU")
+# plotting the locations
+XY_08_KL %>% ggplot(aes(x = `Location X`, y = `Location Y`)) + 
+  geom_point() + 
+  coord_fixed()
+```
+
+```{r}
+#par(mfrow=c(3,1))
+ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=3), bubble = 4, main = "PCNM 3")
 ```
 
 # Variance partitioning
 ```{r}
-# looping variance partitioning
-OTU_vp <- function(env, ps, pcnm) {
-  rn <- rownames(env)
-  # relies on dplyr and phyloseq
-  otu <- otu_table(ps) %>% as.matrix %>% 
-    as.data.frame %>% 
-    t %>% as.data.frame %>% 
-    subset(., row.names(.) %in% rn) %>%
-    .[ rowSums(.)>0, ]
-  var <- varpart(otu, ~ ., pcnm, data=env, 
-                 transfo="hel", chisquare = TRUE)
-  return(var)
-}
+# how do I deal with the collinearity?
+# collinearity detected in X1: mm = 95, m = 91collinearity detected in cbind(X1,X2): mm = 161, m = 157
+vp_mod1 <- varpart(comm_08_KL,  ~ ., scores(pcnm_08_KL), data=meta_08_KL, transfo = "hel")
+vp_mod1
+plot(vp_mod1)
 ```
 
-Variance partitioning (stuck on this for now)
 ```{r}
-OTU_vp(numeric_all[[1]], ps, Wpcnm_all[[1]])
-# ...
-varpart(numeric_all[[1]])
-variance_paritition_full <- varpart(numeric_df)
+# Alternative to above
+# Change the data frame with factors into numeric model matrix
+# note: collection date is a factor (not date)
+# what's the deal with [,-1]??
+rs_mm <- model.matrix(~ ., meta_08_KL)[,-1]
+# this format isn't working
+varpart(decostand(comm_08_KL, "hel"), rs_mm, scores(pcnm_08_KL))
+#Error in qr.default(X, tol = 1e-06) : NA/NaN/Inf in foreign function call (arg 1)
+```
+
+# test with RDA
+set up this section to run on sharcnet (anova was taking forever)
+```{r}
+abFrac <- rda(decostand(comm_08_KL, "hel") ~ ., meta_08_KL)
+# the anova was taking forever to run
+#anova_abFrac <- anova(RDA_abFrac, step=200, perm.max=1000)
+# RsquareAdj gives the same result as component [a] of varpart
+RsquareAdj(abFrac)
+```
+```{r}
+# Test fraction [a] using partial RDA:
+aFrac <- rda(decostand(comm_08_KL, "hel") ~ . + Condition(scores(pcnm_08_KL)), data = meta_08_KL)
+# the anova was taking forever to run
+#anova_aFrac <- anova(aFrac, step=200, perm.max=1000)
+# RsquareAdj gives the same result as component [a] of varpart
+RsquareAdj(aFrac)
+```
+
+# forward selection for parsimonious model
+```{r}
+# env variables
+abFrac # Full model
+abFrac0 <- rda(decostand(mite, "hel") ~ 1, mite.env) # Reduced model
+# Here is where the magic happens, but almost automatically!
+step.env <- ordiR2step(abFrac0, scope = formula(abFrac))
+str(step.env) # this seems to be a very complicated
+step.env # but it is actually just an rda model, with the final model predictor variables
+anova(step.env) # so you can do the same stuff as before
+plot(step.env)
+step.env$anova # and if you are interested, this is a summary of the selection process
+# Note, show how to access the RStudio object explorer
+step.env[["terminfo"]][["ordered"]]
+```
+```{r}
+# spatial variables
+bcFrac <- rda(decostand(mite, "hel") ~ ., scores(pcnm1)) # Full model, oops
+mite.pcnm <- as.data.frame(scores(pcnm1))
+bcFrac <- rda(decostand(mite, "hel") ~ ., mite.pcnm) # Full model
+bcFrac0 <- rda(decostand(mite, "hel") ~ 1, mite.pcnm) # Reduced model
+step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
+step.space$anova
+plot(step.space)
+```
+```{r}
+# variation decomposition with parsimonious variables
+mod.pars <- varpart(mite, ~ ., 
+               mite.pcnm[, names(step.space[["terminfo"]][["ordered"]])], 
+               data = mite.env[, names(step.env[["terminfo"]][["ordered"]])],
+               transfo = "hel")
+mod.pars
+plot(mod.pars)
+plot(mod)
+```
+# Scratching the surface
+```{r}
+# Partition Bray-Curtis dissimilarities
+varpart(vegdist(mite), ~ ., scores(pcnm1), data = mite.env)
 ```
