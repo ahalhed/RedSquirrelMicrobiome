@@ -110,8 +110,7 @@ comm_08_KL <- otu_table(ps) %>% as.matrix %>%
 comm_08_KL
 # get the metadata subset
 meta_08_KL <- rs_q2_metadata %>% 
-  subset(., SampleID %in% rownames(XY_08_KL)) %>%
-  remove_rownames() %>% column_to_rownames(var = "SampleID") %>%
+  subset(., rownames(.) %in% rownames(XY_08_KL)) %>%
   select_if(~ !any(is.na(.))) %>% 
   select(Sex, Age, Month, Season, CollectionDate, BirthYear)
 # calculate weighted PCNM

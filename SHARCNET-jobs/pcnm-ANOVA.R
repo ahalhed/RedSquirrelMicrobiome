@@ -17,7 +17,11 @@ XY_year <- function(metadata, grid, year) {
   df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
   return(df3)
 }
-# just to get metadata
+# GET the metadata
+rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+
+# just to subset the metadata
 XY_08_KL <- XY_year(rs_q2_metadata, "KL", 2008)
 
 # get OTUs (aka a community matrix)
@@ -28,9 +32,6 @@ comm_08_KL <- otu_table(ps) %>% as.matrix %>%
   .[ rowSums(.)>0, ]
 # sample ID's are rownames
 
-# GET the metadata
-rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
-colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
 # get the metadata subset
 meta_08_KL <- rs_q2_metadata %>% 
   subset(., SampleID %in% rownames(XY_08_KL)) %>%
