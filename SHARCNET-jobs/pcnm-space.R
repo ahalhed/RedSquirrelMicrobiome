@@ -43,18 +43,23 @@ meta_08_KL <- rs_q2_metadata %>%
 pcnm_08_KL <- pcnm(dist(XY_08_KL))
 
 # Test fraction [a+b], total environment, using RDA:
-print("ANOVA for abFrac")
 abFrac <- rda(decostand(comm_08_KL, "hel") ~ ., meta_08_KL)
-anova(abFrac, step=200, perm.max=1000)
-# RsquareAdj gives the same result as component [a] of varpart
-print("abFrac adjusted R Squared")
-RsquareAdj(abFrac)
 
+# spatial variables
+#bcFrac <- rda(decostand(comm_08_KL, "hel") ~ ., scores(pcnm_08_KL)) # Full model, oops
+print("Running RDA's")
+rs_pcnm <- as.data.frame(scores(pcnm_08_KL))
+bcFrac <- rda(decostand(comm_08_KL, "hel") ~ ., rs_pcnm) # Full model
+bcFrac0 <- rda(decostand(comm_08_KL, "hel") ~ 1, rs_pcnm) # Reduced model
+step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
+print("Summary of selection process")
+step.space$anova
+#                  R2.adj Df     AIC      F Pr(>F)   
+#  + PCNM2         0.0026787  1 -105.77 1.6419  0.008 **
+#  + PCNM33        0.0045491  1 -105.23 1.4472  0.012 * 
+#  <All variables> 0.0049302  
 
-# Test fraction [a] using partial RDA:
-print("ANOVA for aFrac")
-aFrac <- rda(decostand(comm_08_KL, "hel") ~ . + Condition(scores(pcnm_08_KL)), data = meta_08_KL)
-anova(aFrac, step=200, perm.max=1000)
-# RsquareAdj gives the same result as component [a] of varpart
-print("aFrac adjusted R Squared")
-RsquareAdj(aFrac)
+# save the plot
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/step_space.pdf")
+plot(step.space)
+dev.off() # close the graphics device

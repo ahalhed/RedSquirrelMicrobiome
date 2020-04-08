@@ -35,8 +35,10 @@ ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-tabl
 
 ```{r}
 # GET the metadata
-rs_q2_metadata <- sample_data(ps) %>% as.matrix %>% as.data.frame %>%
-  rename("Location X" = "Location.X", "Location Y" = "Location.Y")
+rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+# this seemed easier but was throwing weird errors in ordisurf
+#rs_q2_metadata <- sample_data(ps) %>% as.matrix %>% as.data.frame %>% rename("Location X" = "Location.X", "Location Y" = "Location.Y")
 View(rs_q2_metadata)
 ```
 
@@ -45,10 +47,11 @@ View(rs_q2_metadata)
 # subset the XY's by grid and year
 XY_year <- function(metadata, grid, year) {
   df1 <- subset(metadata, Grid == grid, 
-         select = c("Location X", "Location Y", "Year"))
+         select = c("SampleID", "Location X", "Location Y", "Year"))
   df2 <- subset(df1, Year == year, 
-         select = c("Location X", "Location Y"))
-  return(df2)
+         select = c("SampleID", "Location X", "Location Y"))
+  df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
+  return(df3)
 }
 
 # maximum distance
@@ -63,6 +66,8 @@ max_dist <- function(dm) {
 # numeric metadata (depends on dplyr)
 Grid_numeric <- function(metadata, grid, year) {
   df1 <- subset(metadata, Grid == grid) %>%
+    remove_rownames() %>%
+    column_to_rownames(., var = "SampleID") %>%
     subset(., Year == year)
   df2 <- df1 %>%
     # want sex and food supplement to be numeric
@@ -104,19 +109,21 @@ pcnm_08_KL <- pcnm(e_08_KL)
 comm_08_KL <- otu_table(ps) %>% as.matrix %>% 
     as.data.frame %>% 
     t %>% as.data.frame %>% 
-    subset(., row.names(.) %in% rownames(XY_08_KL)) %>%
+    subset(., rownames(.) %in% rownames(XY_08_KL)) %>%
     .[ rowSums(.)>0, ]
 # sample ID's are rownames
 comm_08_KL
 # get the metadata subset
 meta_08_KL <- rs_q2_metadata %>% 
-  subset(., rownames(.) %in% rownames(XY_08_KL)) %>%
+  subset(., SampleID %in% rownames(XY_08_KL)) %>%
   select_if(~ !any(is.na(.))) %>% 
+  # age and birth year are collinear
   select(Sex, Age, Month, Season, CollectionDate, BirthYear)
 # calculate weighted PCNM
 Wpcnm_08_KL <- pcnm(e_08_KL, 
                     w = rowSums(comm_08_KL)/sum(comm_08_KL))
 # CCA - might need to change explanatories
+# not including Birth year here due to collinearity with age (same information)
 cca_08_KL <- cca(comm_08_KL ~ scores(Wpcnm_08_KL) + Sex + Season + Age, meta_08_KL)
 ```
 
@@ -174,28 +181,36 @@ varpart(decostand(comm_08_KL, "hel"), rs_mm, scores(pcnm_08_KL))
 ```
 
 # test with RDA
-set up this section to run on sharcnet (anova was taking forever)
+set up this section to run on sharcnet (anova was taking forever). See pcnm-ANOVA-30022687.out for results
 ```{r}
 abFrac <- rda(decostand(comm_08_KL, "hel") ~ ., meta_08_KL)
-# the anova was taking forever to run
-#anova_abFrac <- anova(RDA_abFrac, step=200, perm.max=1000)
+# this took just under 6 hours to run on SHARCNET
+anova(abFrac, step=200, perm.max=1000)
+#          Df Variance      F Pr(>F)   
+#Model     91  0.25306 1.0637  0.002 **
+#Residual 148  0.38693   
+
 # RsquareAdj gives the same result as component [a] of varpart
 RsquareAdj(abFrac)
+#r.squared = 0.3954196
+#adj.r.squared = 0.02368439
 ```
+This one is still running (pcnm-2ANOVA-30189200.out)
 ```{r}
 # Test fraction [a] using partial RDA:
 aFrac <- rda(decostand(comm_08_KL, "hel") ~ . + Condition(scores(pcnm_08_KL)), data = meta_08_KL)
 # the anova was taking forever to run
-#anova_aFrac <- anova(aFrac, step=200, perm.max=1000)
+anova(aFrac, step=200, perm.max=1000)
 # RsquareAdj gives the same result as component [a] of varpart
 RsquareAdj(aFrac)
 ```
 
 # forward selection for parsimonious model
+Output in pcnm-env-30055778.out 
 ```{r}
 # env variables
 abFrac # Full model
-abFrac0 <- rda(decostand(mite, "hel") ~ 1, mite.env) # Reduced model
+abFrac0 <- rda(decostand(comm_08_KL, "hel") ~ 1, meta_08_KL) # Reduced model
 # Here is where the magic happens, but almost automatically!
 step.env <- ordiR2step(abFrac0, scope = formula(abFrac))
 str(step.env) # this seems to be a very complicated
@@ -206,28 +221,28 @@ step.env$anova # and if you are interested, this is a summary of the selection p
 # Note, show how to access the RStudio object explorer
 step.env[["terminfo"]][["ordered"]]
 ```
+Output in pcnm-space-30152477.out
 ```{r}
 # spatial variables
-bcFrac <- rda(decostand(mite, "hel") ~ ., scores(pcnm1)) # Full model, oops
-mite.pcnm <- as.data.frame(scores(pcnm1))
-bcFrac <- rda(decostand(mite, "hel") ~ ., mite.pcnm) # Full model
-bcFrac0 <- rda(decostand(mite, "hel") ~ 1, mite.pcnm) # Reduced model
+#bcFrac <- rda(decostand(comm_08_KL, "hel") ~ ., scores(pcnm_08_KL)) # Full model, oops
+rs_pcnm <- as.data.frame(scores(pcnm_08_KL))
+bcFrac <- rda(decostand(comm_08_KL, "hel") ~ ., rs_pcnm) # Full model
+bcFrac0 <- rda(decostand(comm_08_KL, "hel") ~ 1, rs_pcnm) # Reduced model
 step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
 step.space$anova
 plot(step.space)
 ```
 ```{r}
 # variation decomposition with parsimonious variables
-mod.pars <- varpart(mite, ~ ., 
-               mite.pcnm[, names(step.space[["terminfo"]][["ordered"]])], 
-               data = mite.env[, names(step.env[["terminfo"]][["ordered"]])],
+mod.pars <- varpart(comm_08_KL, ~ ., 
+               rs_pcnm[, names(step.space[["terminfo"]][["ordered"]])], 
+               data = meta_08_KL[, names(step.env[["terminfo"]][["ordered"]])],
                transfo = "hel")
 mod.pars
 plot(mod.pars)
-plot(mod)
 ```
 # Scratching the surface
 ```{r}
 # Partition Bray-Curtis dissimilarities
-varpart(vegdist(mite), ~ ., scores(pcnm1), data = mite.env)
+varpart(vegdist(comm_08_KL), ~ ., scores(pcnm_08_KL), data = meta_08_KL)
 ```

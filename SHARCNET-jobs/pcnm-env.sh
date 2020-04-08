@@ -2,7 +2,7 @@
 #SBATCH --account=def-cottenie
 #SBATCH --time=12:00:00
 #SBATCH --mem-per-cpu 64G
-#SBATCH --job-name=pcnm-ANOVA
+#SBATCH --job-name=pcnm-env
 #SBATCH --output=../output/%x-%j.out
 
 #script starts here
@@ -17,4 +17,4 @@ module load r/3.6.0
 R
 
 # run R script
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/pcnm-ANOVA.R
+Rscript /home/ahalhed/red-squirrel-w2020/R-env/pcnm-env.R
