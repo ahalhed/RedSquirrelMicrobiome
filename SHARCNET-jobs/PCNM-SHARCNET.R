@@ -37,24 +37,6 @@ max_dist <- function(dm) {
   return(m)
 }
 
-# numeric metadata (depends on dplyr)
-Grid_numeric <- function(metadata, grid, year) {
-  df1 <- subset(metadata, Grid == grid) %>%
-    remove_rownames() %>%
-    column_to_rownames(., var = "SampleID") %>%
-    subset(., Year == year)
-  df2 <- df1 %>%
-    # want sex and food supplement to be numeric
-    # male 0, female 1; no 0, yes 1
-    mutate(Sex = as.integer(recode(Sex, "Male" = 0, "Female" = 1)),
-           FoodSupplement = as.integer(recode(FoodSupplement, 
-                                   "No" = 0, "Yes" = 1)))
-  df3 <- Filter(is.numeric, df2)
-  drop <- c("Location X", "Location Y", "Date")
-  df4 <- df3[,!(names(df3) %in% drop)]
-  return(df4)
-}
-
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
@@ -64,21 +46,19 @@ ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-tabl
                       metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
 
 print("Read in the metadata")
-rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+rs_q2_metadata <- read.table("/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv", sep="\t")
 colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
 
 # start analysis
 print("Starting initial data preparation")
 print("Access and plot XY data")
-XY_sub <- XY_year(rs_q2_metadata, "KL", 2010)
+XY_sub <- XY_year(rs_q2_metadata, "KL", 2008)
 # plotting the locations
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/KL2010_XY.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_XY.pdf")
 XY_sub %>% ggplot(aes(x = `Location X`, y = `Location Y`)) + 
   geom_point() + 
   coord_fixed()
 dev.off()
-print("Access numeric data")
-numeric_10_KL <- Grid_numeric(rs_q2_metadata, "KL", 2010)
 print("Computing Euclidean Distances")
 eDIST <- dist(XY_sub)
 print("Maximum Euclidean Distance")
@@ -110,7 +90,7 @@ UWpcnm$vectors
 # plot with ordisurf
 print("Plotting first three PCNM axes with ordisurf")
 # replace grid-year with values used in this script
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/KL2010_ordisurf123.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_ordisurf123.pdf")
 par(mfrow=c(1,3))
 ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
 ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
@@ -133,15 +113,15 @@ summary(cca_sub)
 print("Multiscale ordination")
 mso_sub <- mso(cca_sub, XY_sub)
 # plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/KL2010_mso.pdf")
-msoplot(mso_sub, ylim = c(0, 45), main="2010 KL")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_mso.pdf")
+msoplot(mso_sub, ylim = c(0, 45), main="2008 KL")
 dev.off()
 
 # Variance partitioning
 print("Variance partitioning")
 vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub, transfo = "hel")
 vp_mod1
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/KL2010_vp_mod1.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_vp_mod1.pdf")
 plot(vp_mod1)
 dev.off()
 
@@ -171,7 +151,7 @@ anova(step.env)
 # this is a summary of the selection process
 step.env$anova
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/KL2010_step_env.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_step_env.pdf")
 plot(step.env)
 dev.off()
 
@@ -186,7 +166,7 @@ anova(step.space)
 # this is a summary of the selection process
 step.space$anova
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/KL2010_step_space.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_step_space.pdf")
 plot(step.space)
 dev.off()
 
@@ -197,7 +177,7 @@ mod.pars <- varpart(comm_obj, ~ .,
                data = meta_sub[, names(step.env$terminfo$ordered)],
                transfo = "hel")
 mod.pars
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/KL2010_mod_pars.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
 
