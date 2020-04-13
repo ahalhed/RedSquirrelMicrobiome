@@ -1,4 +1,14 @@
-# phyloseq object (ps) previously read in (present in the environment)
+# attach required packages
+library(tidyverse)
+library(phyloseq)
+library(vegan)
+library(qiime2R)
+
+print("Building phyloseq object")
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
 
 # subset the XY's by grid and year
 XY_year <- function(metadata, grid, year) {
