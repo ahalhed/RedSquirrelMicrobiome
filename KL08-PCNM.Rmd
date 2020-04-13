@@ -154,10 +154,11 @@ XY_08_KL %>% ggplot(aes(x = `Location X`, y = `Location Y`)) +
 ```
 
 ```{r}
-#par(mfrow=c(3,1))
-ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=1), bubble = 4, main = "PCNM 1")
+par(mfrow=c(1,2))
+#ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=1), bubble = 4, main = "PCNM 1")
 ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=2), bubble = 4, main = "PCNM 2")
-ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=3), bubble = 4, main = "PCNM 3")
+#ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=3), bubble = 4, main = "PCNM 3")
+ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=33), bubble = 4, main = "PCNM 33")
 ```
 
 # Variance partitioning
@@ -194,8 +195,12 @@ anova(abFrac, step=200, perm.max=1000)
 RsquareAdj(abFrac)
 #r.squared = 0.3954196
 #adj.r.squared = 0.02368439
+meta_08_KL
 ```
-This one is still running (pcnm-2ANOVA-30189200.out)
+DONE (pcnm-2ANOVA-30189200.out)
+         Df Variance      F Pr(>F)
+Model    91  0.24449 1.0177  0.275
+Residual 82  0.21648         
 ```{r}
 # Test fraction [a] using partial RDA:
 aFrac <- rda(decostand(comm_08_KL, "hel") ~ . + Condition(scores(pcnm_08_KL)), data = meta_08_KL)
@@ -218,8 +223,6 @@ step.env # but it is actually just an rda model, with the final model predictor 
 anova(step.env) # so you can do the same stuff as before
 plot(step.env)
 step.env$anova # and if you are interested, this is a summary of the selection process
-# Note, show how to access the RStudio object explorer
-step.env[["terminfo"]][["ordered"]]
 ```
 Output in pcnm-space-30152477.out
 ```{r}
@@ -232,11 +235,13 @@ step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
 step.space$anova
 plot(step.space)
 ```
+
+
 ```{r}
 # variation decomposition with parsimonious variables
 mod.pars <- varpart(comm_08_KL, ~ ., 
-               rs_pcnm[, names(step.space[["terminfo"]][["ordered"]])], 
-               data = meta_08_KL[, names(step.env[["terminfo"]][["ordered"]])],
+               rs_pcnm[, names(step.space$terminfo$ordered)], 
+               data = meta_08_KL[, names(step.env$terminfo$ordered)],
                transfo = "hel")
 mod.pars
 plot(mod.pars)
