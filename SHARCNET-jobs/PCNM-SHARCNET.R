@@ -97,15 +97,15 @@ ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_sub, scores(UWpcnm, choi=3), bubble = 4, main = "PCNM 3")
 dev.off()
 
-# weighted PCNM
+# weighted PCNM (labelled as WUWpcnm in scripts run - a find/replace typo)
 print("Weighted PCNM")
-WUWpcnm <- pcnm(eDIST, w = rowSums(comm_obj)/sum(comm_obj))
-WUWpcnm$vectors
+Wpcnm <- pcnm(eDIST, w = rowSums(comm_obj)/sum(comm_obj))
+Wpcnm$vectors
 
 # computing CCA with weighted PCNM
 print("CCA with weighted PCNM")
 # not including Birth year here due to collinearity with age (same information)
-cca_sub <- cca(comm_obj ~ scores(WUWpcnm) + Sex + Season + Age, meta_sub)
+cca_sub <- cca(comm_obj ~ scores(Wpcnm) + Sex + Season + Age, meta_sub)
 summary(cca_sub)
 
 
