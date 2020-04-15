@@ -44,6 +44,5 @@ comm_08_KL <- otu_table(ps) %>% as.matrix %>%
 # unweighted PCNM
 pcnm_08_KL <- pcnm(e_08_KL)
 
-
 # Partition Bray-Curtis dissimilarities
 varpart(vegdist(comm_08_KL), ~ ., scores(pcnm_08_KL), data = meta_08_KL)

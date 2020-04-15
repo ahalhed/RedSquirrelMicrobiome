@@ -78,6 +78,7 @@ meta_sub <- rs_q2_metadata %>%
   subset(., SampleID %in% rownames(XY_sub)) %>%
   select_if(~ !any(is.na(.))) %>% 
   # age and birth year are collinear
+  # should I add the squirrel id here? dam/sire id has misssingness
   select(Sex, Age, Month, Season, CollectionDate, BirthYear)
 # Remove objects we're done with
 print("Removing phyloseq obejct and full metadata data frame")
@@ -92,6 +93,8 @@ print("Plotting first three PCNM axes with ordisurf")
 # replace grid-year with values used in this script
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_ordisurf123.pdf")
 par(mfrow=c(1,3))
+# these can be adjusted afterwards, once we know which are significant
+# see section starting at 161
 ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
 ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_sub, scores(UWpcnm, choi=3), bubble = 4, main = "PCNM 3")
@@ -129,6 +132,7 @@ dev.off()
 print("Testing with RDA (full model)")
 abFrac <- rda(decostand(comm_obj, "hel") ~ ., meta_sub)
 abFrac # Full model
+anova(abFrac, step=200, perm.max=1000)
 # RsquareAdj gives the same result as component [a] of varpart
 RsquareAdj(abFrac)
 
@@ -171,6 +175,7 @@ plot(step.space)
 dev.off()
 
 # variation decomposition with parsimonious variables
+# probably going to fail because of insignificant environmental variables
 print("Variation decomposition with parsimonious variables")
 mod.pars <- varpart(comm_obj, ~ ., 
                pcnm_df[, names(step.space$terminfo$ordered)], 
@@ -181,6 +186,8 @@ pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_mod_pars.pd
 plot(mod.pars)
 dev.off()
 
+# if the above decomposition fails, the below needs to be run separately
+# scripts for this labelled bc
 # Partition Bray-Curtis dissimilarities
 print("Partition Bray-Curtis dissimilarities")
 varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)

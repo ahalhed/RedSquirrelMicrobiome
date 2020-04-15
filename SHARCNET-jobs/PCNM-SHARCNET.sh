@@ -14,7 +14,7 @@
 #---
 
 #set up
-# cd /home/ahalhed/red-squirrel-w2020/R-env/
+# initiated frpm: /home/ahalhed/red-squirrel-w2020/R-env/
 module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 R
 
