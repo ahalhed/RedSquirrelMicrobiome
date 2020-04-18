@@ -8,7 +8,7 @@ print("Set up (working directory, theme, and packages)")
 # set working directory
 setwd("/home/ahalhed/red-squirrel-w2020/R-env")
 
-# attach required packages
+# attaLL required packages
 library(tidyverse)
 library(qiime2R)
 library(phyloseq)
@@ -32,7 +32,7 @@ XY_year <- function(metadata, grid, year) {
 max_dist <- function(dm) {
   df1 <- as.data.frame(as.matrix(dm))
   # functions is soft deprecated (replace with functions or lambdas)
-  summ <- summarise_each(df1, ~ max(df1, na.rm=TRUE))
+  summ <- summarise_eaLL(df1, ~ max(df1, na.rm=TRUE))
   m <- apply(summ, 1, max)
   return(m)
 }
@@ -52,9 +52,9 @@ colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "S
 # start analysis
 print("Starting initial data preparation")
 print("Access and plot XY data")
-XY_sub <- XY_year(rs_q2_metadata, "KL", 2008)
+XY_sub <- XY_year(rs_q2_metadata, "LL", 2008)
 # plotting the locations
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_XY.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_XY.pdf")
 XY_sub %>% ggplot(aes(x = `Location X`, y = `Location Y`)) + 
   geom_point() + 
   coord_fixed()
@@ -79,7 +79,7 @@ meta_sub <- rs_q2_metadata %>%
   select_if(~ !any(is.na(.))) %>% 
   # age and birth year are collinear
   # should I add the squirrel id here? dam/sire id has misssingness
-  select(Sex, Age, Month, Season, CollectionDate, BirthYear)
+  select(Age, Month, Season, CollectionDate, BirthYear)
 # Remove objects we're done with
 print("Removing phyloseq obejct and full metadata data frame")
 rm(rs_q2_metadata, ps)
@@ -91,13 +91,13 @@ UWpcnm$vectors
 # plot with ordisurf
 print("Plotting first three PCNM axes with ordisurf")
 # replace grid-year with values used in this script
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_ordisurf123.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_ordisurf123.pdf")
 par(mfrow=c(1,3))
-# these can be adjusted afterwards, once we know which are significant
+# these can be adjusted afterwards, once we know whiLL are significant
 # see section starting at 161
-ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
-ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
-ordisurf(XY_sub, scores(UWpcnm, choi=3), bubble = 4, main = "PCNM 3")
+ordisurf(XY_sub, scores(UWpcnm, LLoi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_sub, scores(UWpcnm, LLoi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_sub, scores(UWpcnm, LLoi=3), bubble = 4, main = "PCNM 3")
 dev.off()
 
 # weighted PCNM (labelled as WUWpcnm in scripts run - a find/replace typo)
@@ -108,7 +108,7 @@ Wpcnm$vectors
 # computing CCA with weighted PCNM
 print("CCA with weighted PCNM")
 # not including Birth year here due to collinearity with age (same information)
-cca_sub <- cca(comm_obj ~ scores(Wpcnm) + Sex + Season + Age, meta_sub)
+cca_sub <- cca(comm_obj ~ scores(Wpcnm) + Season + Age, meta_sub)
 summary(cca_sub)
 
 
@@ -116,8 +116,8 @@ summary(cca_sub)
 print("Multiscale ordination")
 mso_sub <- mso(cca_sub, XY_sub)
 # plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_mso.pdf")
-msoplot(mso_sub, ylim = c(0, 45), main="2008 KL")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_mso.pdf")
+msoplot(mso_sub, ylim = c(0, 45), main="2008 LL")
 dev.off()
 
 # notes on data
@@ -128,7 +128,7 @@ dev.off()
 print("Variance partitioning")
 vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub, transfo = "hel")
 vp_mod1
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_vp_mod1.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_vp_mod1.pdf")
 plot(vp_mod1)
 dev.off()
 
@@ -159,7 +159,7 @@ anova(step.env)
 # this is a summary of the selection process
 step.env$anova
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_step_env.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_step_env.pdf")
 plot(step.env)
 dev.off()
 
@@ -174,7 +174,7 @@ anova(step.space)
 # this is a summary of the selection process
 step.space$anova
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_step_space.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_step_space.pdf")
 plot(step.space)
 dev.off()
 
@@ -186,7 +186,7 @@ mod.pars <- varpart(comm_obj, ~ .,
                data = meta_sub[, names(step.env$terminfo$ordered)],
                transfo = "hel")
 mod.pars
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_mod_pars.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
 
