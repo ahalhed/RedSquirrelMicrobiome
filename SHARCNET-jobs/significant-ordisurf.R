@@ -1,7 +1,7 @@
 #---
 #title: "Significant Ordisurf Plots"
 #author: "Alicia Halhed"
-#date: "02/13/2020"
+#date: "04/22/2020"
 #---
 
 print("Set up (working directory, theme, and packages)")
@@ -26,24 +26,6 @@ XY_year <- function(metadata, grid, year) {
                 select = c("SampleID", "Location X", "Location Y"))
   df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
   return(df3)
-}
-# community objec
-COb <- function(phy, xy){
-  trp <- otu_table(phy) %>% as.matrix %>% 
-    as.data.frame %>% t %>% as.data.frame
-  sub <- trp %>%
-    subset(., rownames(.) %in% rownames(xy)) %>%
-    .[ rowSums(.)>0, ]
-  return(sub)
-}
-
-#metadata
-meta_sub <- function(md, xy) {
-  subs <- subset(md, SampleID %in% rownames(xy)) %>%
-  select_if(~ !any(is.na(.))) %>% 
-  # age and birth year are collinear
-  select(Sex, Age, Month, Season, CollectionDate, BirthYear)
-  return(subs)
 }
 
 # get the data
