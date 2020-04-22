@@ -8,7 +8,7 @@ print("Set up (working directory, theme, and packages)")
 # set working directory
 setwd("/home/ahalhed/red-squirrel-w2020/R-env")
 
-# attaLL required packages
+# attach required packages
 library(tidyverse)
 library(qiime2R)
 library(phyloseq)
@@ -32,7 +32,7 @@ XY_year <- function(metadata, grid, year) {
 max_dist <- function(dm) {
   df1 <- as.data.frame(as.matrix(dm))
   # functions is soft deprecated (replace with functions or lambdas)
-  summ <- summarise_eaLL(df1, ~ max(df1, na.rm=TRUE))
+  summ <- summarise_each(df1, ~ max(df1, na.rm=TRUE))
   m <- apply(summ, 1, max)
   return(m)
 }
@@ -93,11 +93,11 @@ print("Plotting first three PCNM axes with ordisurf")
 # replace grid-year with values used in this script
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_ordisurf123.pdf")
 par(mfrow=c(1,3))
-# these can be adjusted afterwards, once we know whiLL are significant
+# these can be adjusted afterwards, once we know which are significant
 # see section starting at 161
-ordisurf(XY_sub, scores(UWpcnm, LLoi=1), bubble = 4, main = "PCNM 1")
-ordisurf(XY_sub, scores(UWpcnm, LLoi=2), bubble = 4, main = "PCNM 2")
-ordisurf(XY_sub, scores(UWpcnm, LLoi=3), bubble = 4, main = "PCNM 3")
+ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_sub, scores(UWpcnm, choi=3), bubble = 4, main = "PCNM 3")
 dev.off()
 
 # weighted PCNM (labelled as WUWpcnm in scripts run - a find/replace typo)
