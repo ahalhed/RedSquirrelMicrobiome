@@ -21,7 +21,7 @@ View(RS_metadata)
 
 ```{r}
 # 218 from AG 2008
-# spatial significant (5 axes)
+# spatial significant (PCNM55 + PCNM74 + PCNM27 + PCNM56 + PCNM22)
 RS_metadata %>%
   filter(Grid == "AG" & Year == "2008") %>%
   nrow
