@@ -71,17 +71,36 @@ nz <- plyr::numcolwise(nonzero)(RA_full)
 ```
 
 ```{r}
+# total relative abundance (weighted)
+# still fiddling around with what these mean
+RA <- RA_full %>% colSums() %>% as.data.frame
+RA_001 <- RA %>%
+  rownames_to_column(var = "OTU") %>% 
+  rename("Count" = ".") %>% 
+  mutate(RelativeAbundance = .$Count/nrow(OTU_full)) %>%
+  filter(RelativeAbundance > 0.001)
+```
+
+```{r}
 # extract the OTUs that fall above the 95% threshold
 # based on the number of non-zero occurrences of each OTU
-cOTU <- t(nz) %>% as.data.frame %>% 
+OTU95 <- t(nz) %>% as.data.frame %>% 
   rownames_to_column(var = "OTU") %>% 
   rename("Occurrences" = "V1") %>%
   subset(., Occurrences > th)
 ```
 
 ```{r}
+# combine to ensure that those in 95% of the samples
+# have a total relative abundance of 0.1%
+cOTU <- inner_join(cOTU, RA_001)
+```
+
+
+```{r}
 OTU_core <- OTU_full[, cOTU$OTU]
 RA_core <- RA_full[, cOTU$OTU]
 View(OTU_core)
+View(RA_core)
 ```
 
