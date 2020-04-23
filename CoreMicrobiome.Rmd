@@ -1,0 +1,84 @@
+---
+title: "Core vs Rare"
+author: "Alicia Halhed"
+date: "23/04/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Core vs Rare
+As defined by Mahnic and Rupnik (2018), the core microbiome includes OTUs with relative abundances >0.1%, present in at least 95% of tested samples.
+
+## Get the OTU table
+
+```{r}
+print("Set up (working directory, theme, and packages)")
+# set working directory
+#setwd("/home/ahalhed/red-squirrel-w2020/R-env")
+
+# attach required packages
+library(tidyverse)
+library(qiime2R)
+library(phyloseq)
+library(vegan)
+```
+
+```{r}
+# SHARCNET paths
+print("Read in the Data")
+print("Building phyloseq object")
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
+```
+
+```{r}
+# transpose and convert to data frame
+OTU_full <- otu_table(ps) %>% as.matrix %>% 
+    as.data.frame %>% 
+    t %>% as.data.frame 
+```
+
+
+## Getting out the core
+this tutorial might come in handy: http://joey711.github.io/phyloseq-demo/phyloseq-demo.html
+
+```{r}
+sums<-OTU_full %>% colSums() %>% as.data.frame
+
+
+sums %>% rename("Count" = ".") %>% 
+  mutate(RelativeAbundance = .$Count/nrow(sums)) %>%
+  filter(RelativeAbundance > 0.1)
+```
+
+```{r}
+# transform the counts to relative abundance,
+RA_full <- transform_sample_counts(ps, function(x) x/sum(x)) %>% 
+  otu_table %>% as.matrix %>% as.data.frame %>% 
+    t %>% as.data.frame
+head(RA_full)
+```
+
+```{r}
+colMeans(RA_full > 0.1) %>% as.data.frame %>% 
+  rownames_to_column(var = "OTU") %>% rename("RA" = ".")
+
+```
+
+Presence in 95% of samples; relative abundace > 0.1
+```{r}
+# 95% threshold
+th <- 0.95*nrow(RA_full)
+th
+```
+
+```{r}
+nonzero <- function(x) sum(x!=0)
+plyr::numcolwise(nonzero)(RA_full) %>% select_if(~max(.)>th)
+```
+
