@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Core vs Rare
-As defined by Mahnic and Rupnik (2018), the core microbiome includes OTUs with relative abundances >0.1%, present in at least 95% of tested samples.
+As defined by Mahnic and Rupnik (2018), the core microbiome includes OTUs with average relative abundances >0.1%, present in at least 95% of tested samples.
 
 ## Get the OTU table
 
@@ -28,7 +28,6 @@ library(vegan)
 
 ```{r}
 # SHARCNET paths
-print("Read in the Data")
 print("Building phyloseq object")
 ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
                       tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
@@ -38,6 +37,7 @@ ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-tabl
 
 ```{r}
 # transpose and convert to data frame
+print("Accessing OTU table")
 OTU_full <- otu_table(ps) %>% as.matrix %>% 
     as.data.frame %>% 
     t %>% as.data.frame 
@@ -48,42 +48,46 @@ OTU_full <- otu_table(ps) %>% as.matrix %>%
 this tutorial might come in handy: http://joey711.github.io/phyloseq-demo/phyloseq-demo.html
 
 ```{r}
-# transform the counts to relative abundance,
+# transform the counts to relative abundance
+print("Transforming the OTU counts to relative abundance")
 RA_full <- transform_sample_counts(ps, function(x) x/sum(x)) %>% 
   otu_table %>% as.matrix %>% as.data.frame %>% 
     t %>% as.data.frame
-head(RA_full)
 ```
 
-Presence in 95% of samples; relative abundace > 0.1
+Presence in 95% of samples; relative abundace > 0.1%
 ```{r}
 # 95% threshold
 # minimum number of samples that an OTU must occur in 
 # to be considered as part of the "core" microbiome
+print("Calculating 95% threshold")
 th <- 0.95*nrow(RA_full)
 th
 ```
 
 ```{r}
 # Access the number of non-zero occurrences of each OTU
+print("Accessing the number of non-zero occurrences of each OTU")
 nonzero <- function(x) sum(x!=0)
 nz <- plyr::numcolwise(nonzero)(RA_full)
 ```
 
 ```{r}
-# total relative abundance (weighted)
-# still fiddling around with what these mean
+# total relative abundance
+# average relative abundance across all 909 samples
+print("Calculating average relative abundance")
 RA <- RA_full %>% colSums() %>% as.data.frame
 RA_001 <- RA %>%
   rownames_to_column(var = "OTU") %>% 
-  rename("Count" = ".") %>% 
-  mutate(RelativeAbundance = .$Count/nrow(OTU_full)) %>%
+  rename("ColSum" = ".") %>% 
+  mutate(RelativeAbundance = .$ColSum/nrow(OTU_full)) %>%
   filter(RelativeAbundance > 0.001)
 ```
 
 ```{r}
 # extract the OTUs that fall above the 95% threshold
 # based on the number of non-zero occurrences of each OTU
+print("Extract the OTUs that occur in >95% of samples")
 OTU95 <- t(nz) %>% as.data.frame %>% 
   rownames_to_column(var = "OTU") %>% 
   rename("Occurrences" = "V1") %>%
@@ -93,14 +97,22 @@ OTU95 <- t(nz) %>% as.data.frame %>%
 ```{r}
 # combine to ensure that those in 95% of the samples
 # have a total relative abundance of 0.1%
-cOTU <- inner_join(cOTU, RA_001)
+print("Find OTUs that occur in >95% of samples and have an average relative abundance >0.1%")
+cOTU <- inner_join(OTU95, RA_001)
+print("How many OTUs meet these criteria?")
+nrow(cOTU)
 ```
 
 
 ```{r}
+print("Subset the OTU table to find core and rare OTUs")
 OTU_core <- OTU_full[, cOTU$OTU]
-RA_core <- RA_full[, cOTU$OTU]
-View(OTU_core)
-View(RA_core)
+OTU_rare <- OTU_full %>% 
+  select(-one_of(cOTU$OTU))
+```
+
+```{r}
+print("Removing objects that are no longer needed")
+rm(cOTU, OTU95, RA_001, RA, RA_full, OTU_full, ps)
 ```
 
