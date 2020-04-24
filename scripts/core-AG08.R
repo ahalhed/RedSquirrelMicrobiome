@@ -218,6 +218,10 @@ pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core
 plot(step.space)
 dev.off()
 
+# Partition Bray-Curtis dissimilarities
+print("Partition Bray-Curtis dissimilarities")
+varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)
+
 # variation decomposition with parsimonious variables
 print("Variation decomposition with parsimonious variables")
 mod.pars <- varpart(comm_obj, ~ ., 
@@ -228,8 +232,3 @@ mod.pars
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
-
-# Partition Bray-Curtis dissimilarities
-print("Partition Bray-Curtis dissimilarities")
-varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)
-
