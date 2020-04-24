@@ -1,7 +1,7 @@
 #---
-#title: "PCNM for Squirrel Microbiome (SHARCNET)"
+#title: "PCNM for Core Squirrel Microbiome (SHARCNET)"
 #author: "Alicia Halhed"
-#date: "02/13/2020"
+#date: "04/24/2020"
 #---
 
 print("Set up (working directory, theme, and packages)")
