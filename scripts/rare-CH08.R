@@ -124,7 +124,7 @@ meta_sub <- rs_q2_metadata %>%
   select_if(~ !any(is.na(.))) %>% 
   # age and birth year are collinear
   # should I add the squirrel id here? dam/sire id has misssingness
-  select(Sex, Age, Month, Season, CollectionDate, BirthYear)
+  select(Age, Month, Season, CollectionDate, BirthYear)
 
 # Remove objects we're done with
 print("Removing pobjects that are no longer needed")
