@@ -37,3 +37,608 @@ null device
 [1] "Finding core microbiome"
 [1] "Accessing full OTU table as a community object"
 [1] "Transforming the OTU counts to relative abundance"
+[1] "Calculating 95% threshold"
+[1] 863.55
+[1] "Accessing the number of non-zero occurrences of each OTU"
+[1] "Calculating average relative abundance"
+[1] "Extract the OTUs that occur in >95% of samples"
+[1] "Find OTUs that occur in >95% of samples and have an average relative abundance >0.1%"
+Joining, by = "OTU"
+[1] "How many OTUs meet these criteria?"
+[1] 14
+[1] "Subset the OTU table to find core OTUs"
+[1] "Build the core community object (OTU table) for grid/year"
+[1] "Extract metadata for grid/year"
+[1] "Removing pobjects that are no longer needed"
+[1] "Unweighted PCNM"
+                              PCNM1       PCNM2       PCNM3       PCNM4
+P3181.8815.F.2.SU.2008   0.10756977 -0.16150669 -0.01082882  0.49676661
+P3107.8404.F.1.SU.2008   0.27135641  0.18101369  0.07012213 -0.22250494
+P3066.8644.F.2.SU.2008   0.07588880 -0.17810852  0.08352943  0.52773654
+P1791.8513.F.6.SU.2008   0.06692147 -0.41455143 -0.22767292 -0.18542393
+P1786.10405.F.1.SU.2008 -0.22279516 -0.01764951  0.30754821 -0.07301821
+P1767.8513.F.6.SU.2008   0.06692147 -0.41455143 -0.22767292 -0.18542393
+P1705.8579.F.4.SU.2008  -0.25765492  0.20125280 -0.14277625  0.03160502
+P1681.10362.F.1.SU.2008 -0.17434815 -0.19745968  0.30585911 -0.16030879
+P1642.8398.F.4.SU.2008  -0.25322271  0.04262434  0.21351013 -0.06470338
+P1631.8593.F.2.SU.2008   0.03913599 -0.46283511 -0.13319871 -0.23611778
+P1520.10133.F.3.SU.2008  0.31082110  0.17673338  0.09053869 -0.08886634
+P1461.10747.F.1.SU.2008 -0.27719969  0.10530517  0.08903443 -0.04715820
+P1427.10133.F.3.SU.2008  0.31082110  0.17673338  0.09053869 -0.08886634
+P1424.10160.F.3.SU.2008 -0.21206325 -0.06341098  0.33120196  0.09506182
+P1277.8579.F.4.SU.2008  -0.19126298  0.22238762 -0.32666052  0.02483345
+P1254.10657.F.1.SU.2008 -0.06439901  0.15173998 -0.43994006  0.07725974
+P0143.10747.F.1.SU.2008 -0.27719969  0.10530517  0.08903443 -0.04715820
+P0137.10271.F.1.SU.2008  0.24951342 -0.02122131  0.06769587  0.41109087
+P0123.8404.F.1.SU.2008   0.27148558  0.18114140  0.07019332 -0.22258359
+P0064.8633.F.1.SU.2008  -0.15111065  0.21032434 -0.39059489  0.04664591
+P0054.10133.F.3.SU.2008  0.31082110  0.17673338  0.09053869 -0.08886634
+                              PCNM5       PCNM6       PCNM7       PCNM8
+P3181.8815.F.2.SU.2008  -0.07069171 -0.10096110  0.23672292  0.27002468
+P3107.8404.F.1.SU.2008   0.25630061 -0.17600829  0.26420440  0.12438037
+P3066.8644.F.2.SU.2008   0.30053488 -0.13501225  0.18013044 -0.05042792
+P1791.8513.F.6.SU.2008   0.11448782  0.31657058  0.07371587 -0.05853586
+P1786.10405.F.1.SU.2008  0.12583395  0.11799952 -0.27998912 -0.11414637
+P1767.8513.F.6.SU.2008   0.11448782  0.31657058  0.07371587 -0.05853586
+P1705.8579.F.4.SU.2008   0.27838480  0.21052903 -0.25187181 -0.06035989
+P1681.10362.F.1.SU.2008 -0.30690643 -0.49454855 -0.12515960  0.04778822
+P1642.8398.F.4.SU.2008  -0.05733124  0.24809973 -0.04693793  0.56174672
+P1631.8593.F.2.SU.2008  -0.19496554 -0.31095399 -0.11683502  0.03218475
+P1520.10133.F.3.SU.2008 -0.10959540  0.09360580 -0.12136872 -0.07704075
+P1461.10747.F.1.SU.2008 -0.18917364  0.06440656  0.26202864 -0.18437939
+P1427.10133.F.3.SU.2008 -0.10959540  0.09360580 -0.12136872 -0.07704075
+P1424.10160.F.3.SU.2008  0.40084361 -0.03051093 -0.04028515 -0.19434255
+P1277.8579.F.4.SU.2008  -0.20315799  0.10702398  0.17189873  0.42498907
+P1254.10657.F.1.SU.2008  0.21344313 -0.34156906 -0.50877915  0.13138796
+P0143.10747.F.1.SU.2008 -0.18917364  0.06440656  0.26202864 -0.18437939
+P0137.10271.F.1.SU.2008 -0.37842659  0.22415629 -0.26682287 -0.11486018
+P0123.8404.F.1.SU.2008   0.25602282 -0.17571665  0.26375441  0.12403943
+P0064.8633.F.1.SU.2008  -0.14172646 -0.18529940  0.21258689 -0.46545155
+P0054.10133.F.3.SU.2008 -0.10959540  0.09360580 -0.12136872 -0.07704075
+                              PCNM9        PCNM10
+P3181.8815.F.2.SU.2008   0.56254533 -6.381405e-04
+P3107.8404.F.1.SU.2008   0.10452578  7.071163e-01
+P3066.8644.F.2.SU.2008  -0.35585190  2.304892e-08
+P1791.8513.F.6.SU.2008   0.01638350  1.307126e-07
+P1786.10405.F.1.SU.2008  0.51780986  1.519761e-05
+P1767.8513.F.6.SU.2008   0.01638350  1.307126e-07
+P1705.8579.F.4.SU.2008   0.12501246 -3.141893e-06
+P1681.10362.F.1.SU.2008 -0.03831079  1.516393e-07
+P1642.8398.F.4.SU.2008  -0.13171371  2.262098e-08
+P1631.8593.F.2.SU.2008  -0.09659125 -3.041916e-06
+P1520.10133.F.3.SU.2008 -0.07951403 -7.523507e-06
+P1461.10747.F.1.SU.2008  0.01095856  2.899309e-08
+P1427.10133.F.3.SU.2008 -0.07951403 -7.523507e-06
+P1424.10160.F.3.SU.2008 -0.35518381 -1.509795e-05
+P1277.8579.F.4.SU.2008  -0.26296717  9.909432e-08
+P1254.10657.F.1.SU.2008  0.01296917  2.367145e-07
+P0143.10747.F.1.SU.2008  0.01095856  2.899308e-08
+P0137.10271.F.1.SU.2008 -0.06462771  6.463210e-04
+P0123.8404.F.1.SU.2008   0.10398298 -7.070967e-01
+P0064.8633.F.1.SU.2008   0.06225872  9.849815e-08
+P0054.10133.F.3.SU.2008 -0.07951403 -7.523507e-06
+[1] "Plotting first three PCNM axes with ordisurf"
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+y ~ s(x1, x2, k = 10, bs = "tp", fx = FALSE)
+
+Estimated degrees of freedom:
+7.72  total = 8.72 
+
+REML score: -29.57522     
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+y ~ s(x1, x2, k = 10, bs = "tp", fx = FALSE)
+
+Estimated degrees of freedom:
+8.64  total = 9.64 
+
+REML score: -24.43544     
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+y ~ s(x1, x2, k = 10, bs = "tp", fx = FALSE)
+
+Estimated degrees of freedom:
+8.41  total = 9.41 
+
+REML score: -17.87212     
+null device 
+          1 
+[1] "Weighted PCNM"
+                               PCNM1        PCNM2       PCNM3       PCNM4
+P3181.8815.F.2.SU.2008  -0.174907488  0.038579937  1.95954968 -2.96839132
+P3107.8404.F.1.SU.2008  -1.407163831 -0.120891919 -0.54715393  0.30789290
+P3066.8644.F.2.SU.2008  -0.109721903 -0.095329001  1.84782132 -3.43890791
+P1791.8513.F.6.SU.2008   0.168492769  1.525669934  1.24274126  0.56933197
+P1786.10405.F.1.SU.2008  0.858047171 -1.159454405 -0.77610247 -0.46206652
+P1767.8513.F.6.SU.2008   0.168492769  1.525669934  1.24274126  0.56933197
+P1705.8579.F.4.SU.2008   0.452057689 -1.405031803  2.03808758  1.46172466
+P1681.10362.F.1.SU.2008  1.123197427  0.211798876 -1.10449546 -0.21278839
+P1642.8398.F.4.SU.2008   0.878772989 -1.270606986 -0.34232547  0.09392243
+P1631.8593.F.2.SU.2008   0.578399850  1.688613549 -0.02819532  0.23712511
+P1520.10133.F.3.SU.2008 -1.416893685 -0.120013386 -0.33240369 -0.27717994
+P1461.10747.F.1.SU.2008  0.862477537 -1.299678174  0.06797159  0.47975420
+P1427.10133.F.3.SU.2008 -1.416893685 -0.120013386 -0.33240369 -0.27717994
+P1424.10160.F.3.SU.2008  0.853343591 -1.171064774 -0.44180985 -1.35251733
+P1277.8579.F.4.SU.2008   0.345211990 -1.186449148  2.26086884  2.03272383
+P1254.10657.F.1.SU.2008 -0.099935111 -0.211448344  2.64616953  1.57737631
+P0143.10747.F.1.SU.2008  0.862477537 -1.299678174  0.06797159  0.47975420
+P0137.10271.F.1.SU.2008 -0.544520517 -0.008414114  1.67668467 -3.29297808
+P0123.8404.F.1.SU.2008  -1.405507365 -0.120678280 -0.54492239  0.30557553
+P0064.8633.F.1.SU.2008   0.009723093 -0.460577779  2.68408992  1.86981680
+P0054.10133.F.3.SU.2008 -1.416893685 -0.120013386 -0.33240369 -0.27717994
+                             PCNM5       PCNM6       PCNM7        PCNM8
+P3181.8815.F.2.SU.2008  -0.1989092  0.31166005  2.87918198 -0.509461423
+P3107.8404.F.1.SU.2008   0.1751379  0.68219762  0.47203446 -0.083812285
+P3066.8644.F.2.SU.2008   0.4790379  2.32461826 -0.44452696 -0.004488515
+P1791.8513.F.6.SU.2008   3.6668304 -0.55786550 -0.84899212 -0.593251261
+P1786.10405.F.1.SU.2008  0.5242942  0.60070179 -1.97775127  0.323007130
+P1767.8513.F.6.SU.2008   3.6668304 -0.55786550 -0.84899212 -0.593251261
+P1705.8579.F.4.SU.2008   1.1198716  0.61657162 -2.11804992  1.103003909
+P1681.10362.F.1.SU.2008 -0.9536524  0.11774476  0.13149723  0.079412952
+P1642.8398.F.4.SU.2008   0.6654156 -0.57603110  0.58715655  0.668885144
+P1631.8593.F.2.SU.2008  -0.1699631 -0.03374541  0.06212857  0.051021794
+P1520.10133.F.3.SU.2008 -0.4488726 -1.51411550 -1.06103627  0.143590645
+P1461.10747.F.1.SU.2008 -0.2886750 -0.18346234 -0.25562966 -2.925992042
+P1427.10133.F.3.SU.2008 -0.4488726 -1.51411550 -1.06103627  0.143590645
+P1424.10160.F.3.SU.2008  0.8237779  2.17479845 -2.42304780  0.319808430
+P1277.8579.F.4.SU.2008   0.1681498 -1.67275198  2.55624403  0.326149507
+P1254.10657.F.1.SU.2008 -2.1778299  1.27749088 -0.77925242  2.857812045
+P0143.10747.F.1.SU.2008 -0.2886750 -0.18346234 -0.25562966 -2.925992042
+P0137.10271.F.1.SU.2008 -1.4521049 -4.46704798 -2.04790918  0.256487044
+P0123.8404.F.1.SU.2008   0.1713324  0.66615290  0.45586000 -0.080738131
+P0064.8633.F.1.SU.2008  -2.5468271  0.97660992 -1.31746430 -4.509223820
+P0054.10133.F.3.SU.2008 -0.4488726 -1.51411550 -1.06103627  0.143590645
+                              PCNM9        PCNM10
+P3181.8815.F.2.SU.2008   2.38286423  1.748329e-02
+P3107.8404.F.1.SU.2008   0.05473137 -1.225623e+00
+P3066.8644.F.2.SU.2008  -2.95453372  5.897279e-05
+P1791.8513.F.6.SU.2008   0.34456426  8.881230e-05
+P1786.10405.F.1.SU.2008  5.19670678 -7.667853e-04
+P1767.8513.F.6.SU.2008   0.34456426  8.881230e-05
+P1705.8579.F.4.SU.2008   1.70402401 -8.027679e-03
+P1681.10362.F.1.SU.2008 -0.01872418  4.733917e-05
+P1642.8398.F.4.SU.2008  -0.15378352  5.498646e-06
+P1631.8593.F.2.SU.2008  -0.11155950 -6.788918e-04
+P1520.10133.F.3.SU.2008 -0.21592031  1.855948e-05
+P1461.10747.F.1.SU.2008 -0.05434536  5.219380e-05
+P1427.10133.F.3.SU.2008 -0.21592031  1.855948e-05
+P1424.10160.F.3.SU.2008 -1.60822489  3.214531e-04
+P1277.8579.F.4.SU.2008  -2.25175372  1.171772e-04
+P1254.10657.F.1.SU.2008  0.48483222  1.337700e-04
+P0143.10747.F.1.SU.2008 -0.05434536  5.219380e-05
+P0137.10271.F.1.SU.2008 -0.12514670 -4.910829e-02
+P0123.8404.F.1.SU.2008   0.04935557  3.805728e+00
+P0064.8633.F.1.SU.2008   0.14929409  2.769949e-04
+P0054.10133.F.3.SU.2008 -0.21592031  1.855948e-05
+[1] "CCA with weighted PCNM"
+
+Call:
+cca(formula = comm_obj ~ scores(Wpcnm) + Age, data = meta_sub) 
+
+Partitioning of scaled Chi-square:
+              Inertia Proportion
+Total          1.0512     1.0000
+Constrained    0.7755     0.7378
+Unconstrained  0.2757     0.2622
+
+Eigenvalues, and their contribution to the scaled Chi-square 
+
+Importance of components:
+                        CCA1   CCA2    CCA3    CCA4     CCA5     CCA6     CCA7
+Eigenvalue            0.4661 0.2178 0.04654 0.01960 0.010034 0.008039 0.003526
+Proportion Explained  0.4434 0.2072 0.04428 0.01865 0.009545 0.007648 0.003355
+Cumulative Proportion 0.4434 0.6505 0.69481 0.71345 0.722998 0.730646 0.734000
+                          CCA8     CCA9     CCA10     CCA11    CA1     CA2
+Eigenvalue            0.002509 0.001224 0.0001196 9.063e-05 0.1068 0.07053
+Proportion Explained  0.002387 0.001164 0.0001138 8.622e-05 0.1016 0.06710
+Cumulative Proportion 0.736387 0.737551 0.7376649 7.378e-01 0.8394 0.90648
+                          CA3     CA4     CA5      CA6      CA7      CA8
+Eigenvalue            0.05623 0.01814 0.01150 0.006661 0.003432 0.001866
+Proportion Explained  0.05349 0.01726 0.01094 0.006336 0.003265 0.001775
+Cumulative Proportion 0.95998 0.97723 0.98818 0.994513 0.997778 0.999553
+                            CA9
+Eigenvalue            0.0004698
+Proportion Explained  0.0004469
+Cumulative Proportion 1.0000000
+
+Accumulated constrained eigenvalues
+Importance of components:
+                        CCA1   CCA2    CCA3    CCA4    CCA5     CCA6     CCA7
+Eigenvalue            0.4661 0.2178 0.04654 0.01960 0.01003 0.008039 0.003526
+Proportion Explained  0.6010 0.2808 0.06001 0.02527 0.01294 0.010367 0.004547
+Cumulative Proportion 0.6010 0.8818 0.94179 0.96706 0.98000 0.990369 0.994916
+                          CCA8     CCA9     CCA10     CCA11
+Eigenvalue            0.002509 0.001224 0.0001196 9.063e-05
+Proportion Explained  0.003235 0.001578 0.0001542 1.169e-04
+Cumulative Proportion 0.998151 0.999729 0.9998831 1.000e+00
+
+Scaling 2 for species and site scores
+* Species are scaled proportional to eigenvalues
+* Sites are unscaled: weighted dispersion equal on all dimensions
+
+
+Species scores
+
+                                            CCA1     CCA2      CCA3     CCA4
+7043c33d20fcae3fe26d9ce4b0c125e265e1abd0  1.4443  1.04436 -0.009179 -0.03905
+196c5cfa4dc50b44d41aa0758e281103c5bdd5e2 -0.4914  0.09543  0.018223 -0.01073
+e99e61ca834a7c493182e0315e383ee41547dbd0  0.4266 -0.59164 -0.037006 -0.29470
+8e4cf2b1369f3463868939e2f33b57232bea618d  0.5518 -0.53013 -0.069077 -0.02198
+b212ce219f884c266dda7a85b0a4fa6e797e0c54  0.7833 -0.25406  0.532232  0.16557
+e6aa12974247b6ec7fae3e25aeffa1d7bd744ec2  0.4779 -0.39990 -0.154656  0.04840
+0d02df0bfe003e6a1c79cb70ea485a0d5572ce2d  0.8108 -0.82267  0.395633  0.17254
+6263d2de888216e2ccb06dadb2eedafe1853eaeb  0.6659 -0.81205  0.213700  0.03719
+ed431e1f7f124b162542909fd06aabe258956802  0.9318 -1.01780 -0.364891 -0.09847
+d8f5b3d86a4953eb85a9db29ae3a8f1c088aeb3c  0.7436 -0.79500  0.085931 -0.43091
+2657f398b7d9c27f3ca37479ca5030a17190cc42  0.9159 -0.97693 -0.249920 -0.88873
+b6ffefa097567d8148f17ad0e06154f1647669ee  0.1719 -0.14799 -0.226285 -0.17325
+c2a100a45b06564caab49637e5c2a042f0de5bfd  0.2713 -0.19610 -0.557726  0.44219
+4f2c2b2652b4915634ce618875b7b0fd2fdebcd4  0.5601 -0.36415 -0.698378 -0.02560
+                                              CCA5      CCA6
+7043c33d20fcae3fe26d9ce4b0c125e265e1abd0  0.028069  0.009340
+196c5cfa4dc50b44d41aa0758e281103c5bdd5e2  0.013233  0.006692
+e99e61ca834a7c493182e0315e383ee41547dbd0 -0.281192  0.054346
+8e4cf2b1369f3463868939e2f33b57232bea618d -0.001387 -0.027757
+b212ce219f884c266dda7a85b0a4fa6e797e0c54 -0.155357  0.004479
+e6aa12974247b6ec7fae3e25aeffa1d7bd744ec2 -0.141721 -0.161068
+0d02df0bfe003e6a1c79cb70ea485a0d5572ce2d  0.207333 -0.012358
+6263d2de888216e2ccb06dadb2eedafe1853eaeb -0.088381 -0.025695
+ed431e1f7f124b162542909fd06aabe258956802  0.318832  0.019616
+d8f5b3d86a4953eb85a9db29ae3a8f1c088aeb3c -0.213464  0.152454
+2657f398b7d9c27f3ca37479ca5030a17190cc42 -0.182043  0.323872
+b6ffefa097567d8148f17ad0e06154f1647669ee -0.116500 -0.676807
+c2a100a45b06564caab49637e5c2a042f0de5bfd -0.171430  0.093960
+4f2c2b2652b4915634ce618875b7b0fd2fdebcd4  0.049181 -0.026271
+
+
+Site scores (weighted averages of species scores)
+
+                            CCA1     CCA2     CCA3       CCA4    CCA5    CCA6
+P3107.8404.F.1.SU.2008  -0.53908  0.34181 -0.65128  1.3804021 -0.5327  1.5122
+P3181.8815.F.2.SU.2008  -0.80833  0.38269  0.34216 -0.3545092  1.4255  0.8998
+P0137.10271.F.1.SU.2008  0.07947 -0.18713  0.09842  1.6313871 -1.5353 -0.3582
+P1705.8579.F.4.SU.2008   1.25913  1.43486 -0.77463 -0.0001119 -0.5833 -0.8850
+P0123.8404.F.1.SU.2008   0.40809 -0.42653 -5.49915  5.4692327 -5.2280 -0.4122
+P1277.8579.F.4.SU.2008   1.04444 -2.49780 -1.99382 -2.9445851  1.6117 -5.1642
+P1786.10405.F.1.SU.2008  1.74523 -2.06530 -3.10750 -2.5576689  9.8660  0.3777
+P1461.10747.F.1.SU.2008 -0.69219  0.23858  0.20876 -0.8817623 -0.0620  0.3797
+P1642.8398.F.4.SU.2008  -0.59543  0.08254  0.37832 -0.0889410  0.1889  0.6216
+P0054.10133.F.3.SU.2008 -0.54747 -0.04668 -0.28168 -0.2611853 -0.9403 -1.2433
+P0064.8633.F.1.SU.2008   1.47371 -1.93719  0.95169  0.8125255 -5.2267  0.6333
+P1791.8513.F.6.SU.2008   0.14638  0.69897 -0.57842  0.7193747  0.7066  0.8636
+P1767.8513.F.6.SU.2008   1.00855  0.33039 -0.99550 -0.4992424  2.7894  0.4152
+P1424.10160.F.3.SU.2008  0.11612 -0.52170  0.46852  2.5822010 -2.2958  1.3478
+P3066.8644.F.2.SU.2008  -0.03706  0.01954  0.78616  0.8870519 -2.0318 -3.6826
+P1427.10133.F.3.SU.2008 -0.27047 -0.45733  0.54726 -0.1294508  2.5434 -0.5139
+P1631.8593.F.2.SU.2008   0.56737 -0.70235 -3.69029  2.9647372 -3.3521 -4.2737
+P0143.10747.F.1.SU.2008  1.64590 -1.03405  0.22789  1.0482227  1.9609 -1.5971
+P1681.10362.F.1.SU.2008  2.67222  3.01389  0.72411 -0.8635552  0.3368  0.9673
+P1254.10657.F.1.SU.2008  1.64612 -2.78880 -2.01107 -8.7324418 -0.7579  4.6444
+P1520.10133.F.3.SU.2008  1.64110 -2.65901  2.75567  3.0234919  7.1895 -2.6790
+
+
+Site constraints (linear combinations of constraining variables)
+
+                            CCA1     CCA2      CCA3     CCA4     CCA5     CCA6
+P3107.8404.F.1.SU.2008  -0.61261  0.31665 -0.965236  0.88520 -1.06918  1.64695
+P3181.8815.F.2.SU.2008  -0.77860  0.33213  0.306768  0.07141  1.15506  0.62903
+P0137.10271.F.1.SU.2008 -0.06195  0.25783  0.969880  1.52803 -0.90948  0.42747
+P1705.8579.F.4.SU.2008   1.11477  0.24232 -1.611141  0.12282 -0.15923 -2.15569
+P0123.8404.F.1.SU.2008   0.40986  0.08314 -4.418984  2.48789  1.10865  1.31322
+P1277.8579.F.4.SU.2008   1.11477  0.24232 -1.611141  0.12282 -0.15923 -2.15569
+P1786.10405.F.1.SU.2008  1.16100 -0.95120 -2.413625  0.36990  2.58283 -0.19504
+P1461.10747.F.1.SU.2008 -0.93948  0.20955  0.003534  0.01566 -0.86114  0.06319
+P1642.8398.F.4.SU.2008  -0.41626 -0.07461  0.385354  0.55199 -0.13364  0.19651
+P0054.10133.F.3.SU.2008 -0.44276  0.08261 -0.059617 -0.75659 -0.68636 -1.00768
+P0064.8633.F.1.SU.2008   1.35790 -1.74211  1.376037  0.25213 -0.23890  0.36977
+P1791.8513.F.6.SU.2008   0.38130  0.17966 -1.824425 -0.59012 -0.62569  0.18118
+P1767.8513.F.6.SU.2008   1.35790 -1.74211  1.376037  0.25213 -0.23890  0.36977
+P1424.10160.F.3.SU.2008  0.21097 -0.65831  0.032438  1.21425 -0.73988  1.41965
+P3066.8644.F.2.SU.2008  -0.41346  0.67033  1.358584 -1.40204  1.70449 -2.33638
+P1427.10133.F.3.SU.2008 -0.09137 -1.01389 -0.070727 -1.09387  3.35087 -0.28047
+P1631.8593.F.2.SU.2008   0.38130  0.17966 -1.824425 -0.59012 -0.62569  0.18118
+P0143.10747.F.1.SU.2008  1.96498 -1.56165 -0.183110  4.23299  0.22862 -3.81255
+P1681.10362.F.1.SU.2008  2.70283  2.96259  0.688941 -0.42547  0.05862  0.68940
+P1254.10657.F.1.SU.2008  1.79764 -3.12166 -1.943994 -4.79876 -1.03760  2.33169
+P1520.10133.F.3.SU.2008  1.35790 -1.74211  1.376037  0.25213 -0.23890  0.36977
+
+
+Biplot scores for constraining variables
+
+                        CCA1      CCA2      CCA3     CCA4      CCA5     CCA6
+scores(Wpcnm)PCNM1  -0.39387 -0.033764 -0.399206 -0.02994 -0.440062 -0.26666
+scores(Wpcnm)PCNM2  -0.09823  0.088694  0.009771 -0.29708 -0.299139 -0.49617
+scores(Wpcnm)PCNM3   0.22244 -0.262099 -0.245146 -0.17746  0.302368 -0.25304
+scores(Wpcnm)PCNM4   0.01536  0.040720 -0.071330 -0.69516  0.464162 -0.17940
+scores(Wpcnm)PCNM5   0.11245  0.279008 -0.181196  0.29436 -0.002688 -0.21016
+scores(Wpcnm)PCNM6  -0.24728  0.341441 -0.205065 -0.20103  0.148767  0.52951
+scores(Wpcnm)PCNM7  -0.43969  0.507386  0.235652 -0.17254 -0.030449  0.05240
+scores(Wpcnm)PCNM8  -0.18778  0.007684  0.389655  0.34324  0.450131 -0.17714
+scores(Wpcnm)PCNM9   0.03713  0.016320 -0.654441  0.15926  0.162731  0.23186
+scores(Wpcnm)PCNM10  0.69028  0.524364  0.076042 -0.10101 -0.218569  0.01565
+Age                  0.17105 -0.233927  0.051748  0.15894 -0.084258 -0.32800
+
+[1] "Multiscale ordination"
+null device 
+          1 
+[1] "Variance partitioning"
+Warning messages:
+1: collinearity detected in X1: mm = 15, m = 14 
+2: collinearity detected in cbind(X1,X2): mm = 25, m = 20 
+
+Partition of variance in RDA 
+
+Call: varpart(Y = comm_obj, X = ~., scores(UWpcnm), data = meta_sub,
+transfo = "hel")
+Species transformation:  hellinger
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 5.0296 
+            Variance: 0.25148 
+No. of observations: 21 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           14   0.74077       0.13589     TRUE
+[b+c] = X2           10   0.67236       0.34471     TRUE
+[a+b+c] = X1+X2      20   1.00000                   TRUE
+Individual fractions                                    
+[a] = X1|X2          10                             TRUE
+[b]                   0                            FALSE
+[c] = X2|X1           6                             TRUE
+[d] = Residuals                                    FALSE
+---
+Use function ‘rda’ to test significance of fractions of interest
+Warning message:
+collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+null device 
+          1 
+[1] "Testing with RDA (full model)"
+Call: rda(formula = decostand(comm_obj, "hel") ~ Age + CollectionDate +
+BirthYear, data = meta_sub)
+
+              Inertia Proportion Rank
+Total         0.25148    1.00000     
+Constrained   0.18629    0.74077   14
+Unconstrained 0.06519    0.25923    6
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.10793 0.03446 0.01490 0.01226 0.00640 0.00439 0.00266 0.00130 0.00086 0.00056 
+  RDA11   RDA12   RDA13   RDA14 
+0.00025 0.00024 0.00009 0.00000 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6 
+0.04384 0.01080 0.00670 0.00170 0.00142 0.00074 
+
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ Age + CollectionDate + BirthYear, data = meta_sub)
+         Df Variance      F Pr(>F)
+Model    14 0.186288 1.2247  0.325
+Residual  6 0.065192              
+$r.squared
+[1] 0.7407664
+
+$adj.r.squared
+[1] 0.1358879
+
+[1] "Testing with partial RDA (fraction [a])"
+No residual component
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ Age + CollectionDate + BirthYear + Condition(scores(UWpcnm)), data = meta_sub)
+         Df Variance F Pr(>F)
+Model    10 0.082396         
+Residual  0 0.000000         
+$r.squared
+[1] 0.327643
+
+$adj.r.squared
+[1] NA
+
+[1] "Forward selection for parsimonious model"
+[1] "Environmental variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
+                 R2.adjusted
++ CollectionDate   0.2177767
+<All variables>    0.1358879
+<none>             0.0000000
++ Age             -0.0279678
++ BirthYear       -0.0279678
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ 1, data = meta_sub)
+
+              Inertia Rank
+Total          0.2515     
+Unconstrained  0.2515   14
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9    PC10 
+0.14699 0.03963 0.02167 0.01363 0.01267 0.00503 0.00434 0.00259 0.00220 0.00117 
+   PC11    PC12    PC13    PC14 
+0.00081 0.00040 0.00027 0.00009 
+
+No constrained component
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ 1, data = meta_sub)
+         Df Variance  F Pr(>F)
+Model     0  0.00000  0       
+Residual 20  0.25148          
+NULL
+null device 
+          1 
+[1] "Spatial variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
+                 R2.adjusted
+<All variables>  0.344714024
++ PCNM8          0.128722239
++ PCNM10         0.090868857
++ PCNM6          0.055446510
++ PCNM1          0.025518627
++ PCNM2          0.015262643
+<none>           0.000000000
++ PCNM3         -0.002901669
++ PCNM9         -0.019470165
++ PCNM7         -0.024808602
++ PCNM4         -0.040432410
++ PCNM5         -0.046777596
+
+        Df     AIC      F Pr(>F)  
++ PCNM8  1 -29.984 3.9548  0.014 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.1287222 
+Call: decostand(comm_obj, "hel") ~ PCNM8 
+ 
+                R2.adjusted
+<All variables>  0.34471402
++ PCNM10         0.23179060
++ PCNM6          0.19440035
++ PCNM1          0.16280980
++ PCNM2          0.15198404
++ PCNM3          0.13281060
+<none>           0.12872224
++ PCNM9          0.11532163
++ PCNM7          0.10968662
++ PCNM4          0.09319482
++ PCNM5          0.08649712
+
+         Df     AIC      F Pr(>F)  
++ PCNM10  1 -31.763 3.5492  0.026 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.2317906 
+Call: decostand(comm_obj, "hel") ~ PCNM8 + PCNM10 
+ 
+                R2.adjusted
+<All variables>   0.3447140
++ PCNM6           0.3073950
++ PCNM1           0.2739462
++ PCNM2           0.2624836
++ PCNM3           0.2421823
+<none>            0.2317906
++ PCNM9           0.2236646
++ PCNM7           0.2176981
++ PCNM4           0.2002362
++ PCNM5           0.1931445
+
+        Df     AIC      F Pr(>F)  
++ PCNM6  1 -33.139 2.9649  0.022 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.307395 
+Call: decostand(comm_obj, "hel") ~ PCNM8 + PCNM10 + PCNM6 
+ 
+                R2.adjusted
++ PCNM1           0.3569105
++ PCNM2           0.3447315
+<All variables>   0.3447140
++ PCNM3           0.3231614
+<none>            0.3073950
++ PCNM9           0.3034863
++ PCNM7           0.2971469
++ PCNM4           0.2785937
++ PCNM5           0.2710588
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ PCNM8 + PCNM10 +
+PCNM6, data = pcnm_df)
+
+              Inertia Proportion Rank
+Total          0.2515     1.0000     
+Constrained    0.1034     0.4113    3
+Unconstrained  0.1481     0.5887   14
+Inertia is variance 
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3 
+0.09116 0.01033 0.00194 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9    PC10 
+0.06828 0.02745 0.01648 0.01266 0.01073 0.00398 0.00287 0.00233 0.00146 0.00097 
+   PC11    PC12    PC13    PC14 
+0.00040 0.00022 0.00017 0.00006 
+
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ PCNM8 + PCNM10 + PCNM6, data = pcnm_df)
+         Df Variance      F Pr(>F)   
+Model     3  0.10343 3.9588  0.004 **
+Residual 17  0.14805                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+                 R2.adj Df     AIC      F Pr(>F)  
++ PCNM8         0.12872  1 -29.984 3.9548  0.014 *
++ PCNM10        0.23179  1 -31.763 3.5492  0.026 *
++ PCNM6         0.30739  1 -33.139 2.9649  0.022 *
+<All variables> 0.34471                           
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities"
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = vegdist(comm_obj), X = ~., scores(UWpcnm), data =
+meta_sub)
+
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 4.5059 
+No. of observations: 21 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           14   0.71194       0.03981     TRUE
+[b+c] = X2           10   0.60144       0.20288     TRUE
+[a+b+c] = X1+X2      20   1.00000                   TRUE
+Individual fractions                                    
+[a] = X1|X2          10                             TRUE
+[b]                   0                            FALSE
+[c] = X2|X1           6                             TRUE
+[d] = Residuals                                    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+Warning messages:
+1: collinearity detected in X1: mm = 15, m = 14 
+2: collinearity detected in cbind(X1,X2): mm = 25, m = 20 
+3: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+[1] "Variation decomposition with parsimonious variables"
+Error in terms.formula(formula, data = data) : 
+  '.' in formula and no 'data' argument
+Calls: varpart ... model.frame -> model.frame.default -> terms -> terms.formula
+Execution halted
