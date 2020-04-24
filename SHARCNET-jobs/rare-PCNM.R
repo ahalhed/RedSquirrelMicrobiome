@@ -4,6 +4,10 @@
 #date: "02/24/2020"
 #---
 
+# for starting multiple shell scripts
+# type this in terminal (bash script)
+# for file in ./RedSquirrelSpatial/scripts/core-*.sh; do sbatch $file; done
+
 print("Set up (working directory, theme, and packages)")
 # set working directory
 setwd("/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial")
