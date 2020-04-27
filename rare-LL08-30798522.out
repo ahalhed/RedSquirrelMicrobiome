@@ -34366,3 +34366,137 @@ Call: decostand(comm_obj, "hel") ~ 1
 + PCNM15        -0.0043491328
 + PCNM16        -0.0061760953
 
+        Df     AIC      F Pr(>F)  
++ PCNM5  1 -16.163 1.5522  0.016 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.01186193 
+Call: decostand(comm_obj, "hel") ~ PCNM5 
+ 
+                R2.adjusted
+<All variables> 0.025160860
++ PCNM20        0.022930238
++ PCNM13        0.020081576
++ PCNM3         0.018734146
++ PCNM21        0.017191125
++ PCNM10        0.015557210
++ PCNM6         0.015228478
++ PCNM14        0.014078012
++ PCNM17        0.012438406
++ PCNM1         0.011905147
+<none>          0.011861934
++ PCNM8         0.011817160
++ PCNM18        0.010738410
++ PCNM4         0.009854177
++ PCNM11        0.009001099
++ PCNM9         0.008729596
++ PCNM19        0.008658460
++ PCNM2         0.008568126
++ PCNM7         0.008098750
++ PCNM12        0.007686170
++ PCNM15        0.007683547
++ PCNM16        0.005815063
+
+         Df     AIC      F Pr(>F)  
++ PCNM20  1 -15.749 1.5098  0.022 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.02293024 
+Call: decostand(comm_obj, "hel") ~ PCNM5 + PCNM20 
+ 
+                R2.adjusted
++ PCNM13         0.03159844
++ PCNM3          0.03021967
++ PCNM21         0.02864077
++ PCNM10         0.02696885
++ PCNM6          0.02663248
++ PCNM14         0.02545526
+<All variables>  0.02516086
++ PCNM17         0.02377752
++ PCNM1          0.02323186
++ PCNM8          0.02314182
+<none>           0.02293024
++ PCNM18         0.02203799
++ PCNM4          0.02113319
++ PCNM11         0.02026027
++ PCNM9          0.01998246
++ PCNM19         0.01990967
++ PCNM2          0.01981723
++ PCNM7          0.01933694
++ PCNM12         0.01891477
++ PCNM15         0.01891208
++ PCNM16         0.01700014
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ PCNM5 + PCNM20, data =
+pcnm_df)
+
+              Inertia Proportion Rank
+Total         0.68826    1.00000     
+Constrained   0.04502    0.06541    2
+Unconstrained 0.64324    0.93459   44
+Inertia is variance 
+
+Eigenvalues for constrained axes:
+    RDA1     RDA2 
+0.030313 0.014707 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.07718 0.03239 0.03017 0.02610 0.02317 0.01986 0.01825 0.01815 
+(Showing 8 of 44 unconstrained eigenvalues)
+
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ PCNM5 + PCNM20, data = pcnm_df)
+         Df Variance      F Pr(>F)   
+Model     2  0.04502 1.5398  0.004 **
+Residual 44  0.64324                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+                  R2.adj Df     AIC      F Pr(>F)  
++ PCNM5         0.011862  1 -16.163 1.5522  0.016 *
++ PCNM20        0.022930  1 -15.749 1.5098  0.022 *
+<All variables> 0.025161                           
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities"
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = vegdist(comm_obj), X = ~., scores(UWpcnm), data =
+meta_sub)
+
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 16.224 
+No. of observations: 47 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           25   0.56727       0.05210     TRUE
+[b+c] = X2           21   0.46955       0.02397     TRUE
+[a+b+c] = X1+X2      46   1.00000                   TRUE
+Individual fractions                                    
+[a] = X1|X2          25                             TRUE
+[b]                   0                            FALSE
+[c] = X2|X1          21                             TRUE
+[d] = Residuals                                    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+Warning messages:
+1: collinearity detected in X1: mm = 28, m = 25 
+2: collinearity detected in cbind(X1,X2): mm = 49, m = 46 
+[1] "Variation decomposition with parsimonious variables"
+Error in terms.formula(formula, data = data) : 
+  '.' in formula and no 'data' argument
+Calls: varpart ... model.frame -> model.frame.default -> terms -> terms.formula
+Execution halted

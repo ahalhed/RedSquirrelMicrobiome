@@ -34382,3 +34382,139 @@ $adj.r.squared
 [1] 0.03161998
 
 [1] "Testing with partial RDA (fraction [a])"
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ Age + Month + Season + CollectionDate + BirthYear + Condition(scores(UWpcnm)), data = meta_sub)
+         Df Variance      F Pr(>F)
+Model    24  0.32895 1.1673  0.359
+Residual  1  0.01174              
+$r.squared
+[1] 0.5186139
+
+$adj.r.squared
+[1] 0.1367641
+
+[1] "Forward selection for parsimonious model"
+[1] "Environmental variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
+                 R2.adjusted
++ CollectionDate 0.035142014
+<All variables>  0.031619977
++ Month          0.011979773
++ Season         0.011979773
++ Age            0.001877306
++ BirthYear      0.001877306
+<none>           0.000000000
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ 1, data = meta_sub)
+
+              Inertia Rank
+Total          0.6343     
+Unconstrained  0.6343   46
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.08467 0.03101 0.03040 0.02726 0.02342 0.02193 0.01927 0.01781 
+(Showing 8 of 46 unconstrained eigenvalues)
+
+No constrained component
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ 1, data = meta_sub)
+         Df Variance  F Pr(>F)
+Model     0  0.00000  0       
+Residual 46  0.63429          
+NULL
+null device 
+          1 
+[1] "Spatial variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
+                  R2.adjusted
++ PCNM8          1.482931e-02
+<All variables>  1.168860e-02
++ PCNM3          6.856770e-03
++ PCNM6          4.756599e-03
++ PCNM15         3.341848e-03
++ PCNM13         2.781523e-03
++ PCNM5          1.686002e-03
++ PCNM9          1.569476e-03
++ PCNM12         1.547770e-03
++ PCNM17         6.923436e-04
++ PCNM11         2.705925e-04
++ PCNM2          9.715029e-05
+<none>           0.000000e+00
++ PCNM20        -1.294046e-03
++ PCNM7         -1.455965e-03
++ PCNM16        -1.468764e-03
++ PCNM19        -2.356177e-03
++ PCNM1         -2.506045e-03
++ PCNM14        -3.275477e-03
++ PCNM10        -4.061126e-03
++ PCNM4         -4.541886e-03
++ PCNM18        -4.680779e-03
++ PCNM21        -6.295451e-03
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ 1, data = pcnm_df)
+
+              Inertia Rank
+Total          0.6343     
+Unconstrained  0.6343   46
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.08467 0.03101 0.03040 0.02726 0.02342 0.02193 0.01927 0.01781 
+(Showing 8 of 46 unconstrained eigenvalues)
+
+No constrained component
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ 1, data = pcnm_df)
+         Df Variance  F Pr(>F)
+Model     0  0.00000  0       
+Residual 46  0.63429          
+NULL
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities"
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = vegdist(comm_obj), X = ~., scores(UWpcnm), data =
+meta_sub)
+
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 15.191 
+No. of observations: 47 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           26   0.57244       0.01662     TRUE
+[b+c] = X2           21   0.46590       0.01726     TRUE
+[a+b+c] = X1+X2      45   0.98087       0.11988     TRUE
+Individual fractions                                    
+[a] = X1|X2          24                 0.10262     TRUE
+[b]                   0                -0.08600    FALSE
+[c] = X2|X1          19                 0.10326     TRUE
+[d] = Residuals                         0.88012    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+Warning messages:
+1: collinearity detected in X1: mm = 29, m = 26 
+2: collinearity detected in cbind(X1,X2): mm = 50, m = 45 
+3: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+[1] "Variation decomposition with parsimonious variables"
+Error in terms.formula(formula, data = data) : 
+  '.' in formula and no 'data' argument
+Calls: varpart ... model.frame -> model.frame.default -> terms -> terms.formula
+Execution halted
