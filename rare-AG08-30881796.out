@@ -44018,3 +44018,57 @@ $adj.r.squared
 [1] 0.007568765
 
 [1] "Testing with partial RDA (fraction [a])"
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ Sex + Age + Month + Season + CollectionDate + BirthYear + Condition(scores(UWpcnm)), data = meta_sub)
+         Df Variance      F Pr(>F)
+Model    82  0.26886 1.0213  0.266
+Residual 51  0.16373              
+$r.squared
+[1] 0.3758151
+
+$adj.r.squared
+[1] 0.01280307
+
+[1] "Forward selection for parsimonious model"
+[1] "Environmental variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
+                   R2.adjusted
++ CollectionDate  0.0078504519
+<All variables>   0.0075687648
++ Season          0.0047459376
++ Month           0.0017293041
+<none>            0.0000000000
++ Sex            -0.0002306890
++ Age            -0.0002721189
++ BirthYear      -0.0002721189
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ 1, data = meta_sub)
+
+              Inertia Rank
+Total          0.7154     
+Unconstrained  0.7154  217
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.06887 0.02677 0.02039 0.01754 0.01386 0.01088 0.01007 0.00935 
+(Showing 8 of 217 unconstrained eigenvalues)
+
+No constrained component
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ 1, data = meta_sub)
+          Df Variance  F Pr(>F)
+Model      0   0.0000  0       
+Residual 217   0.7154          
+NULL
+null device 
+          1 
+[1] "Spatial variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
