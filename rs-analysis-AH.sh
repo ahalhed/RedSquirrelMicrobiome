@@ -89,7 +89,6 @@ qiime phylogeny midpoint-root \
   --i-tree ./trees/unrooted_tree.qza \
   --o-rooted-tree ./trees/rooted_tree.qza 
 
-# raxml currently running
 # https://docs.qiime2.org/2019.10/plugins/available/phylogeny/raxml/
 qiime phylogeny raxml \
   --i-alignment aligned_sequences.qza \

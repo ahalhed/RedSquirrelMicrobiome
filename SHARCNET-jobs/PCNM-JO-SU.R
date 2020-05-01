@@ -100,7 +100,7 @@ ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_sub, scores(UWpcnm, choi=3), bubble = 4, main = "PCNM 3")
 dev.off()
 
-# weighted PCNM (labelled as WUWpcnm in scripts run - a find/replace typo)
+# weighted PCNM
 print("Weighted PCNM")
 Wpcnm <- pcnm(eDIST, w = rowSums(comm_obj)/sum(comm_obj))
 Wpcnm$vectors
