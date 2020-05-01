@@ -44625,3 +44625,11 @@ Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 +      PCNM
 + PCNM62        0.008422190
 + PCNM68        0.008324913
 
+         Df     AIC      F Pr(>F)  
++ PCNM31  1 -68.513 1.3173  0.032 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.01089701 
+Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 +      PCNM74 + PCNM31 
+ 
