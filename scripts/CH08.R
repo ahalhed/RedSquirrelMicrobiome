@@ -78,7 +78,8 @@ meta_sub <- rs_q2_metadata %>%
   subset(., SampleID %in% rownames(XY_sub)) %>%
   select_if(~ !any(is.na(.))) %>% 
   # age and birth year are collinear
-  select(Sex, Age, Month, Season, CollectionDate, BirthYear)
+  # should I add the squirrel id here? dam/sire id has misssingness
+  select(Age, Month, Season, CollectionDate, BirthYear)
 # Remove objects we're done with
 print("Removing phyloseq obejct and full metadata data frame")
 rm(rs_q2_metadata, ps)
@@ -92,12 +93,14 @@ print("Plotting first three PCNM axes with ordisurf")
 # replace grid-year with values used in this script
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/CH2008_ordisurf123.pdf")
 par(mfrow=c(1,3))
+# these can be adjusted afterwards, once we know which are significant
+# see section starting at 161
 ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
 ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_sub, scores(UWpcnm, choi=3), bubble = 4, main = "PCNM 3")
 dev.off()
 
-# weighted PCNM
+# weighted PCNM (labelled as WUWpcnm in scripts run - a find/replace typo)
 print("Weighted PCNM")
 Wpcnm <- pcnm(eDIST, w = rowSums(comm_obj)/sum(comm_obj))
 Wpcnm$vectors
@@ -105,7 +108,7 @@ Wpcnm$vectors
 # computing CCA with weighted PCNM
 print("CCA with weighted PCNM")
 # not including Birth year here due to collinearity with age (same information)
-cca_sub <- cca(comm_obj ~ scores(Wpcnm) + Sex + Season + Age, meta_sub)
+cca_sub <- cca(comm_obj ~ scores(Wpcnm) + Season + Age, meta_sub)
 summary(cca_sub)
 
 
@@ -116,6 +119,10 @@ mso_sub <- mso(cca_sub, XY_sub)
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/CH2008_mso.pdf")
 msoplot(mso_sub, ylim = c(0, 45), main="2008 CH")
 dev.off()
+
+# notes on data
+# Grids JO and SU only has females from month 5, late spring
+# Grids CH and LL only has females
 
 # Variance partitioning
 print("Variance partitioning")
@@ -172,6 +179,7 @@ plot(step.space)
 dev.off()
 
 # variation decomposition with parsimonious variables
+# probably going to fail because of insignificant environmental variables
 print("Variation decomposition with parsimonious variables")
 mod.pars <- varpart(comm_obj, ~ ., 
                pcnm_df[, names(step.space$terminfo$ordered)], 
@@ -182,6 +190,8 @@ pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/CH2008_mod_pars.pd
 plot(mod.pars)
 dev.off()
 
+# if the above decomposition fails, the below needs to be run separately
+# scripts for this labelled bc
 # Partition Bray-Curtis dissimilarities
 print("Partition Bray-Curtis dissimilarities")
 varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)

@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --account=def-cottenie
-#SBATCH --time=3-00:00:00
+#SBATCH --time=1-00:00:00
 #SBATCH --mem-per-cpu 64G
-#SBATCH --job-name=LL08-PCNM
+#SBATCH --job-name=LL08-2PCNM
 #SBATCH --output=./PCNM/%x-%j.out
 
 #---
@@ -20,4 +20,4 @@ R
 
 # run R script
 # replace LL08 with specific grid/year combo being run
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/scripts/LL08.R
+Rscript /home/ahalhed/red-squirrel-w2020/R-env/scripts/LL08-2.R

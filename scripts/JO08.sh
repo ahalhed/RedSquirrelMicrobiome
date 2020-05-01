@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --account=def-cottenie
 #SBATCH --time=3-00:00:00
-#SBATCH --mem-per-cpu 64G
-#SBATCH --job-name=JO08-PCNM
+#SBATCH --mem-per-cpu 128G
+#SBATCH --job-name=JO08-2PCNM
 #SBATCH --output=./PCNM/%x-%j.out
 
 #---
@@ -20,4 +20,4 @@ R
 
 # run R script
 # replace JO08 with specific grid/year combo being run
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/scripts/JO08.R
+Rscript /home/ahalhed/red-squirrel-w2020/R-env/scripts/JO08-2.R
