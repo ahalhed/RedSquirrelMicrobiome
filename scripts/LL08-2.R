@@ -178,6 +178,10 @@ pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_step_space.
 plot(step.space)
 dev.off()
 
+# Partition Bray-Curtis dissimilarities
+print("Partition Bray-Curtis dissimilarities")
+varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)
+
 # variation decomposition with parsimonious variables
 # probably going to fail because of insignificant environmental variables
 print("Variation decomposition with parsimonious variables")
@@ -189,10 +193,3 @@ mod.pars
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
-
-# if the above decomposition fails, the below needs to be run separately
-# scripts for this labelled bc
-# Partition Bray-Curtis dissimilarities
-print("Partition Bray-Curtis dissimilarities")
-varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)
-

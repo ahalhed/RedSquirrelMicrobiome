@@ -171,7 +171,13 @@ pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/AG2008_step_space.
 plot(step.space)
 dev.off()
 
+# Partition Bray-Curtis dissimilarities
+print("Partition Bray-Curtis dissimilarities")
+varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)
+
 # variation decomposition with parsimonious variables
+# if environmental or spatial variables don't have significant
+# axes, the below will fail
 print("Variation decomposition with parsimonious variables")
 mod.pars <- varpart(comm_obj, ~ ., 
                pcnm_df[, names(step.space$terminfo$ordered)], 
@@ -181,8 +187,4 @@ mod.pars
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/AG2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
-
-# Partition Bray-Curtis dissimilarities
-print("Partition Bray-Curtis dissimilarities")
-varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)
 
