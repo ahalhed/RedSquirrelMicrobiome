@@ -65,4 +65,17 @@ Eigenvalues for unconstrained axes:
 0.06126 0.02458 0.01939 0.01663 0.01345 0.01039 0.00968 0.00920 
 (Showing 8 of 210 unconstrained eigenvalues)
 
-slurmstepd: error: *** JOB 31049494 ON gra822 CANCELLED AT 2020-05-02T12:03:52 DUE TO TIME LIMIT ***
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 + PCNM74 + PCNM31 + PCNM73, data = pcnm_df)
+          Df Variance      F Pr(>F)    
+Model      7  0.03157 1.3849  0.001 ***
+Residual 210  0.68384                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+NULL
+Error in pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/AG2008_step_space.pdf") : 
+  cannot open file '/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/AG2008_step_space.pdf'
+Execution halted
