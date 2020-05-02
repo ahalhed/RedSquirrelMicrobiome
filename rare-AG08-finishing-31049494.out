@@ -1,0 +1,67 @@
+
+Lmod is automatically replacing "intel/2016.4" with "gcc/7.3.0".
+
+-------------------------------------------------------------------------------
+The following dependent module(s) are not currently loaded: gcccore/.5.4.0 (required by: icc/.2016.4.258, ifort/.2016.4.258)
+-------------------------------------------------------------------------------
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+The following have been reloaded with a version change:
+  1) gcccore/.5.4.0 => gcccore/.7.3.0     2) imkl/11.3.4.258 => imkl/2018.3.222
+
+[1] "Set up (working directory, theme, and packages)"
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
+✔ ggplot2 3.2.1     ✔ purrr   0.3.3
+✔ tibble  2.1.3     ✔ dplyr   0.8.4
+✔ tidyr   1.0.2     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+Loading required package: permute
+Loading required package: lattice
+This is vegan 2.5-6
+[1] "Initiate functions for analysis"
+[1] "Read in the Data"
+[1] "Building phyloseq object"
+[1] "Read in the metadata"
+[1] "Getting the XY data"
+[1] "Computing Euclidean Distances"
+[1] "Finding core microbiome"
+[1] "Accessing full OTU table as a community object"
+[1] "Transforming the OTU counts to relative abundance"
+[1] "Calculating 95% threshold"
+[1] 863.55
+[1] "Accessing the number of non-zero occurrences of each OTU"
+[1] "Calculating average relative abundance"
+[1] "Extract the OTUs that occur in >95% of samples"
+[1] "Find OTUs that occur in >95% of samples and have an average relative abundance >0.1%"
+Joining, by = "OTU"
+[1] "How many OTUs meet these criteria?"
+[1] 14
+[1] "Subset the OTU table to find rare OTUs"
+[1] "Build the rare community object (OTU table) for grid/year"
+[1] "Extract metadata for grid/year"
+[1] "Removing phyloseq obejct and full metadata data frame"
+[1] "Unweighted PCNM"
+[1] "Spatial variables"
+Call: rda(formula = decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 +
+PCNM22 + PCNM27 + PCNM74 + PCNM31 + PCNM73, data = pcnm_df)
+
+              Inertia Proportion Rank
+Total         0.71540    1.00000     
+Constrained   0.03157    0.04413    7
+Unconstrained 0.68384    0.95587  210
+Inertia is variance 
+
+Eigenvalues for constrained axes:
+    RDA1     RDA2     RDA3     RDA4     RDA5     RDA6     RDA7 
+0.010326 0.005376 0.003844 0.003605 0.003060 0.002924 0.002433 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.06126 0.02458 0.01939 0.01663 0.01345 0.01039 0.00968 0.00920 
+(Showing 8 of 210 unconstrained eigenvalues)
+
