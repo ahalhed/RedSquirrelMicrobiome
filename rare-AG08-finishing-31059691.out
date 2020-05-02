@@ -65,4 +65,3 @@ Eigenvalues for unconstrained axes:
 0.06126 0.02458 0.01939 0.01663 0.01345 0.01039 0.00968 0.00920 
 (Showing 8 of 210 unconstrained eigenvalues)
 
-slurmstepd: error: *** JOB 31049494 ON gra822 CANCELLED AT 2020-05-02T12:03:52 DUE TO TIME LIMIT ***
