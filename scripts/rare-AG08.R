@@ -210,6 +210,10 @@ bcFrac <- rda(decostand(comm_obj, "hel") ~ ., pcnm_df) # Full model
 bcFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, pcnm_df) # Reduced model
 step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
 step.space
+# 4 day script was killed here - I picked up the rest with 
+# an interactive session, since we know what the step.space
+# model output was from printing it to the screen before the
+# the job was killed
 anova(step.space)
 # this is a summary of the selection process
 step.space$anova
