@@ -13,4 +13,4 @@ module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 
 # run R script
 # replace KL08 with specific grid/year combo being run
-Rscript /home/ahalhed/red-squirrel-w2020/AliciaMSc/squirrel/SHARCNET-jobs/significant-ordisurf.R
+Rscript /home/ahalhed/AliciaMSc/squirrel/SHARCNET-jobs/significant-ordisurf.R
