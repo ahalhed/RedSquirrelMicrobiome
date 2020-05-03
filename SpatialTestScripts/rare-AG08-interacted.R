@@ -143,7 +143,7 @@ anova(step.space)
 # this is a summary of the selection process
 step.space$anova
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_step_space.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_step_space.pdf")
 plot(step.space)
 dev.off()
 
@@ -160,7 +160,7 @@ mod.pars <- varpart(comm_obj, ~ .,
                     data = meta_sub[, names(step.env$terminfo$ordered)],
                     transfo = "hel")
 mod.pars
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_mod_pars.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
 
