@@ -71,9 +71,17 @@ SU <- pcnm(d_SU)
 
 # plot with ordisurf
 print("Plotting significant PCNM axes with ordisurf")
-# replace grid-year with values used in this script
+
 print("AG 2008")
-print("Forward selection still running at time of running this script")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_ordiSIG.pdf")
+par(mfrow=c(3,3))
+ordisurf(XY_AG, scores(AG, choi=55), bubble = 4, main = "PCNM 55")
+ordisurf(XY_AG, scores(AG, choi=56), bubble = 4, main = "PCNM 56")
+ordisurf(XY_AG, scores(AG, choi=22), bubble = 4, main = "PCNM 22")
+ordisurf(XY_AG, scores(AG, choi=27), bubble = 4, main = "PCNM 27")
+ordisurf(XY_AG, scores(AG, choi=31), bubble = 4, main = "PCNM 31")
+ordisurf(XY_AG, scores(AG, choi=73), bubble = 4, main = "PCNM 73")
+dev.off()
 
 print("CH 2008")
 print("No significant core axes")
@@ -81,27 +89,21 @@ print("No significant core axes")
 print("JO 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_JO2008_ordiSIG.pdf")
 par(mfrow=c(1,1))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_JO, scores(JO, choi=1), bubble = 4, main = "PCNM 1")
 dev.off()
 
 print("KL 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_KL2008_ordiSIG.pdf")
 par(mfrow=c(1,1))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_KL8, scores(KL8, choi=2), bubble = 4, main = "PCNM 2")
 dev.off()
 
 print("KL 2009")
-print("No significant core axes")
+print("No significant rare axes")
 
 print("KL 2010")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_KL2010_ordiSIG.pdf")
 par(mfrow=c(2,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_KL10, scores(KL10, choi=33), bubble = 4, main = "PCNM 33")
 ordisurf(XY_KL10, scores(KL10, choi=4), bubble = 4, main = "PCNM 4")
 ordisurf(XY_KL10, scores(KL10, choi=2), bubble = 4, main = "PCNM 2")
@@ -110,8 +112,6 @@ dev.off()
 print("LL 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_LL2008_ordiSIG.pdf")
 par(mfrow=c(1,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_LL, scores(LL, choi=5), bubble = 4, main = "PCNM 5")
 ordisurf(XY_LL, scores(LL, choi=20), bubble = 4, main = "PCNM 20")
 dev.off()
@@ -119,8 +119,6 @@ dev.off()
 print("SU 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_SU2008_ordiSIG.pdf")
 par(mfrow=c(1,1))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_SU, scores(SU, choi=6), bubble = 4, main = "PCNM 6")
 dev.off()
 
