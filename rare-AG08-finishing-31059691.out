@@ -65,3 +65,51 @@ Eigenvalues for unconstrained axes:
 0.06126 0.02458 0.01939 0.01663 0.01345 0.01039 0.00968 0.00920 
 (Showing 8 of 210 unconstrained eigenvalues)
 
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 + PCNM74 + PCNM31 + PCNM73, data = pcnm_df)
+          Df Variance      F Pr(>F)    
+Model      7  0.03157 1.3849  0.001 ***
+Residual 210  0.68384                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+NULL
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities"
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = vegdist(comm_obj), X = ~., scores(UWpcnm), data =
+meta_sub)
+
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 79.858 
+No. of observations: 218 
+
+Partition table:
+                      Df R.squared Adj.R.squared Testable
+[a+b] = X1            82   0.39006       0.01958     TRUE
+[b+c] = X2            84   0.39445       0.01201     TRUE
+[a+b+c] = X1+X2      166   0.77563       0.04533     TRUE
+Individual fractions                                     
+[a] = X1|X2           82                 0.03333     TRUE
+[b]                    0                -0.01375    FALSE
+[c] = X2|X1           84                 0.02575     TRUE
+[d] = Residuals                          0.95467    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+Warning messages:
+1: collinearity detected in X1: mm = 86, m = 82 
+2: collinearity detected in cbind(X1,X2): mm = 170, m = 166 
+[1] "Variation decomposition with parsimonious variables"
+Error in `[.data.frame`(meta_sub, , names(step.env$terminfo$ordered)) : 
+  object 'step.env' not found
+Calls: varpart ... model.frame.default -> is.data.frame -> [ -> [.data.frame
+Execution halted
