@@ -210,6 +210,15 @@ bcFrac <- rda(decostand(comm_obj, "hel") ~ ., pcnm_df) # Full model
 bcFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, pcnm_df) # Reduced model
 step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
 step.space
+# summary of selection process
+step.space$anova
+# R2.adj Df     AIC      F Pr(>F)  
+#  + PCNM55        0.010063  1 -277.05 3.2058  0.016 *
+#  + PCNM27        0.018522  1 -277.93 2.8617  0.014 *
+#  + PCNM74        0.026032  1 -278.62 2.6578  0.026 *
+#  <All variables> 0.031240                           
+#---
+#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 anova(step.space)
 # this is a summary of the selection process
 step.space$anova
