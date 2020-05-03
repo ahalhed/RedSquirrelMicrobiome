@@ -119,28 +119,10 @@ step.space <- rda(formula = decostand(comm_obj, "hel") ~
                     PCNM55 + PCNM56 + PCNM22 + PCNM27 + PCNM74 + PCNM31 + PCNM73, 
                   data = pcnm_df)
 step.space
-# Call: rda(formula = decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 +
-# PCNM22 + PCNM27 + PCNM74 + PCNM31 + PCNM73, data = pcnm_df)
-
-# Inertia Proportion Rank
-# Total         0.71540    1.00000     
-# Constrained   0.03157    0.04413    7
-# Unconstrained 0.68384    0.95587  210
-# Inertia is variance 
-
-# Eigenvalues for constrained axes:
-#   RDA1     RDA2     RDA3     RDA4     RDA5     RDA6     RDA7 
-# 0.010326 0.005376 0.003844 0.003605 0.003060 0.002924 0.002433 
-
-# Eigenvalues for unconstrained axes:
-#   PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
-# 0.06126 0.02458 0.01939 0.01663 0.01345 0.01039 0.00968 0.00920 
-# (Showing 8 of 210 unconstrained eigenvalues)
-
-
 
 anova(step.space)
 # this is a summary of the selection process
+# only works when running ordi step
 step.space$anova
 # save plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_step_space.pdf")
