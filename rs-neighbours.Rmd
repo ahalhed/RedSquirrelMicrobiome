@@ -1,0 +1,334 @@
+---
+title: "Hypothesis Testing"
+author: "Alicia Halhed"
+date: "04/03/2020"
+output: word_document
+---
+## Set up
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# local
+setwd("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/R-env")
+# or on graham.sharcnet.ca
+# setwd("/home/ahalhed/red-squirrel-w2020")
+```
+
+```{r}
+library(qiime2R)
+library(tidyverse)
+library(phyloseq)
+library(ggpubr)
+library(vegan)
+```
+
+## Phyloseq
+
+```{r}
+# this was run on SHARCNET and the environment was downloaded locally due to high memory requirement
+ps <- qza_to_phyloseq(features = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/filtered-table.qza",
+                      tree = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "RS_meta.tsv")
+```
+
+```{r}
+# this computes the following: c("Observed","Chao1","ACE","Shannon","Simpson","InvSimpson","Fisher")
+# have "Observed" and "Shannon" from QIIME2 as well (hopefully these will be the same)
+ps_richness <- estimate_richness(ps) # took a few minutes to run
+```
+```{r}
+# load in additional values from QIIME2
+q2.shannonp <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/shannon_vector.qza")$data
+q2.shannonnp <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-non-phylogenetic/shannon_vector.qza")$data
+q2.faith_pd <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/faith_pd_vector.qza")$data
+q2.evenness <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/evenness_vector.qza")$data
+q2.otus <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-non-phylogenetic/observed_otus_vector.qza")$data
+merge(q2.evenness, q2.shannonnp, q2.shannonp, q2.faith_pd, q2.otus, by=0, all=T)
+```
+
+```{r}
+# append additional values from QIIME2 to the above richness data frame
+merged_richness <- merge(q2.evenness, q2.shannonnp, by=0, all = T) %>%
+  column_to_rownames(var = "Row.names") %>%
+  rename("q2.npshannon" = "shannon") %>%
+  merge(., q2.shannonp, by=0, all = T) %>%
+  column_to_rownames(var = "Row.names") %>%
+  merge(., q2.faith_pd, by=0, all = T) %>%
+  column_to_rownames(var = "Row.names") %>%
+  merge(., q2.otus, by=0, all = T) %>%
+  column_to_rownames(var = "Row.names") %>%
+  rename("q2.pielou_e" = "pielou_e",
+         "q2.pshannon" = "shannon",
+         "q2.faith_pd" = "faith_pd",
+         "q2.observed_otus" = "observed_otus") %>%
+  merge(., ps_richness, by=0, all = T) %>%
+  column_to_rownames(var = "Row.names") %>%
+  select("q2.pshannon", "q2.npshannon", "Shannon",
+         "q2.observed_otus", "Observed", everything())
+View(merged_richness)
+```
+
+```{r}
+# remove R objects no longer needed
+rm(q2.evenness, q2.faith_pd, q2.otus, q2.shannonnp, q2.shannonp)
+```
+
+## Number of Times Dispersed
+Group individuals by number of different locations sampled.
+
+Maybe something with comparing first and last location sampled. Account for time difference?
+
+```{r}
+# GET the metadata
+rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+# add dispersal numbers onto the metadata
+dispersal_metadata <- rs_q2_metadata %>%
+  group_by(Squirrel.ID) %>% 
+  mutate(CollectionDate = str_remove_all(CollectionDate, "-"),
+         Unique.Locations = n_distinct(Location))
+# take only the most recently collected ones
+rs_sub_meta <- rs_q2_metadata %>%
+  group_by(Squirrel.ID) %>% 
+  mutate(CollectionDate = str_remove_all(CollectionDate, "-"),
+         Unique.Locations = n_distinct(Location)) %>%
+  top_n(1, CollectionDate)
+```
+```{r}
+# bring in distance matrices
+dm_phylo_bray <- read_qza("../core-metrics-phylogenetic/bray_curtis_distance_matrix.qza")
+dm_phylo_jaccard <- read_qza("../core-metrics-phylogenetic/jaccard_distance_matrix.qza")
+```
+### Jaccard sampling locations plot
+The original paper compared the Jaccard distance between related individuals. I am doing that with the number of sampling locations.
+```{r}
+df_jaccar_loc <- dm_phylo_jaccard$data %>% 
+  as.matrix %>% as.data.frame %>% # put the jaccard dm into a data frame
+  rownames_to_column(var = "SampleID1") %>%
+  # format the data frame
+  pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
+  unique() %>% # this removes the duplications of the data
+  left_join(rs_q2_metadata %>% # join with the metadata for first sample
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID1" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations, 
+         SampleID2, Distance) %>%
+  rename("Unique.Locations1"="Unique.Locations") %>%
+  left_join(rs_q2_metadata %>% # join with the metadata for second sample
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID2" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations1, SampleID2, 
+         Unique.Locations, Distance) %>%
+  rename("Unique.Locations2"="Unique.Locations") %>%
+  unite(Pairs, c(Unique.Locations1, Unique.Locations2), 
+        remove=FALSE, sep = "-") %>%
+  subset(SampleID1 %in% rs_sub_meta$SampleID) %>%
+  subset(SampleID2 %in% rs_sub_meta$SampleID)
+View(df_jaccar_loc)
+```
+```{r}
+# mean pairs to compare
+comparisons <- list(c("1-1", "1-2"), c("1-1", "1-3"), 
+                    c("1-1", "1-4"), c("1-1", "1-5"), 
+                    c("1-1", "1-6"), c("1-1", "1-7"), 
+                    c("1-1", "1-8"), c("1-1", "1-9"))
+# plot
+# should I be accounting for year/season?
+df_jaccar_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 1) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Jaccard Distance") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns"))) +
+  stat_compare_means(label.y = 1.1, label.x = 7) +
+  stat_summary(fun.y=mean, geom="point", shape=20, size=1, color="red", fill="red")
+```
+What are the means on that jaccard plot?
+```{r}
+df_jaccar_loc %>%
+  group_by(Pairs) %>%
+  summarise_at(vars(Distance), 
+               funs(mean(., na.rm=TRUE))) %>%
+  head(9)
+```
+
+### Some stats
+```{r}
+# full data (all samples)
+jaccard_location_anosim <- anosim(dm_phylo_bray$data, 
+              dispersal_metadata$Unique.Locations, 
+              permutations = 1000)
+summary(jaccard_location_anosim)
+plot(jaccard_location_anosim)
+```
+```{r}
+# full data (all samples)
+jaccard_location_adonis <- adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
+              data = dispersal_metadata, 
+              permutations = 1000)
+summary(jaccard_location_adonis)
+# need to figure out how to get the plot to work (and how to look at the)
+plot(jaccard_location_adonis)
+```
+
+
+
+## Immediate Neighbours
+### Boxplots
+```{r}
+df_jaccar_neighbours <- dm_phylo_jaccard$data %>% 
+  as.matrix %>% as.data.frame %>% # put the jaccard dm into a data frame
+  rownames_to_column(var = "SampleID1") %>%
+  # format the data frame
+  pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
+  unique() %>% # this removes the duplications of the data
+  left_join(rs_q2_metadata %>% # join with the metadata for first sample
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID1" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations, 
+         SampleID2, Distance, Grid,
+         "Location X", "Location Y") %>%
+  rename("Unique.Locations1"="Unique.Locations", 
+         "LocationX1" = "Location X", 
+         "LocationY1" = "Location Y",
+         "Grid1" = "Grid") %>%
+  left_join(rs_q2_metadata %>% # join with the metadata for second sample
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID2" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations1, Grid1, LocationX1, LocationY1,
+         SampleID2, Unique.Locations, Grid,
+         "Location X", "Location Y", Distance) %>%
+  rename("Unique.Locations2"="Unique.Locations", 
+         "LocationX2" = "Location X", 
+         "LocationY2" = "Location Y",
+         "Grid2" = "Grid")
+View(df_jaccar_neighbours)
+df_jaccar_neighbours$Grid1 %>% table
+```
+
+```{r}
+# add information about neighbours
+# distance between X points
+df_jaccar_neighbours$Distance.X <- ifelse(
+  df_jaccar_neighbours$Grid1 != df_jaccar_neighbours$Grid2,
+    NA, # not calculating distance between different grids (only within grids)
+  ifelse(df_jaccar_neighbours$LocationX1<0 & df_jaccar_neighbours$LocationX2>0,
+  abs(df_jaccar_neighbours$LocationX2 - df_jaccar_neighbours$LocationX1),
+  ifelse(
+    df_jaccar_neighbours$LocationX1>0 & df_jaccar_neighbours$LocationX2<0,
+  abs(df_jaccar_neighbours$LocationX1 - df_jaccar_neighbours$LocationX2), 
+  abs(df_jaccar_neighbours$LocationX1 - df_jaccar_neighbours$LocationX2)
+  )))
+# distance between X points
+df_jaccar_neighbours$Distance.Y <- ifelse(
+  df_jaccar_neighbours$Grid1 != df_jaccar_neighbours$Grid2,
+    NA, # not calculating distance between different grids (only within grids)
+  ifelse(df_jaccar_neighbours$LocationY1<0 & df_jaccar_neighbours$LocationY2>0,
+  abs(df_jaccar_neighbours$LocationY2 - df_jaccar_neighbours$LocationY1),
+  ifelse(
+    df_jaccar_neighbours$LocationY1>0 & df_jaccar_neighbours$LocationY2<0,
+  abs(df_jaccar_neighbours$LocationY1 - df_jaccar_neighbours$LocationY2), 
+  abs(df_jaccar_neighbours$LocationY1 - df_jaccar_neighbours$LocationY2)
+  )))
+```
+
+```{r}
+# add information about neighbours (level dependent on distance apart)
+df_jaccar_neighbours$Neighbour <- ifelse(
+  df_jaccar_neighbours$SampleID1 == df_jaccar_neighbours$SampleID2,
+  "Same Sample", 
+  ifelse(
+    df_jaccar_neighbours$Grid1 != df_jaccar_neighbours$Grid2,
+    "Different Grid",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 1 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 1 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 0.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 0.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 1 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 1 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 0.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 0.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 == df_jaccar_neighbours$LocationY2),
+      "Immediate Neighbour",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 2 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 2 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 1.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 1.5 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 2 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 2 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 1.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 1.5 == df_jaccar_neighbours$LocationY2),
+      "Near Neighbour",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 3 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 3 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 2.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 2.5 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 3 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 3 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 2.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 2.5 == df_jaccar_neighbours$LocationY2),
+      "Neighbour",
+    ifelse(
+      df_jaccar_neighbours$Grid1 == df_jaccar_neighbours$Grid2 &
+        (df_jaccar_neighbours$LocationX1 + 4 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 4 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 + 3.5 == df_jaccar_neighbours$LocationX2 |
+           df_jaccar_neighbours$LocationX1 - 3.5 == df_jaccar_neighbours$LocationX2) &
+        (df_jaccar_neighbours$LocationY1 + 4 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 4 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 + 3.5 == df_jaccar_neighbours$LocationY2 |
+           df_jaccar_neighbours$LocationY1 - 3.5 == df_jaccar_neighbours$LocationY2),
+      "Far Neighbour", "Same Grid"
+    ))))))
+```
+
+
+```{r}
+# order by distance
+df_jaccar_neighbours$Neighbour <- factor(df_jaccar_neighbours$Neighbour,
+    levels = c('Sample Sample', 'Immediate Neighbour', 'Near Neighbour', 'Neighbour', 'Far Neighbour', 'Same Grid', 'Different Grid'),ordered = TRUE)
+# plot
+df_jaccar_neighbours %>%
+  filter(Distance != 0) %>%
+  ggplot(aes(x=Neighbour, y=Distance, group=Neighbour)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Neighbour") +
+  ylab("Jaccard Distance")
+```
+
+### Some stats
+```{r}
+# jaccard
+# how to take into account the neighbour thing? 
+# 
+vegan::anosim(df_jaccar_neighbours$Distance, 
+              df_jaccar_neighbours$Neighbour, 
+              permutations = 1000) %>%
+  summary
+```
+
+```{r}
+# full data (all samples)
+vegan::adonis(dm_phylo_bray$data ~ Unique.Locations*CollectionDate, 
+              data = dispersal_metadata, 
+              permutations = 1000) %>%
+  summary
+```

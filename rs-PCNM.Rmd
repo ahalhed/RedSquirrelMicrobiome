@@ -1,0 +1,391 @@
+---
+title: "PCNM"
+author: "Alicia Halhed"
+date: "19/03/2020"
+output: word_document
+---
+
+# Set up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# set working directory
+setwd("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020")
+# attach required packages
+library(tidyverse)
+library(qiime2R)
+library(vegan)
+```
+
+## Read in the Data
+```{r}
+# GET the metadata
+rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+View(rs_q2_metadata)
+```
+
+```{r}
+# build phyloseq object
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
+```
+
+```{r}
+# bray-curtis phylogenetic distance matrix
+dm_phylo_bray <- read_qza("../core-metrics-phylogenetic/bray_curtis_distance_matrix.qza")
+# jaccard phylogenetic distance matrix
+dm_phylo_jaccard <- read_qza("../core-metrics-phylogenetic/jaccard_distance_matrix.qza")
+# weighted unifrac  phylogenetic distance matrix
+dm_phylo_wu <- read_qza("../core-metrics-phylogenetic/weighted_unifrac_distance_matrix.qza")
+# unweighted unifrac phylogenetic distance matrix
+dm_phylo_uu <- read_qza("../core-metrics-phylogenetic/unweighted_unifrac_distance_matrix.qza")
+```
+
+# Squirrel data
+GUSTA ME talks about PCNM for microbiome data (https://mb3is.megx.net/gustame/spatial-analysis/pcnm).
+## Preparation
+### Data Exploration
+```{r}
+unique(rs_q2_metadata$Grid)
+# Levels: AG CH JO KL LL SU
+```
+
+```{r}
+# full distance matrix
+# doubt I will need this
+rs_q2_metadata %>%
+  select(., "SampleID", "Location X","Location Y") %>%
+  column_to_rownames(., var = "SampleID") %>%
+  dist(., method = "e") %>% as.matrix %>% as.data.frame()
+```
+
+### Functions for Analysis
+```{r, Functions}
+# subset the XY's by grid and year
+XY_year <- function(metadata, grid, year) {
+  df1 <- subset(metadata, Grid == grid, 
+         select = c("SampleID", "Location X", "Location Y", "Year"))
+  df2 <- subset(df1, Year == year, 
+         select = c("SampleID", "Location X", "Location Y"))
+  df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
+  return(df3)
+}
+
+# maximum distance
+max_dist <- function(dm) {
+  df1 <- as.data.frame(as.matrix(dm))
+  # functions is soft deprecated (replace with functions or lambdas)
+  summ <- summarise_each(df1, funs(max(df1, na.rm=TRUE)))
+  m <- apply(summ, 1, max)
+  return(m)
+}
+
+# numeric metadata (depends on dplyr)
+Grid_numeric <- function(metadata, grid, year) {
+  df1 <- subset(metadata, Grid == grid) %>%
+    remove_rownames() %>%
+    column_to_rownames(., var = "SampleID") %>%
+    subset(., Year == year)
+  df2 <- df1 %>%
+    # want sex and food supplement to be numeric
+    # male 0, female 1; no 0, yes 1
+    mutate(Sex = as.integer(recode(Sex, "Male" = 0, "Female" = 1)),
+           FoodSupplement = as.integer(recode(FoodSupplement, 
+                                   "No" = 0, "Yes" = 1)))
+  df3 <- Filter(is.numeric, df2)
+  drop <- c("Location X", "Location Y", "Date")
+  df4 <- df3[,!(names(df3) %in% drop)]
+  return(df4)
+}
+
+# weighted PCNM for CCA
+PCNM_CCA <- function(XY, ps, env) {
+  rn <- rownames(XY)
+  # relies on dplyr and phyloseq
+  otu <- otu_table(ps) %>% as.matrix %>% 
+    as.data.frame %>% 
+    t %>% as.data.frame %>% 
+    subset(., row.names(.) %in% rn) %>%
+    .[ rowSums(.)>0, ]
+  rs <- rowSums(otu)/sum(otu)
+  # relies on vegan
+  pcnmw <- pcnm(dist(XY, method = "e"), w = rs)
+  ord <- cca(otu ~ scores(pcnmw) + Sex + Month + Age, env)
+  return(ord)
+}
+
+# looping variance partitioning
+OTU_vp <- function(env, ps, pcnm) {
+  rn <- rownames(env)
+  # relies on dplyr and phyloseq
+  otu <- otu_table(ps) %>% as.matrix %>% 
+    as.data.frame %>% 
+    t %>% as.data.frame %>% 
+    subset(., row.names(.) %in% rn) %>%
+    .[ rowSums(.)>0, ]
+  var <- varpart(otu, ~ ., pcnm, data=env, 
+                 transfo="hel", chisquare = TRUE)
+  return(var)
+}
+```
+
+## PCNM & CCA
+### Calculations
+#### Data Manipulation
+XY data
+```{r}
+# AG (only 2008)
+XY_08_AG <- XY_year(rs_q2_metadata, "AG", 2008)
+# CH (only 2008)
+XY_08_CH <- XY_year(rs_q2_metadata, "CH", 2008)
+# JO (only 2008)
+XY_08_JO <- XY_year(rs_q2_metadata, "JO", 2008)
+# KL (sampled all 3 years)
+XY_08_KL <- XY_year(rs_q2_metadata, "KL", 2008)
+XY_09_KL <- XY_year(rs_q2_metadata, "KL", 2009)
+XY_10_KL <- XY_year(rs_q2_metadata, "KL", 2010)
+# LL (only 2008)
+XY_08_LL <- XY_year(rs_q2_metadata, "LL", 2008)
+# SU (only 2008)
+XY_08_SU <- XY_year(rs_q2_metadata, "SU", 2008)
+# make a list of XY's
+XY_all <- list(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
+```
+
+Numeric Data for CCA
+```{r}
+# AG (only 2008)
+numeric_08_AG <- Grid_numeric(rs_q2_metadata, "AG", 2008)
+# CH (only 2008)
+numeric_08_CH <- Grid_numeric(rs_q2_metadata, "CH", 2008)
+# JO (only 2008)
+numeric_08_JO <- Grid_numeric(rs_q2_metadata, "JO", 2008)
+# KL (sampled all 3 years)
+numeric_08_KL <- Grid_numeric(rs_q2_metadata, "KL", 2008)
+numeric_09_KL <- Grid_numeric(rs_q2_metadata, "KL", 2009)
+numeric_10_KL <- Grid_numeric(rs_q2_metadata, "KL", 2010)
+# LL (only 2008)
+numeric_08_LL <- Grid_numeric(rs_q2_metadata, "LL", 2008)
+# SU (only 2008)
+numeric_08_SU <- Grid_numeric(rs_q2_metadata, "SU", 2008)
+# make a list of numeric's
+numeric_all <- list(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, 
+                    numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
+```
+
+#### Computing
+Compute Euclidean Distance
+```{r}
+e_all <- lapply(XY_all, function(x) dist(x, method = "e"))
+```
+
+Neighbour threshold - I want to keep the threshold consistent for all distance matrices.
+```{r}
+# checking what the highest values are in each dm
+lapply(e_all, max_dist)
+# highest values range from ~20 to 30+
+# gonna go with 5 (based on above and test runs with no specific threshold)
+```
+PCNM
+```{r}
+# setting threshold to 5
+# unweighted
+pcnm_all <- lapply(e_all, function(x) pcnm(x, 5))
+# weighted PCNM and CCA
+# ps is the full phyloseq object for the entire data set
+# this cca takes into account neighbours (weighted pcnm), time (grouped by year; month is in model),
+# space (grouped by grid too), and individual factors (sex and age in the model)
+Wpcnm_all <- mapply(function(x, y) PCNM_CCA(x, ps, y), XY_all, numeric_all)
+```
+
+```{r}
+# look at the PCNM values(this one is AG 2008)
+pcnm_all[[1]]$vectors
+# look at CCA summary (all)
+lapply(Wpcnm_all, summary)
+```
+
+Variance partitioning (stuck on this for now)
+```{r}
+OTU_vp(numeric_all[[1]], ps, Wpcnm_all[[1]])
+# ...
+varpart(numeric_all[[1]])
+variance_paritition_full <- varpart(numeric_df)
+```
+
+Spatial partitioning of CCA
+```{r}
+# from vegan
+# section 14.4 in numerical ecology
+# multiscale ordination
+mso_1 <- mso(PCNM_CCA(XY_all[[1]], ps, numeric_all[[1]]), XY_all[[1]])
+mso_2 <- mso(PCNM_CCA(XY_all[[2]], ps, numeric_all[[2]]), XY_all[[2]])
+mso_3 <- mso(PCNM_CCA(XY_all[[3]], ps, numeric_all[[3]]), XY_all[[3]])
+mso_4 <- mso(PCNM_CCA(XY_all[[4]], ps, numeric_all[[4]]), XY_all[[4]])
+mso_5 <- mso(PCNM_CCA(XY_all[[5]], ps, numeric_all[[5]]), XY_all[[5]])
+mso_6 <- mso(PCNM_CCA(XY_all[[6]], ps, numeric_all[[6]]), XY_all[[6]])
+mso_7 <- mso(PCNM_CCA(XY_all[[7]], ps, numeric_all[[7]]), XY_all[[7]])
+mso_8 <- mso(PCNM_CCA(XY_all[[8]], ps, numeric_all[[8]]), XY_all[[8]])
+```
+
+```{r}
+# AG, JO, LL got peanut butter
+#par(mfrow=c(2,4))
+# 08 AG
+msoplot(mso_1, ylim = c(0, 43), main="2008 AG")
+# 08_CH
+msoplot(mso_2, ylim = c(0, 15), main="2008 CJ")
+# 08_JO
+msoplot(mso_3, ylim = c(0, 12), main="2008 JO")
+# 08_KL
+msoplot(mso_4, ylim = c(0, 45), main="2008 KL")
+# 09_KL
+msoplot(mso_5, ylim = c(0, 24), main="2009 KL")
+# 10_KL
+msoplot(mso_6, ylim = c(0, 41), main="2010 KL")
+# 08_LL
+msoplot(mso_7, ylim = c(0, 17), main="2008 LL")
+# 08_SU
+msoplot(mso_8, ylim = c(0, 12), main="2008 SU")
+```
+Notes from Numerical Ecology about these:
+* White squares (residuals) = non-significant variogram 
+
+#### Full data set
+```{r}
+# full XY
+XY <- rbind(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
+# remove unnescessary XY objects
+rm(XY_08_AG, XY_08_CH, XY_08_JO, XY_08_KL, XY_09_KL, XY_10_KL, XY_08_LL, XY_08_SU)
+```
+
+```{r}
+# combine numeric data into a single df
+numeric_df <- rbind(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
+# remove unnescessary numeric objects
+rm(numeric_08_AG, numeric_08_CH, numeric_08_JO, numeric_08_KL, 
+   numeric_09_KL, numeric_10_KL, numeric_08_LL, numeric_08_SU)
+```
+
+```{r}
+# for full data set
+e_dist <- dist(numeric_df, method = "e")
+# unweighted pcnm
+pcnm_full <- pcnm(e_dist, 5)
+# weighted pcnm and cca
+Wpcnm_full <- PCNM_CCA(XY, ps, numeric_df)
+summary(Wpcnm_full)
+#
+```
+
+### Plotting
+#### Ordisurf and ordiplom
+Working in SHARCNET, I saved the ordisplom plots using this code (adding the figure numbers where the * is)
+```{r}
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/mso_*.pdf")
+# plot code here
+dev.off()
+```
+```{r}
+# AG 2008
+# Map of PCNMs in the sample plot
+ordisurf(XY_all[[1]], scores(pcnm_all[[1]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[1]], scores(pcnm_all[[1]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[1]], scores(pcnm_all[[1]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[1]], choices=1:4, main = "AG 2008")
+```
+
+
+```{r}
+# CH 2008
+# Map of PCNMs in the sample plot
+ordisurf(XY_all[[2]], scores(pcnm_all[[2]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[2]], scores(pcnm_all[[2]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[2]], scores(pcnm_all[[2]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[2]], choices=1:4, main = "CH 2008")
+```
+
+```{r}
+# JO 2008
+# Map of PCNMs in the sample plot
+ordisurf(XY_all[[3]], scores(pcnm_all[[3]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[3]], scores(pcnm_all[[3]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[3]], scores(pcnm_all[[3]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[3]], choices=1:4, main = "JO 2008")
+```
+
+```{r}
+# KL 2008
+# Map of PCNMs in the sample plot
+ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[4]], scores(pcnm_all[[4]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[4]], choices=1:4, main = "KL 2008")
+```
+
+```{r}
+# KL 2009
+# Map of PCNMs in the sample plot
+ordisurf(XY_all[[5]], scores(pcnm_all[[5]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[5]], scores(pcnm_all[[5]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[5]], scores(pcnm_all[[5]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[5]], choices=1:4, main = "KL 2009")
+```
+
+```{r}
+## Map of PCNMs in the sample plot
+# KL 2010
+ordisurf(XY_all[[6]], scores(pcnm_all[[6]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[6]], scores(pcnm_all[[6]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[6]], scores(pcnm_all[[6]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[6]], choices=1:4, main = "KL 2010")
+```
+
+```{r}
+# LL 2008
+# Map of PCNMs in the sample plot
+ordisurf(XY_all[[7]], scores(pcnm_all[[7]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[7]], scores(pcnm_all[[7]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[7]], scores(pcnm_all[[7]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[7]], choices=1:4, main = "LL 2008")
+```
+
+```{r}
+# SU 2008
+# Map of PCNMs in the sample plot
+ordisurf(XY_all[[8]], scores(pcnm_all[[8]], choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_all[[8]], scores(pcnm_all[[8]], choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_all[[8]], scores(pcnm_all[[8]], choi=3), bubble = 4, main = "PCNM 3")
+# Plot first PCNMs against each other
+ordisplom(pcnm_all[[8]], choices=1:4, main = "SU 2008")
+```
+
+
+
+
+
+#### Biplots
+For the full data set (not worrying about year here)
+```{r}
+# CCA-full for unscaled
+# need vegan loaded for plots to worked
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/plots/CCA-scaled.pdf")
+par(mfrow=c(2,1))
+plot(Wpcnm_full, scaling ="species", main = "Scaled by Species", select = "Month")
+plot(Wpcnm_full, scaling = "sites", main = "Scaled by Sites")
+dev.off()
+```
+

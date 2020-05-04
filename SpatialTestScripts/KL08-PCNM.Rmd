@@ -1,0 +1,253 @@
+---
+title: "PCNM for KL 2008"
+author: "Alicia Halhed"
+date: "02/04/2020"
+output: word_document
+---
+
+# Set up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# set working directory
+setwd("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020")
+# attach required packages
+library(tidyverse)
+library(qiime2R)
+library(phyloseq)
+library(vegan)
+# set theme
+theme_set(theme_bw())
+```
+
+## Read in the Data
+
+```{r}
+# build phyloseq object (paths for SHARCNET)
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
+```
+
+```{r}
+# GET the metadata
+rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+# this seemed easier but was throwing weird errors in ordisurf
+#rs_q2_metadata <- sample_data(ps) %>% as.matrix %>% as.data.frame %>% rename("Location X" = "Location.X", "Location Y" = "Location.Y")
+View(rs_q2_metadata)
+```
+
+## Functions for Analysis
+```{r, Functions}
+# subset the XY's by grid and year
+XY_year <- function(metadata, grid, year) {
+  df1 <- subset(metadata, Grid == grid, 
+         select = c("SampleID", "Location X", "Location Y", "Year"))
+  df2 <- subset(df1, Year == year, 
+         select = c("SampleID", "Location X", "Location Y"))
+  df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
+  return(df3)
+}
+
+# maximum distance
+max_dist <- function(dm) {
+  df1 <- as.data.frame(as.matrix(dm))
+  # functions is soft deprecated (replace with functions or lambdas)
+  summ <- summarise_each(df1, ~ max(df1, na.rm=TRUE))
+  m <- apply(summ, 1, max)
+  return(m)
+}
+
+# numeric metadata (depends on dplyr)
+Grid_numeric <- function(metadata, grid, year) {
+  df1 <- subset(metadata, Grid == grid) %>%
+    remove_rownames() %>%
+    column_to_rownames(., var = "SampleID") %>%
+    subset(., Year == year)
+  df2 <- df1 %>%
+    # want sex and food supplement to be numeric
+    # male 0, female 1; no 0, yes 1
+    mutate(Sex = as.integer(recode(Sex, "Male" = 0, "Female" = 1)),
+           FoodSupplement = as.integer(recode(FoodSupplement, 
+                                   "No" = 0, "Yes" = 1)))
+  df3 <- Filter(is.numeric, df2)
+  drop <- c("Location X", "Location Y", "Date")
+  df4 <- df3[,!(names(df3) %in% drop)]
+  return(df4)
+}
+```
+
+# Initial analysis
+```{r}
+# XY data
+XY_08_KL <- XY_year(rs_q2_metadata, "KL", 2008)
+# numeric data for CCA
+numeric_08_KL <- Grid_numeric(rs_q2_metadata, "KL", 2008)
+XY_08_KL %>% View
+```
+
+```{r}
+# Compute Euclidean Distance
+e_08_KL <- dist(XY_08_KL)
+# checking what the highest values are in the dm
+# to help decide the Neighbour threshold
+max_dist(e_08_KL) #27.04163
+```
+
+PCNM
+```{r}
+# setting threshold to 5 (got rid of this)
+# unweighted PCNM
+pcnm_08_KL <- pcnm(e_08_KL)
+# weighted PCNM
+# get OTUs (aka a community matrix)
+comm_08_KL <- otu_table(ps) %>% as.matrix %>% 
+    as.data.frame %>% 
+    t %>% as.data.frame %>% 
+    subset(., rownames(.) %in% rownames(XY_08_KL)) %>%
+    .[ rowSums(.)>0, ]
+# sample ID's are rownames
+comm_08_KL
+# get the metadata subset
+meta_08_KL <- rs_q2_metadata %>% 
+  subset(., SampleID %in% rownames(XY_08_KL)) %>%
+  select_if(~ !any(is.na(.))) %>% 
+  # age and birth year are collinear
+  select(Sex, Age, Month, Season, CollectionDate, BirthYear)
+# calculate weighted PCNM
+Wpcnm_08_KL <- pcnm(e_08_KL, 
+                    w = rowSums(comm_08_KL)/sum(comm_08_KL))
+# CCA - might need to change explanatories
+# not including Birth year here due to collinearity with age (same information)
+cca_08_KL <- cca(comm_08_KL ~ scores(Wpcnm_08_KL) + Sex + Season + Age, meta_08_KL)
+```
+
+```{r}
+# look at the PCNM values
+pcnm_08_KL$vectors
+Wpcnm_08_KL$vectors
+# look at CCA summary
+# what is significance? most important?
+summary(cca_08_KL)
+```
+
+# Spatial partitioning of CCA (mso)
+```{r}
+# from vegan
+# section 14.4 in numerical ecology
+# multiscale ordination
+mso_08_KL <- mso(cca_08_KL, XY_08_KL)
+# plot
+msoplot(mso_08_KL, ylim = c(0, 45), main="2008 KL")
+```
+
+```{r}
+# plotting the locations
+XY_08_KL %>% ggplot(aes(x = `Location X`, y = `Location Y`)) + 
+  geom_point() + 
+  coord_fixed()
+```
+
+```{r}
+par(mfrow=c(1,2))
+#ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=1), bubble = 4, main = "PCNM 1")
+ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=2), bubble = 4, main = "PCNM 2")
+#ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=3), bubble = 4, main = "PCNM 3")
+ordisurf(XY_08_KL, scores(pcnm_08_KL, choi=33), bubble = 4, main = "PCNM 33")
+```
+
+# Variance partitioning
+```{r}
+# how do I deal with the collinearity?
+# collinearity detected in X1: mm = 95, m = 91collinearity detected in cbind(X1,X2): mm = 161, m = 157
+vp_mod1 <- varpart(comm_08_KL,  ~ ., scores(pcnm_08_KL), data=meta_08_KL, transfo = "hel")
+vp_mod1
+plot(vp_mod1)
+```
+
+```{r}
+# Alternative to above
+# Change the data frame with factors into numeric model matrix
+# note: collection date is a factor (not date)
+# what's the deal with [,-1]??
+rs_mm <- model.matrix(~ ., meta_08_KL)[,-1]
+# this format isn't working
+varpart(decostand(comm_08_KL, "hel"), rs_mm, scores(pcnm_08_KL))
+#Error in qr.default(X, tol = 1e-06) : NA/NaN/Inf in foreign function call (arg 1)
+```
+
+# test with RDA
+set up this section to run on sharcnet (anova was taking forever). See pcnm-ANOVA-30022687.out for results
+```{r}
+abFrac <- rda(decostand(comm_08_KL, "hel") ~ ., meta_08_KL)
+# this took just under 6 hours to run on SHARCNET
+anova(abFrac, step=200, perm.max=1000)
+#          Df Variance      F Pr(>F)   
+#Model     91  0.25306 1.0637  0.002 **
+#Residual 148  0.38693   
+
+# RsquareAdj gives the same result as component [a] of varpart
+RsquareAdj(abFrac)
+#r.squared = 0.3954196
+#adj.r.squared = 0.02368439
+meta_08_KL
+```
+DONE (pcnm-2ANOVA-30189200.out)
+         Df Variance      F Pr(>F)
+Model    91  0.24449 1.0177  0.275
+Residual 82  0.21648         
+```{r}
+# Test fraction [a] using partial RDA:
+aFrac <- rda(decostand(comm_08_KL, "hel") ~ . + Condition(scores(pcnm_08_KL)), data = meta_08_KL)
+# the anova was taking forever to run
+anova(aFrac, step=200, perm.max=1000)
+# RsquareAdj gives the same result as component [a] of varpart
+RsquareAdj(aFrac)
+```
+
+# forward selection for parsimonious model
+Output in pcnm-env-30055778.out 
+```{r}
+# env variables
+abFrac # Full model
+abFrac0 <- rda(decostand(comm_08_KL, "hel") ~ 1, meta_08_KL) # Reduced model
+# Here is where the magic happens, but almost automatically!
+step.env <- ordiR2step(abFrac0, scope = formula(abFrac))
+str(step.env) # this seems to be a very complicated
+step.env # but it is actually just an rda model, with the final model predictor variables
+anova(step.env) # so you can do the same stuff as before
+plot(step.env)
+step.env$anova # and if you are interested, this is a summary of the selection process
+```
+Output in pcnm-space-30152477.out
+```{r}
+# spatial variables
+#bcFrac <- rda(decostand(comm_08_KL, "hel") ~ ., scores(pcnm_08_KL)) # Full model, oops
+rs_pcnm <- as.data.frame(scores(pcnm_08_KL))
+bcFrac <- rda(decostand(comm_08_KL, "hel") ~ ., rs_pcnm) # Full model
+bcFrac0 <- rda(decostand(comm_08_KL, "hel") ~ 1, rs_pcnm) # Reduced model
+step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
+step.space$anova
+plot(step.space)
+```
+
+
+```{r}
+# variation decomposition with parsimonious variables
+mod.pars <- varpart(comm_08_KL, ~ ., 
+               rs_pcnm[, names(step.space$terminfo$ordered)], 
+               data = meta_08_KL[, names(step.env$terminfo$ordered)],
+               transfo = "hel")
+mod.pars
+plot(mod.pars)
+```
+# Scratching the surface
+```{r}
+# Partition Bray-Curtis dissimilarities
+varpart(vegdist(comm_08_KL), ~ ., scores(pcnm_08_KL), data = meta_08_KL)
+```

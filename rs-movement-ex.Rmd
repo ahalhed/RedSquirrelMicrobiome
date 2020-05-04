@@ -1,0 +1,656 @@
+---
+title: "Squirrel Analysis"
+author: "Alicia Halhed"
+date: "19/01/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Attach Required Packages
+also set the working directory to the project folder (will be downloading the red-squirrel-w2020 folder to work with locally)
+```{r}
+# local
+setwd("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/R-env")
+# or on graham.sharcnet.ca
+# setwd("/home/ahalhed/red-squirrel-w2020")
+```
+
+```{r}
+library(tidyverse)
+library(qiime2R)
+library(phyloseq)
+library(vegan)
+library(ggpubr)
+```
+
+## Load in QIIME2 objects
+```{r}
+# this was run on SHARCNET and the environment was downloaded locally due to high memory requirement
+# with local paths
+ps <- qza_to_phyloseq(features = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/filtered-table.qza",
+                      tree = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "RS_meta.tsv")
+# with SHARCNET paths
+ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
+                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
+```
+
+```{r}
+# explore the phyloseq object
+ntaxa(ps) # 541922
+nsamples(ps) # 909
+sample_names(ps)[1:5]
+#[1] "B2003.11254.F.1.KL.2010" "B2571.10374.F.3.KL.2010"
+#[3] "B2197.10318.F.4.KL.2010" "B2067.11272.F.1.KL.2010"
+#[5] "P3169.10686.F.1.KL.2008"
+rank_names(ps) #"Kingdom" "Phylum"  "Class"   "Order"   "Family"  "Genus"   "Species"
+sample_variables(ps)
+# [1] "Grid"           "Location.X"     "Location.Y"     "Sex"           
+# [5] "Age"            "Month"          "Season"         "Year"          
+# [9] "Squirrel.ID"    "SireID"         "DamID"          "CollectionDate"
+#[13] "FoodSupplement" "BirthYear"      "Location"       "Date"    
+taxa_names(ps)[1:10] #this isn't interesting to look at
+```
+
+```{r}
+# access different components of the phyloseq object
+otu_table(ps)
+tax_table(ps)
+phy_tree(ps) # Phylogenetic tree with 541922 tips and 541921 internal nodes.
+```
+
+```{r}
+# GET the metadata
+rs_q2_metadata <- read.table("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/RS_meta.tsv", sep="\t")
+colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+View(rs_q2_metadata)
+```
+
+```{r}
+# shannon diversity
+rs_q2_shannon<-read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/shannon_vector.qza")
+# pielou's evenness
+evenness<-read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/evenness_vector.qza")
+# faith's pd
+faith_pd<-read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/faith_pd_vector.qza")
+```
+
+```{r}
+# distance matrices
+dm_phylo_bray <- read_qza("../core-metrics-phylogenetic/bray_curtis_distance_matrix.qza")
+dm_phylo_jaccard <- read_qza("../core-metrics-phylogenetic/jaccard_distance_matrix.qza")
+dm_phylo_wu <- read_qza("../core-metrics-phylogenetic/weighted_unifrac_distance_matrix.qza")
+dm_phylo_uu <- read_qza("../core-metrics-phylogenetic/unweighted_unifrac_distance_matrix.qza")
+```
+
+## Taxonomy 
+### Green Genes
+```{r}
+plot_bar(ps, "Family", fill="Genus", facet_grid=~Grid)
+```
+
+## Shannon Diversity
+```{r, message=FALSE}
+rs_q2_shannon$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  left_join(rs_q2_metadata) %>%
+  subset(Squirrel.ID %in% c("8745", "10275", "10342", "10374", "11176")) %>%
+  mutate(Month=as.numeric(Month)) %>% #coerce this to be stored as number
+    ggplot(aes(x=Month, y=shannon, group=Location, shape = Season, colour = factor(Year))) +
+    geom_point(size = 2) +
+    geom_line() + #lines connect locations
+    facet_grid(Squirrel.ID~Year) + #plot body sites across rows and subjects across columns
+    theme_bw() +
+    xlab("Month") + labs(colour = "Year") +
+    ylab("Shannon Diversity") +
+    ggtitle("Shannon diversity by month")
+```
+
+```{r}
+# resampled squirrels
+resampled.ID <- c('10050', '10061', '10082', '10086', '10112', '10119', '10121', '10125', '10126', '10130', '10131', '10133', '10137', '10138', '10140', '10145', '10153', '10161', '10165', '10168', '10176', '10177', '10181', '10182', '10183', '10184', '10200', '10212', '10213', '10228', '10239', '10260', '10262', '10264', '10265', '10273', '10274', '10275', '10278', '10285', '10304', '10305', '10307', '10318', '10320', '10322', '10324', '10334', '10338', '10340', '10341', '10342', '10355', '10369', '10370', '10374', '10375', '10376', '10377', '10389', '10390', '10391', '10393', '10395', '10408', '10410', '10411', '10416', '10461', '10517', '10569', '10571', '10588', '10627', '10636', '10640', '10642', '10645', '10646', '10658', '10678', '10679', '10686', '10699', '10701', '10713', '10724', '10725', '10736', '10746', '10747', '10748', '10752', '10754', '10759', '10760', '10761', '10782', '10784', '10818', '10828', '10939', '10960', '11150', '11164', '11171', '11176', '11177', '11181', '11201', '11202', '11203', '11210', '11211', '11254', '11256', '11266', '11272', '11280', '11282', '11319', '11324', '11344', '11488', '11489', '11882', '13659', '13660', '13663', '13680', '13682', '13688', '13692', '8036', '8082', '8095', '8297', '8349', '8385', '8386', '8404', '8407', '8497', '8505', '8510', '8513', '8529', '8557', '8565', '8572', '8576', '8579', '8582', '8588', '8592', '8619', '8636', '8643', '8656', '8657', '8659', '8662', '8680', '8690', '8691', '8700', '8703', '8720', '8726', '8727', '8728', '8729', '8730', '8732', '8735', '8745', '8755', '8771', '8815')
+```
+
+```{r, message=FALSE}
+# all resampled squirrels
+pdf("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/R-env/plots/shannon_resampled.pdf", width = 15, height = 150)
+rs_q2_shannon$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  left_join(rs_q2_metadata) %>%
+  subset(Squirrel.ID %in% resampled.ID) %>%
+  mutate(Month=as.numeric(Month)) %>% #coerce this to be stored as number
+    ggplot(aes(x=CollectionDate, y=shannon, shape = Season, colour = factor(Year))) +
+    geom_point(size = 2) +
+    geom_line() + #lines connect locations
+    facet_grid(Squirrel.ID~Year) + #plot body sites across rows and subjects across columns
+    theme_bw() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1)) +
+  scale_x_discrete(breaks = 4) +
+    xlab("Collection Date") + labs(colour = "Year") +
+    ylab("Shannon Diversity") +
+    ggtitle("Shannon Diversity by Sample Collection Date")
+dev.off()
+```
+## Effect of host movement on diversity
+### Diversity Indices
+Boxplot of shannon diversity panelled by grid
+```{r}
+pdf("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/R-env/plots/shannon_box.pdf", width = 50, height = 50)
+rs_q2_shannon$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  left_join(rs_q2_metadata) %>%
+  subset(Squirrel.ID %in% resampled.ID) %>% 
+  mutate(Month=as.numeric(Month)) %>% #coerce this to be stored as number
+    ggplot(aes(x=Location, y=shannon, group=Location, fill = Grid)) +
+    geom_boxplot() +
+    facet_grid(Grid~.) + #Squirrel.ID
+    theme_bw() +
+    xlab("Location") + labs(colour = "Year") +
+    ylab("Shannon Diversity") +
+    ggtitle("Shannon Diversity by Sampling Location")
+dev.off()
+```
+
+Make a boxplot showing diversity at the last sampling timepoint based on the number of different locations where they were sampled.
+```{r}
+# return the sample that was collected last for each individual squirrel
+rs_sub_meta <- rs_q2_metadata %>%
+  group_by(Squirrel.ID) %>% 
+  mutate(CollectionDate = str_remove_all(CollectionDate, "-"),
+         Unique.Locations = n_distinct(Location)) %>%
+  top_n(1, CollectionDate)
+View(rs_sub_meta)
+```
+
+```{r}
+rs_q2_shannon$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  subset(SampleID %in% rs_sub_meta$SampleID) %>%
+  left_join(rs_sub_meta)  %>%
+  compare_means(shannon ~ Unique.Locations, data = ., method = "wilcox.test")
+```
+```{r}
+# which means to compare
+comparisons <- list(c("1", "2"), c("1", "3"), 
+                    c("1", "4"), c("1", "5"), 
+                    c("1", "6"), c("1", "7"), 
+                    c("1", "8"), c("1", "9"))
+# shannon diversity by number of sites sampled at
+ shannon_box <- rs_q2_shannon$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  subset(SampleID %in% rs_sub_meta$SampleID) %>%
+  left_join(rs_sub_meta)  %>%
+  ggplot(aes(x=Unique.Locations, y=shannon, group=Unique.Locations)) +
+  geom_boxplot() + scale_x_discrete(limits = 1:9) +
+  theme_bw() +
+  xlab("Number of Sampling Locations") +
+  ylab("Shannon Diversity") +
+  ggtitle("Shannon Diversity by Number of Sampling Locations") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
+shannon_box
+```
+
+```{r}
+evenness$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  subset(SampleID %in% rs_sub_meta$SampleID) %>%
+  left_join(rs_sub_meta) %>%
+  compare_means(pielou_e ~ Unique.Locations, data = ., method = "wilcox.test")
+# still need to sort out doing the individual comparisons for the kruskal.test
+evenness$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  subset(SampleID %in% rs_sub_meta$SampleID) %>%
+  left_join(rs_sub_meta) %>%
+  compare_means(pielou_e ~ Unique.Locations, data = ., method = "kruskal.test")
+```
+```{r}
+# which means to compare
+comparisons <- list(c("1", "2"), c("1", "3"), 
+                    c("1", "4"), c("1", "5"), 
+                    c("1", "6"), c("1", "7"), 
+                    c("1", "8"), c("1", "9"))
+# pielou's evenness diversity by number of sites sampled at
+evenness$data %>%
+  rownames_to_column("SampleID") %>%
+  subset(SampleID %in% rs_sub_meta$SampleID) %>%
+  left_join(rs_sub_meta) %>%
+  ggplot(aes(x=Unique.Locations, y=pielou_e, group=Unique.Locations)) +
+  geom_boxplot() + scale_x_discrete(limits = 1:9) +
+  theme_bw() + 
+  xlab("Number of Sampling Locations") +
+  ylab("Pielou's Evenness") +
+  ggtitle("Pielou's Evenness by Number of Sampling Locations") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
+```
+
+
+```{r}
+faith_pd$data %>%
+  as.data.frame() %>%
+  rownames_to_column("SampleID") %>%
+  subset(SampleID %in% rs_sub_meta$SampleID) %>%
+  left_join(rs_sub_meta)  %>%
+  compare_means(faith_pd ~ Unique.Locations, data = ., method = "wilcox.test")
+```
+```{r}
+# which means to compare
+comparisons <- list(c("1", "2"), c("1", "3"), 
+                    c("1", "4"), c("1", "5"), 
+                    c("1", "6"), c("1", "7"), 
+                    c("1", "8"), c("1", "9"))
+# faith's pd diversity by number of sites sampled at
+faith_pd$data %>%
+  rownames_to_column("SampleID") %>%
+  subset(SampleID %in% rs_sub_meta$SampleID) %>%
+  left_join(rs_sub_meta) %>%
+  ggplot(aes(x=Unique.Locations, y=faith_pd, group=Unique.Locations)) +
+  geom_boxplot() + scale_x_discrete(limits = 1:9) +
+  theme_bw() +
+  xlab("Number of Sampling Locations") +
+  ylab("Faith's PD") +
+  ggtitle("Faith's PD by Number of Sampling Locations") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
+```
+
+### Distances between groups
+Need to compare those from each group to one another - boxplot of distances between groups (focusing on 1 sampling location vs 2, 3, etc)
+#### Weighted UniFrac
+```{r}
+df_wu_loc <- dm_phylo_wu$data %>% 
+  as.matrix %>% as.data.frame %>%
+  rownames_to_column(var = "SampleID1") %>%
+  pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
+  unique() %>% # this removes the duplications of the data
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID1" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations, SampleID2, Distance) %>%
+  rename("Unique.Locations1"="Unique.Locations") %>%
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID2" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations1, SampleID2, Unique.Locations, Distance) %>%
+  rename("Unique.Locations2"="Unique.Locations") %>%
+  unite(Pairs, c(Unique.Locations1, Unique.Locations2), remove=FALSE, sep = "-") %>%
+  subset(SampleID1 %in% rs_sub_meta$SampleID) %>%
+  subset(SampleID2 %in% rs_sub_meta$SampleID)
+View(df_wu_loc)
+```
+
+```{r}
+loc1 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 1) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc1
+```
+```{r}
+loc2 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 2) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc2
+```
+```{r}
+loc3 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 3) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc3
+```
+```{r}
+loc4 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 4) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc4
+```
+```{r}
+loc5 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 5) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc5
+```
+```{r}
+loc6 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 6) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc6
+```
+```{r}
+loc7 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 7) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc7
+```
+```{r}
+loc8 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 8) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc8
+```
+```{r}
+loc9 <- df_wu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 9) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Weighted UniFrac Distance")
+loc9
+```
+
+```{r}
+pdf("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/R-env/plots/9_box.pdf", 
+    width = 12, height = 12)
+ggarrange(loc1,loc2,loc3,loc4,loc5,loc6,loc7,loc8,loc9,
+          ncol = 3, nrow = 3)
+dev.off()
+```
+
+```{r}
+rm(loc1,loc2,loc3,loc4,loc5,loc6,loc7,loc8,loc9)
+```
+
+#### Unweighted UniFrac
+```{r}
+df_uu_loc <- dm_phylo_uu$data %>% 
+  as.matrix %>% as.data.frame %>%
+  rownames_to_column(var = "SampleID1") %>%
+  pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
+  unique() %>% # this removes the duplications of the data
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID1" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations, SampleID2, Distance) %>%
+  rename("Unique.Locations1"="Unique.Locations") %>%
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID2" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations1, SampleID2, Unique.Locations, Distance) %>%
+  rename("Unique.Locations2"="Unique.Locations") %>%
+  unite(Pairs, c(Unique.Locations1, Unique.Locations2), remove=FALSE, sep = "-") %>%
+  subset(SampleID1 %in% rs_sub_meta$SampleID) %>%
+  subset(SampleID2 %in% rs_sub_meta$SampleID)
+View(df_uu_loc)
+```
+```{r}
+df_uu_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 1) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Unweighted UniFrac Distance")
+```
+
+#### jaccard
+```{r}
+df_jaccar_loc <- dm_phylo_jaccard$data %>% 
+  as.matrix %>% as.data.frame %>%
+  rownames_to_column(var = "SampleID1") %>%
+  pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
+  unique() %>% # this removes the duplications of the data
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID1" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations, SampleID2, Distance) %>%
+  rename("Unique.Locations1"="Unique.Locations") %>%
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID2" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations1, SampleID2, Unique.Locations, Distance) %>%
+  rename("Unique.Locations2"="Unique.Locations") %>%
+  unite(Pairs, c(Unique.Locations1, Unique.Locations2), remove=FALSE, sep = "-") %>%
+  subset(SampleID1 %in% rs_sub_meta$SampleID) %>%
+  subset(SampleID2 %in% rs_sub_meta$SampleID)
+View(df_jaccar_loc)
+```
+```{r}
+df_jaccar_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 1) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Jaccard Distance")
+```
+
+#### Bray-Curtis
+```{r}
+df_bray_loc <- dm_phylo_bray$data %>% 
+  as.matrix %>% as.data.frame %>%
+  rownames_to_column(var = "SampleID1") %>%
+  pivot_longer(-SampleID1, names_to = "SampleID2", values_to = "Distance") %>%
+  unique() %>% # this removes the duplications of the data
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID1" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations, SampleID2, Distance) %>%
+  rename("Unique.Locations1"="Unique.Locations") %>%
+  left_join(rs_q2_metadata %>% 
+              group_by(Squirrel.ID) %>% 
+              mutate(Unique.Locations = n_distinct(Location)),
+            by = c("SampleID2" = "SampleID")) %>%
+  select(SampleID1, Unique.Locations1, SampleID2, Unique.Locations, Distance) %>%
+  rename("Unique.Locations2"="Unique.Locations") %>%
+  unite(Pairs, c(Unique.Locations1, Unique.Locations2), remove=FALSE, sep = "-") %>%
+  subset(SampleID1 %in% rs_sub_meta$SampleID) %>%
+  subset(SampleID2 %in% rs_sub_meta$SampleID)
+View(df_bray_loc)
+```
+```{r}
+# means to compare
+comparisons <- list(c("1-1", "1-2"), c("1-1", "1-3"), 
+                    c("1-1", "1-4"), c("1-1", "1-5"), 
+                    c("1-1", "1-6"), c("1-1", "1-7"), 
+                    c("1-1", "1-8"), c("1-1", "1-9"))
+df_bray_loc %>%
+  filter(Distance != 0) %>%
+  filter(Unique.Locations1 == 1) %>%
+  ggplot(aes(x=Pairs, y=Distance, group=Pairs)) + 
+  geom_boxplot() + theme_bw()  +
+  xlab("Pairs Compared") +
+  ylab("Bray-Curtis Distance") +
+  stat_compare_means(comparisons = comparisons, # put significance points
+                     symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("****", "***", "**", "*", "ns")))
+```
+## Ordination
+### In R ordinations
+
+```{r}
+# multivariate ordination for the full data set (bray-curtis)
+ord_ps_NMDS_bray <- ordinate(ps, "NMDS", dm_phylo_bray$data)
+ord_ps_RDA_bray <- ordinate(ps, "RDA", dm_phylo_bray$data)
+ord_ps_DCA_bray <- ordinate(ps, "DCA", dm_phylo_bray$data)
+```
+
+```{r}
+# NDMS bray
+plot_ordination(ps, ord_ps_NMDS_bray) + 
+  geom_point(size = 2, 
+	aes(color = factor(sample_data(ps)$Grid))) +
+  stat_ellipse(type = "norm", aes(group = factor(sample_data(ps)$Grid))) +
+  labs(color = "Grid") + 
+  ggtitle("NDMS Ordination Plot") + 
+  theme_classic()
+# RDA bray
+plot_ordination(ps, ord_ps_RDA_bray) + 
+  geom_point(size = 2, 
+	aes(color = factor(sample_data(ps)$Grid))) +
+  stat_ellipse(type = "norm", aes(group = factor(sample_data(ps)$Grid))) +
+  labs(color = "Grid") + 
+  ggtitle("RDA Ordination Plot") + theme_classic()
+# DCA bray
+plot_ordination(ps, ord_ps_DCA_bray) + 
+  geom_point(size = 2, 
+	aes(color = factor(sample_data(ps)$Grid))) +
+  stat_ellipse(type = "norm", aes(group = factor(sample_data(ps)$Grid))) +
+  labs(color = "Grid") + 
+  ggtitle("DCA Ordination Plot") + theme_classic()
+```
+
+```{r}
+# multivariate ordination for the full data set (jaccard)
+ord_ps_NMDS_jaccard <- ordinate(ps, "NMDS", dm_phylo_jaccard$data)
+ord_ps_RDA_jaccard <- ordinate(ps, "RDA", dm_phylo_jaccard$data)
+ord_ps_DCA_jaccard <- ordinate(ps, "DCA", dm_phylo_jaccard$data)
+```
+
+```{r}
+# NDMS jaccard
+plot_ordination(ps, ord_ps_NMDS_jaccard) + 
+  geom_point(size = 2, 
+	aes(color = factor(sample_data(ps)$Grid))) +
+  stat_ellipse(type = "norm", aes(group = factor(sample_data(ps)$Grid))) +
+  labs(color = "Grid") + 
+  ggtitle("NDMS Ordination Plot") + 
+  theme_classic()
+# RDA jaccard
+plot_ordination(ps, ord_ps_RDA_jaccard) + 
+  geom_point(size = 2, 
+	aes(color = factor(sample_data(ps)$Grid))) +
+  stat_ellipse(type = "norm", aes(group = factor(sample_data(ps)$Grid))) +
+  labs(color = "Grid") + 
+  ggtitle("RDA Ordination Plot") + theme_classic()
+# DCA jaccard
+plot_ordination(ps, ord_ps_DCA_jaccard) + 
+  geom_point(size = 2, 
+	aes(color = factor(sample_data(ps)$Grid))) +
+  stat_ellipse(type = "norm", aes(group = factor(sample_data(ps)$Grid))) +
+  labs(color = "Grid") + 
+  ggtitle("DCA Ordination Plot") + theme_classic()
+```
+
+```{r}
+#remove unneeded objects when done
+
+```
+
+### PCoA
+```{r}
+# full file path need, otherwise get annoying errors
+pcoa_bray <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/bray_curtis_pcoa_results.qza")
+pcoa_wu <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/weighted_unifrac_pcoa_results.qza")
+pcoa_uu <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/unweighted_unifrac_pcoa_results.qza")
+pcoa_jaccard <- read_qza("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/core-metrics-phylogenetic/jaccard_pcoa_results.qza")
+```
+
+```{r}
+pcoa_jaccard$data$Vectors %>%
+  left_join(rs_q2_metadata) %>%
+  left_join(rs_q2_shannon$data %>% rownames_to_column("SampleID")) %>%
+  ggplot(aes(x=PC1, y=PC2, color=Grid, size=shannon)) +
+  geom_point() + stat_ellipse() +
+  xlab(paste("PC1: ", round(100*pcoa_jaccard$data$ProportionExplained[1]), "%")) +
+  ylab(paste("PC2: ", round(100*pcoa_jaccard$data$ProportionExplained[2]), "%")) +
+  theme_bw() +
+  ggtitle("Jaccard")
+```
+
+```{r}
+pcoa_bray$data$Vectors %>%
+  left_join(rs_q2_metadata) %>%
+  left_join(rs_q2_shannon$data %>% rownames_to_column("SampleID")) %>%
+  ggplot(aes(x=PC1, y=PC2, color=Grid, size=shannon)) +
+  geom_point() + stat_ellipse() +
+  xlab(paste("PC1: ", round(100*pcoa_bray$data$ProportionExplained[1]), "%")) +
+  ylab(paste("PC2: ", round(100*pcoa_bray$data$ProportionExplained[2]), "%")) +
+  theme_bw() +
+  ggtitle("Bray-Curtis")
+```
+
+```{r}
+pcoa_uu$data$Vectors %>%
+  left_join(rs_q2_metadata) %>%
+  left_join(rs_q2_shannon$data %>% rownames_to_column("SampleID")) %>%
+  ggplot(aes(x=PC1, y=PC2, color=Grid, size=shannon)) +
+  geom_point() + stat_ellipse() +
+  xlab(paste("PC1: ", round(100*pcoa_uu$data$ProportionExplained[1]), "%")) +
+  ylab(paste("PC2: ", round(100*pcoa_uu$data$ProportionExplained[2]), "%")) +
+  theme_bw() +
+  ggtitle("Unweighted UniFrac")
+```
+
+```{r}
+pcoa_wu$data$Vectors %>%
+  left_join(rs_q2_metadata) %>%
+  left_join(rs_q2_shannon$data %>% rownames_to_column("SampleID")) %>%
+  ggplot(aes(x=PC1, y=PC2, color=Grid, size=shannon)) +
+  geom_point() + stat_ellipse() +
+  xlab(paste("PC1: ", round(100*pcoa_wu$data$ProportionExplained[1]), "%")) +
+  ylab(paste("PC2: ", round(100*pcoa_wu$data$ProportionExplained[2]), "%")) +
+  theme_bw() +
+  ggtitle("Weighted UniFrac")
+```
+
+
+
+### PCoA Sub
+```{r}
+rs_sub_meta %>%
+  left_join(pcoa_wu$data$Vectors) %>%
+  ggplot(aes(x=PC1, y=PC2, color=factor(Unique.Locations))) +
+  geom_point() + stat_ellipse() +
+  xlab(paste("PC1: ", round(100*pcoa_wu$data$ProportionExplained[1]), "%")) +
+  ylab(paste("PC2: ", round(100*pcoa_wu$data$ProportionExplained[2]), "%")) +
+  theme_bw() +
+  ggtitle("Weighted UniFrac")
+```
+
+

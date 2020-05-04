@@ -1,0 +1,95 @@
+---
+title: "test"
+author: "Alicia Halhed"
+date: "18/04/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+RS_metadata <- read_excel("~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-data/original/metadata_all_samples.xlsx")
+View(RS_metadata)
+```
+
+```{r}
+# 218 from AG 2008
+# peanut butter
+# spatial significant (PCNM55 + PCNM74 + PCNM27 + PCNM56 + PCNM22)
+RS_metadata %>%
+  filter(Grid == "AG" & Year == "2008") %>%
+  nrow
+```
+
+```{r}
+# 47 from CH 2008
+# spatial not significant
+RS_metadata %>%
+  filter(Grid == "CH" & Year == "2008") %>%
+  nrow
+```
+
+```{r}
+# 23 from JO 2008
+# peanut butter
+# one significant axis (1)
+RS_metadata %>%
+  filter(Grid == "JO" & Year == "2008") %>%
+  nrow
+```
+
+```{r}
+# 240 from KL 2008
+# two significant axes (2,33)
+RS_metadata %>%
+  filter(Grid == "KL" & Year == "2008") %>%
+  nrow
+```
+
+```{r}
+# 124 from KL 2009
+# spatial not significant
+RS_metadata %>%
+  filter(Grid == "KL" & Year == "2009") %>%
+  nrow
+```
+
+```{r}
+# 189 from KL 2010
+# three significant axes (4, 37, 2)
+RS_metadata %>%
+  filter(Grid == "KL" & Year == "2010") %>%
+  nrow
+```
+
+```{r}
+# 47 from LL 2008
+# peanut butter
+# two significant axes (5, 13)
+RS_metadata %>%
+  filter(Grid == "LL" & Year == "2008") %>%
+  nrow
+```
+
+```{r}
+# 21 from SU 2008
+# 2 significant axes (6, 8)
+RS_metadata %>%
+  filter(Grid == "SU" & Year == "2008") %>%
+  nrow
+```
+
+
+
+
+
+
+
+
