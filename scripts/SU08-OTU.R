@@ -105,7 +105,7 @@ ncol(comm_core)
 print("Build the rare community object (OTU table) for grid/year")
 comm_rare <- OTU_rare %>% 
   subset(., rownames(.) %in% rownames(XY_sub)) %>%
-  .[ colSums(.)>0, ]
+  .[ , colSums(.)>0 ]
 print("Number of OTUs (columns) in rare OTU table for SU 2008")
 ncol(comm_rare)
 
