@@ -103,7 +103,7 @@ print("Number of OTUs (columns) in core OTU table for KL 2009")
 ncol(comm_core)
 # subset the samples from the rare microbiome
 print("Build the rare community object (OTU table) for grid/year")
-comm_obj <- OTU_rare %>% 
+comm_rare <- OTU_rare %>% 
   subset(., rownames(.) %in% rownames(XY_sub)) %>%
   .[ colSums(.)>0, ]
 print("Number of OTUs (columns) in rare OTU table for KL 2009")

@@ -3,7 +3,7 @@
 #SBATCH --time=0-02:00:00
 #SBATCH --mem-per-cpu 300G
 #SBATCH --job-name=SU08-OTU
-#SBATCH --output=./%x-%j.out
+#SBATCH --output=./output/%x-%j.out
 
 #---
 #title: "Counting OTUs per grid/year"
