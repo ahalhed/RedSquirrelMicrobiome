@@ -111,7 +111,7 @@ print("Subset the OTU table to find rare OTUs")
 OTU_rare <- OTU_full %>% 
   select(-one_of(cOTU$OTU))
 # subset the samples from the core microbiome
-print("Build the core community object (OTU table) for grid/year")
+print("Build the rare community object (OTU table) for grid/year")
 comm_obj <- OTU_rare %>% 
   subset(., rownames(.) %in% rownames(XY_sub)) %>%
   .[ rowSums(.)>0, ]

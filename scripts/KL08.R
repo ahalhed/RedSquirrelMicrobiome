@@ -71,6 +71,7 @@ comm_obj <- otu_table(ps) %>% as.matrix %>%
     t %>% as.data.frame %>% 
     subset(., rownames(.) %in% rownames(XY_sub)) %>%
     .[ rowSums(.)>0, ]
+
 # sample ID's are rownames
 # get the metadata subset
 print("Extract metadata for grid/year")
