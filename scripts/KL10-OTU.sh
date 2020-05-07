@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=def-cottenie
 #SBATCH --time=0-00:45:00
-#SBATCH --mem-per-cpu 128G
+#SBATCH --mem-per-cpu 74G
 #SBATCH --job-name=KL10-OTU
 #SBATCH --output=./output/%x-%j.out
 

@@ -53,12 +53,6 @@ colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "S
 print("Starting initial data preparation")
 print("Access and plot XY data")
 XY_sub <- XY_year(rs_q2_metadata, "AG", 2008)
-# plotting the locations
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_XY.pdf")
-XY_sub %>% ggplot(aes(x = `Location X`, y = `Location Y`)) + 
-  geom_point() + 
-  coord_fixed()
-dev.off()
 print("Computing Euclidean Distances")
 eDIST <- dist(XY_sub)
 print("Maximum Euclidean Distance")
@@ -113,7 +107,7 @@ OTU_core <- OTU_full[, cOTU$OTU]
 print("Build the core community object (OTU table) for grid/year")
 comm_obj <- OTU_core %>% 
   subset(., rownames(.) %in% rownames(XY_sub)) %>%
-  .[ rowSums(.)>0, ]
+  .[ , colSums(.)>0 ]
 
 
 # sample ID's are rownames
@@ -134,15 +128,6 @@ rm(rs_q2_metadata, cOTU, OTU95, RA_001, RA, RA_full, OTU_full, ps, OTU_core)
 print("Unweighted PCNM")
 UWpcnm <- pcnm(eDIST)
 UWpcnm$vectors
-# plot with ordisurf
-print("Plotting first three PCNM axes with ordisurf")
-# replace grid-year with values used in this script
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_ordisurf123.pdf")
-par(mfrow=c(1,3))
-ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
-ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
-ordisurf(XY_sub, scores(UWpcnm, choi=3), bubble = 4, main = "PCNM 3")
-dev.off()
 
 # weighted PCNM
 print("Weighted PCNM")
@@ -195,9 +180,10 @@ print("Environmental variables")
 abFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, meta_sub) # Reduced model
 step.env <- ordiR2step(abFrac0, scope = formula(abFrac))
 step.env # an rda model, with the final model predictor variables
-anova(step.env)
-# this is a summary of the selection process
+print("Summary of environmental selection process")
 step.env$anova
+print("ANOVA on full environmental selection")
+anova(step.env)
 # save plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_step_env.pdf")
 plot(step.env)
@@ -211,14 +197,9 @@ bcFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, pcnm_df) # Reduced model
 step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
 step.space
 # summary of selection process
+print("Summary of spatial selection process")
 step.space$anova
-# R2.adj Df     AIC      F Pr(>F)  
-#  + PCNM55        0.010063  1 -277.05 3.2058  0.016 *
-#  + PCNM27        0.018522  1 -277.93 2.8617  0.014 *
-#  + PCNM74        0.026032  1 -278.62 2.6578  0.026 *
-#  <All variables> 0.031240                           
-#---
-#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+print("ANOVA on full spatial selection")
 anova(step.space)
 # save plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_step_space.pdf")

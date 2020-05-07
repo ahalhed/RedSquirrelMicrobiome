@@ -70,7 +70,7 @@ comm_obj <- otu_table(ps) %>% as.matrix %>%
     as.data.frame %>% 
     t %>% as.data.frame %>% 
     subset(., rownames(.) %in% rownames(XY_sub)) %>%
-    .[ rowSums(.)>0, ]
+    .[ , colSums(.)>0 ]
 # sample ID's are rownames
 # get the metadata subset
 print("Extract metadata for grid/year")
@@ -155,9 +155,10 @@ print("Environmental variables")
 abFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, meta_sub) # Reduced model
 step.env <- ordiR2step(abFrac0, scope = formula(abFrac))
 step.env # an rda model, with the final model predictor variables
-anova(step.env)
-# this is a summary of the selection process
+print("Summary of environmental selection process")
 step.env$anova
+print("ANOVA on full environmental selection")
+anova(step.env)
 # save plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_step_env.pdf")
 plot(step.env)
@@ -170,9 +171,10 @@ bcFrac <- rda(decostand(comm_obj, "hel") ~ ., pcnm_df) # Full model
 bcFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, pcnm_df) # Reduced model
 step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
 step.space
-anova(step.space)
-# this is a summary of the selection process
+print("Summary of spatial selection process")
 step.space$anova
+print("ANOVA on full spatial selection")
+anova(step.space)
 # save plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/LL2008_step_space.pdf")
 plot(step.space)

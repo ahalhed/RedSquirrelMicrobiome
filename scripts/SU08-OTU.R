@@ -98,7 +98,7 @@ OTU_rare <- OTU_full %>%
 print("Build the core community object (OTU table) for grid/year")
 comm_core <- OTU_core %>% 
   subset(., rownames(.) %in% rownames(XY_sub)) %>%
-  .[ colSums(.)>0, ]
+  .[ , colSums(.)>0 ]
 print("Number of OTUs (columns) in core OTU table for SU 2008")
 ncol(comm_core)
 # subset the samples from the rare microbiome
@@ -112,7 +112,7 @@ ncol(comm_rare)
 print("Building community matrix for full OTU table")
 comm_full <- OTU_full %>% 
   subset(., rownames(.) %in% rownames(XY_sub)) %>%
-  .[ colSums(.)>0, ]
+  .[ , colSums(.)>0 ]
 
 print("Number of OTUs (columns) in full OTU table for SU 2008")
 ncol(comm_full)
