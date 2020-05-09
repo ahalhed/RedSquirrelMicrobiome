@@ -43259,3 +43259,50 @@ Eigenvalues for unconstrained axes:
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 [1] "ANOVA on full spatial selection"
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ PCNM2, data = pcnm_df)
+          Df Variance      F Pr(>F)  
+Model      1  0.00416 1.4957  0.016 *
+Residual 238  0.66120                
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities"
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = vegdist(comm_obj), X = ~., scores(UWpcnm), data =
+meta_sub)
+
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 80.892 
+No. of observations: 240 
+
+Partition table:
+                      Df R.squared Adj.R.squared Testable
+[a+b] = X1            91   0.39577       0.02425     TRUE
+[b+c] = X2            66   0.27909       0.00406     TRUE
+[a+b+c] = X1+X2      157   0.66082       0.01140     TRUE
+Individual fractions                                     
+[a] = X1|X2           91                 0.00734     TRUE
+[b]                    0                 0.01691    FALSE
+[c] = X2|X1           66                -0.01285     TRUE
+[d] = Residuals                          0.98860    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+Warning messages:
+1: collinearity detected in X1: mm = 95, m = 91 
+2: collinearity detected in cbind(X1,X2): mm = 161, m = 157 
+[1] "Variation decomposition with parsimonious variables"
+Error in terms.formula(formula, data = data) : 
+  '.' in formula and no 'data' argument
+Calls: varpart ... model.frame -> model.frame.default -> terms -> terms.formula
+Execution halted
