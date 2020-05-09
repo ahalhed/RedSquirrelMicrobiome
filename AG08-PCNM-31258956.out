@@ -43990,3 +43990,20 @@ Eigenvalues for unconstrained axes:
 0.04653 0.01744 0.01453 0.01056 0.01000 0.00738 0.00681 0.00620 
 (Showing 8 of 135 unconstrained eigenvalues)
 
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ Sex + Age + Month + Season + CollectionDate + BirthYear, data = meta_sub)
+          Df Variance      F Pr(>F)  
+Model     82  0.26509 1.0354  0.059 .
+Residual 135  0.42153                
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+$r.squared
+[1] 0.3860834
+
+$adj.r.squared
+[1] 0.01318591
+
+[1] "Testing with partial RDA (fraction [a])"

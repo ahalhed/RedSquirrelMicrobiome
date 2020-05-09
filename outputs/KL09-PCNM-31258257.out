@@ -36261,3 +36261,112 @@ Eigenvalues for unconstrained axes:
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 [1] "ANOVA on full environmental selection"
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ CollectionDate, data = meta_sub)
+         Df Variance      F Pr(>F)  
+Model    57  0.29652 1.0691  0.036 *
+Residual 66  0.32116                
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+[1] "Spatial variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
+                  R2.adjusted
++ PCNM30         3.069008e-03
++ PCNM25         2.686040e-03
++ PCNM27         1.865967e-03
++ PCNM18         1.815119e-03
++ PCNM3          1.099805e-03
++ PCNM26         8.741202e-04
++ PCNM31         5.979569e-04
++ PCNM6          4.924243e-04
++ PCNM23         3.312530e-04
++ PCNM15         2.485868e-04
++ PCNM8          2.335375e-04
++ PCNM17         1.277860e-04
++ PCNM9          4.133313e-05
+<none>           0.000000e+00
++ PCNM16        -1.953822e-04
++ PCNM29        -2.169746e-04
++ PCNM13        -2.307310e-04
++ PCNM1         -2.563693e-04
++ PCNM14        -4.379714e-04
++ PCNM20        -5.192216e-04
++ PCNM7         -5.217550e-04
++ PCNM22        -5.397837e-04
++ PCNM2         -6.184975e-04
++ PCNM21        -7.895753e-04
++ PCNM5         -8.268247e-04
++ PCNM24        -8.314578e-04
++ PCNM19        -1.528718e-03
++ PCNM28        -1.727776e-03
++ PCNM4         -1.739459e-03
++ PCNM12        -1.772724e-03
++ PCNM10        -2.426180e-03
++ PCNM11        -2.578179e-03
+<All variables> -5.668550e-03
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ 1, data = pcnm_df)
+
+              Inertia Rank
+Total          0.6177     
+Unconstrained  0.6177  123
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.07860 0.04419 0.02095 0.01944 0.01734 0.01522 0.01225 0.01207 
+(Showing 8 of 123 unconstrained eigenvalues)
+
+[1] "Summary of spatial selection process"
+NULL
+[1] "ANOVA on full spatial selection"
+No constrained component
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ 1, data = pcnm_df)
+          Df Variance  F Pr(>F)
+Model      0  0.00000  0       
+Residual 123  0.61768          
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities"
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = vegdist(comm_obj), X = ~., scores(UWpcnm), data =
+meta_sub)
+
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 39.573 
+No. of observations: 124 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           58   0.49610       0.04647     TRUE
+[b+c] = X2           31   0.24864      -0.00453     TRUE
+[a+b+c] = X1+X2      89   0.73052       0.02512     TRUE
+Individual fractions                                    
+[a] = X1|X2          58                 0.02965     TRUE
+[b]                   0                 0.01683    FALSE
+[c] = X2|X1          31                -0.02136     TRUE
+[d] = Residuals                         0.97488    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+Warning messages:
+1: collinearity detected in X1: mm = 63, m = 58 
+2: collinearity detected in cbind(X1,X2): mm = 94, m = 89 
+[1] "Variation decomposition with parsimonious variables"
+Error in terms.formula(object, data = data) : 
+  '.' in formula and no 'data' argument
+Calls: varpart ... model.matrix -> model.matrix.default -> terms -> terms.formula
+Execution halted
