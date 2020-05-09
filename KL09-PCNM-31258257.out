@@ -36177,3 +36177,87 @@ $adj.r.squared
 [1] 0.03215293
 
 [1] "Testing with partial RDA (fraction [a])"
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ Sex + Age + Month + Season + CollectionDate + BirthYear + Condition(scores(UWpcnm)), data = meta_sub)
+         Df Variance      F Pr(>F)
+Model    58  0.29605 1.0295  0.312
+Residual 34  0.16857              
+$r.squared
+[1] 0.4792949
+
+$adj.r.squared
+[1] 0.01836756
+
+[1] "Forward selection for parsimonious model"
+[1] "Environmental variables"
+Step: R2.adj= 0 
+Call: decostand(comm_obj, "hel") ~ 1 
+ 
+                   R2.adjusted
+<All variables>   0.0321529252
++ CollectionDate  0.0310246523
++ Season          0.0073623859
++ Month           0.0062945891
+<none>            0.0000000000
++ Age            -0.0004003849
++ BirthYear      -0.0004003849
++ Sex            -0.0027544482
+
+                 Df     AIC      F Pr(>F)  
++ CollectionDate 57 -25.847 1.0691  0.032 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.03102465 
+Call: decostand(comm_obj, "hel") ~ CollectionDate 
+ 
+                R2.adjusted
+<All variables>  0.03215293
++ Age            0.03215293
++ BirthYear      0.03215293
+<none>           0.03102465
++ Sex            0.03102465
++ Month          0.03102465
++ Season         0.03102465
+
+      Df     AIC      F Pr(>F)
++ Age  1 -25.885 1.0769  0.336
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ CollectionDate, data =
+meta_sub)
+
+              Inertia Proportion Rank
+Total          0.6177     1.0000     
+Constrained    0.2965     0.4801   57
+Unconstrained  0.3212     0.5199   66
+Inertia is variance 
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.04420 0.02318 0.01253 0.01197 0.00979 0.00860 0.00760 0.00753 0.00688 0.00640 
+  RDA11   RDA12   RDA13   RDA14   RDA15   RDA16   RDA17   RDA18   RDA19   RDA20 
+0.00616 0.00576 0.00545 0.00522 0.00503 0.00485 0.00484 0.00469 0.00448 0.00430 
+  RDA21   RDA22   RDA23   RDA24   RDA25   RDA26   RDA27   RDA28   RDA29   RDA30 
+0.00420 0.00414 0.00406 0.00395 0.00389 0.00379 0.00372 0.00364 0.00352 0.00348 
+  RDA31   RDA32   RDA33   RDA34   RDA35   RDA36   RDA37   RDA38   RDA39   RDA40 
+0.00335 0.00327 0.00317 0.00315 0.00308 0.00302 0.00293 0.00286 0.00284 0.00275 
+  RDA41   RDA42   RDA43   RDA44   RDA45   RDA46   RDA47   RDA48   RDA49   RDA50 
+0.00272 0.00265 0.00264 0.00252 0.00251 0.00249 0.00236 0.00230 0.00229 0.00223 
+  RDA51   RDA52   RDA53   RDA54   RDA55   RDA56   RDA57 
+0.00210 0.00206 0.00202 0.00196 0.00185 0.00183 0.00174 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.04086 0.02499 0.01443 0.01082 0.01046 0.01000 0.00869 0.00776 
+(Showing 8 of 66 unconstrained eigenvalues)
+
+[1] "Summary of environmental selection process"
+                   R2.adj Df     AIC      F Pr(>F)  
++ CollectionDate 0.031025 57 -25.847 1.0691  0.032 *
+<All variables>  0.032153                           
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+[1] "ANOVA on full environmental selection"
