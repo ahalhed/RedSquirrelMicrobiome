@@ -1,12 +1,12 @@
 #---
 #title: "PCNM for Squirrel Microbiome (SHARCNET)"
 #author: "Alicia Halhed"
-#date: "02/13/2020"
+#date: "04/13/2020"
 #---
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/red-squirrel-w2020/R-env")
+setwd("/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial")
 
 # attach required packages
 library(tidyverse)
@@ -54,7 +54,7 @@ print("Starting initial data preparation")
 print("Access and plot XY data")
 XY_sub <- XY_year(rs_q2_metadata, "KL", 2008)
 # plotting the locations
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_XY.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_XY.pdf")
 XY_sub %>% ggplot(aes(x = `Location X`, y = `Location Y`)) + 
   geom_point() + 
   coord_fixed()
@@ -91,7 +91,7 @@ UWpcnm$vectors
 # plot with ordisurf
 print("Plotting first three PCNM axes with ordisurf")
 # replace grid-year with values used in this script
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_ordisurf123.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_ordisurf123.pdf")
 par(mfrow=c(1,3))
 ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
 ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
@@ -114,7 +114,7 @@ summary(cca_sub)
 print("Multiscale ordination")
 mso_sub <- mso(cca_sub, XY_sub)
 # plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_mso.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_mso.pdf")
 msoplot(mso_sub, ylim = c(0, 45), main="2008 KL")
 dev.off()
 
@@ -122,7 +122,7 @@ dev.off()
 print("Variance partitioning")
 vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub, transfo = "hel")
 vp_mod1
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_vp_mod1.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_vp_mod1.pdf")
 plot(vp_mod1)
 dev.off()
 
@@ -154,7 +154,7 @@ step.env$anova
 print("ANOVA on full environmental selection")
 anova(step.env)
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_step_env.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_step_env.pdf")
 plot(step.env)
 dev.off()
 
@@ -170,7 +170,7 @@ step.space$anova
 print("ANOVA on full spatial selection")
 anova(step.space)
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_step_space.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_step_space.pdf")
 plot(step.space)
 dev.off()
 
@@ -188,7 +188,7 @@ mod.pars <- varpart(comm_obj, ~ .,
                data = meta_sub[, names(step.env$terminfo$ordered)],
                transfo = "hel")
 mod.pars
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/PCNM/plots/KL2008_mod_pars.pdf")
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
 
