@@ -44313,3 +44313,536 @@ Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56
 + PCNM62        0.003488637
 + PCNM68        0.003392724
 
+         Df    AIC      F Pr(>F)  
++ PCNM22  1 -70.42 1.3865  0.034 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.006278278 
+Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 
+ 
+                R2.adjusted
+<All variables> 0.013427700
++ PCNM27        0.007870521
++ PCNM74        0.007809531
++ PCNM31        0.007730150
++ PCNM73        0.007603410
++ PCNM44        0.007416907
++ PCNM45        0.007376580
++ PCNM8         0.007350887
++ PCNM32        0.007235201
++ PCNM76        0.007215048
++ PCNM78        0.007204172
++ PCNM4         0.007197009
++ PCNM69        0.007181895
++ PCNM53        0.007066226
++ PCNM25        0.006969416
++ PCNM79        0.006874858
++ PCNM51        0.006861507
++ PCNM37        0.006836857
++ PCNM58        0.006811623
++ PCNM7         0.006809901
++ PCNM65        0.006791884
++ PCNM49        0.006773068
++ PCNM41        0.006639215
++ PCNM33        0.006601102
++ PCNM19        0.006562567
++ PCNM18        0.006556527
++ PCNM10        0.006555791
++ PCNM9         0.006533799
++ PCNM21        0.006473390
++ PCNM29        0.006454461
++ PCNM46        0.006452852
++ PCNM52        0.006428295
++ PCNM34        0.006403584
++ PCNM80        0.006392477
++ PCNM35        0.006385569
++ PCNM72        0.006378509
++ PCNM6         0.006353178
++ PCNM38        0.006342351
++ PCNM81        0.006320842
++ PCNM50        0.006294347
++ PCNM84        0.006284001
+<none>          0.006278278
++ PCNM39        0.006236894
++ PCNM20        0.006227677
++ PCNM36        0.006215827
++ PCNM60        0.006190596
++ PCNM83        0.006188997
++ PCNM14        0.006175360
++ PCNM61        0.006099758
++ PCNM1         0.006087827
++ PCNM12        0.006081760
++ PCNM42        0.006079393
++ PCNM16        0.006075727
++ PCNM57        0.006071570
++ PCNM59        0.006067501
++ PCNM24        0.006063012
++ PCNM15        0.006056289
++ PCNM5         0.006054482
++ PCNM70        0.006049880
++ PCNM48        0.005992871
++ PCNM23        0.005967860
++ PCNM82        0.005869443
++ PCNM47        0.005859193
++ PCNM71        0.005857838
++ PCNM3         0.005837730
++ PCNM17        0.005802193
++ PCNM40        0.005779050
++ PCNM28        0.005774541
++ PCNM13        0.005764435
++ PCNM11        0.005697290
++ PCNM43        0.005693718
++ PCNM30        0.005637465
++ PCNM75        0.005626979
++ PCNM66        0.005601105
++ PCNM67        0.005599264
++ PCNM54        0.005585079
++ PCNM26        0.005544782
++ PCNM2         0.005458773
++ PCNM63        0.005445959
++ PCNM64        0.005382131
++ PCNM77        0.005344197
++ PCNM62        0.005278564
++ PCNM68        0.005182200
+
+         Df    AIC      F Pr(>F)  
++ PCNM27  1 -69.79 1.3434  0.044 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.007870521 
+Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 
+ 
+                R2.adjusted
+<All variables> 0.013427700
++ PCNM74        0.009416508
++ PCNM31        0.009336752
++ PCNM73        0.009209415
++ PCNM44        0.009022032
++ PCNM45        0.008981514
++ PCNM8         0.008955701
++ PCNM32        0.008839469
++ PCNM76        0.008819220
++ PCNM78        0.008808293
++ PCNM4         0.008801097
++ PCNM69        0.008785911
++ PCNM53        0.008669696
++ PCNM25        0.008572430
++ PCNM79        0.008477426
++ PCNM51        0.008464012
++ PCNM37        0.008439245
++ PCNM58        0.008413893
++ PCNM7         0.008412162
++ PCNM65        0.008394060
++ PCNM49        0.008375156
++ PCNM41        0.008240672
++ PCNM33        0.008202379
++ PCNM19        0.008163662
++ PCNM18        0.008157593
++ PCNM10        0.008156854
++ PCNM9         0.008134758
++ PCNM21        0.008074064
++ PCNM29        0.008055046
++ PCNM46        0.008053430
++ PCNM52        0.008028756
++ PCNM34        0.008003929
++ PCNM80        0.007992769
++ PCNM35        0.007985829
++ PCNM72        0.007978736
++ PCNM6         0.007953286
++ PCNM38        0.007942408
++ PCNM81        0.007920797
++ PCNM50        0.007894176
++ PCNM84        0.007883782
+<none>          0.007870521
++ PCNM39        0.007836453
++ PCNM20        0.007827192
++ PCNM36        0.007815287
++ PCNM60        0.007789936
++ PCNM83        0.007788330
++ PCNM14        0.007774629
++ PCNM61        0.007698670
++ PCNM1         0.007686682
++ PCNM12        0.007680587
++ PCNM42        0.007678209
++ PCNM16        0.007674525
++ PCNM57        0.007670349
++ PCNM59        0.007666261
++ PCNM24        0.007661750
++ PCNM15        0.007654996
++ PCNM5         0.007653181
++ PCNM70        0.007648557
++ PCNM48        0.007591279
++ PCNM23        0.007566150
++ PCNM82        0.007467268
++ PCNM47        0.007456970
++ PCNM71        0.007455609
++ PCNM3         0.007435406
++ PCNM17        0.007399702
++ PCNM40        0.007376449
++ PCNM28        0.007371919
++ PCNM13        0.007361765
++ PCNM11        0.007294304
++ PCNM43        0.007290715
++ PCNM30        0.007234196
++ PCNM75        0.007223660
++ PCNM66        0.007197665
++ PCNM67        0.007195815
++ PCNM54        0.007181563
++ PCNM26        0.007141076
++ PCNM2         0.007054661
++ PCNM63        0.007041787
++ PCNM64        0.006977658
++ PCNM77        0.006939544
++ PCNM62        0.006873602
++ PCNM68        0.006776783
+
+         Df     AIC      F Pr(>F)  
++ PCNM74  1 -69.156 1.3324  0.036 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.009416508 
+Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 +      PCNM74 
+ 
+                R2.adjusted
+<All variables> 0.013427700
++ PCNM31        0.010897015
++ PCNM73        0.010769074
++ PCNM44        0.010580802
++ PCNM45        0.010540093
++ PCNM8         0.010514157
++ PCNM32        0.010397374
++ PCNM76        0.010377030
++ PCNM78        0.010366051
++ PCNM4         0.010358820
++ PCNM69        0.010343563
++ PCNM53        0.010226797
++ PCNM25        0.010129070
++ PCNM79        0.010033616
++ PCNM51        0.010020138
++ PCNM37        0.009995254
++ PCNM58        0.009969781
++ PCNM7         0.009968042
++ PCNM65        0.009949855
++ PCNM49        0.009930861
++ PCNM41        0.009795739
++ PCNM33        0.009757265
++ PCNM19        0.009718364
++ PCNM18        0.009712267
++ PCNM10        0.009711524
++ PCNM9         0.009689323
++ PCNM21        0.009628342
++ PCNM29        0.009609234
++ PCNM46        0.009607610
++ PCNM52        0.009582819
++ PCNM34        0.009557875
++ PCNM80        0.009546662
++ PCNM35        0.009539689
++ PCNM72        0.009532562
++ PCNM6         0.009506991
++ PCNM38        0.009496061
++ PCNM81        0.009474348
++ PCNM50        0.009447601
++ PCNM84        0.009437158
+<none>          0.009416508
++ PCNM39        0.009389604
++ PCNM20        0.009380300
++ PCNM36        0.009368338
++ PCNM60        0.009342867
++ PCNM83        0.009341254
++ PCNM14        0.009327487
++ PCNM61        0.009251169
++ PCNM1         0.009239124
++ PCNM12        0.009233000
++ PCNM42        0.009230611
++ PCNM16        0.009226910
++ PCNM57        0.009222713
++ PCNM59        0.009218606
++ PCNM24        0.009214074
++ PCNM15        0.009207287
++ PCNM5         0.009205464
++ PCNM70        0.009200818
++ PCNM48        0.009143269
++ PCNM23        0.009118020
++ PCNM82        0.009018670
++ PCNM47        0.009008323
++ PCNM71        0.009006956
++ PCNM3         0.008986657
++ PCNM17        0.008950783
++ PCNM40        0.008927421
++ PCNM28        0.008922869
++ PCNM13        0.008912667
++ PCNM11        0.008844886
++ PCNM43        0.008841280
++ PCNM30        0.008784494
++ PCNM75        0.008773908
++ PCNM66        0.008747789
++ PCNM67        0.008745930
++ PCNM54        0.008731611
++ PCNM26        0.008690932
++ PCNM2         0.008604108
++ PCNM63        0.008591172
++ PCNM64        0.008526740
++ PCNM77        0.008488445
++ PCNM62        0.008422190
++ PCNM68        0.008324913
+
+         Df     AIC      F Pr(>F)  
++ PCNM31  1 -68.513 1.3173  0.032 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.01089701 
+Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 +      PCNM74 + PCNM31 
+ 
+                R2.adjusted
+<All variables> 0.013427700
++ PCNM73        0.012263071
++ PCNM44        0.012073904
++ PCNM45        0.012033000
++ PCNM8         0.012006941
++ PCNM32        0.011889602
++ PCNM76        0.011869161
++ PCNM78        0.011858129
++ PCNM4         0.011850864
++ PCNM69        0.011835534
++ PCNM53        0.011718213
++ PCNM25        0.011620020
++ PCNM79        0.011524111
++ PCNM51        0.011510569
++ PCNM37        0.011485567
++ PCNM58        0.011459973
++ PCNM7         0.011458226
++ PCNM65        0.011439951
++ PCNM49        0.011420867
++ PCNM41        0.011285102
++ PCNM33        0.011246444
++ PCNM19        0.011207358
++ PCNM18        0.011201232
++ PCNM10        0.011200486
++ PCNM9         0.011178180
++ PCNM21        0.011116907
++ PCNM29        0.011097709
++ PCNM46        0.011096077
++ PCNM52        0.011071168
++ PCNM34        0.011046105
++ PCNM80        0.011034839
++ PCNM35        0.011027832
++ PCNM72        0.011020672
++ PCNM6         0.010994979
++ PCNM38        0.010983997
++ PCNM81        0.010962180
++ PCNM50        0.010935307
++ PCNM84        0.010924814
+<none>          0.010897015
++ PCNM39        0.010877033
++ PCNM20        0.010867684
++ PCNM36        0.010855665
++ PCNM60        0.010830074
++ PCNM83        0.010828452
++ PCNM14        0.010814621
++ PCNM61        0.010737938
++ PCNM1         0.010725836
++ PCNM12        0.010719683
++ PCNM42        0.010717282
++ PCNM16        0.010713564
++ PCNM57        0.010709348
++ PCNM59        0.010705221
++ PCNM24        0.010700667
++ PCNM15        0.010693848
++ PCNM5         0.010692016
++ PCNM70        0.010687348
++ PCNM48        0.010629524
++ PCNM23        0.010604156
++ PCNM82        0.010504333
++ PCNM47        0.010493936
++ PCNM71        0.010492562
++ PCNM3         0.010472167
++ PCNM17        0.010436123
++ PCNM40        0.010412649
++ PCNM28        0.010408076
++ PCNM13        0.010397825
++ PCNM11        0.010329721
++ PCNM43        0.010326098
++ PCNM30        0.010269041
++ PCNM75        0.010258405
++ PCNM66        0.010232162
++ PCNM67        0.010230294
++ PCNM54        0.010215907
++ PCNM26        0.010175034
++ PCNM2         0.010087796
++ PCNM63        0.010074799
++ PCNM64        0.010010060
++ PCNM77        0.009971583
++ PCNM62        0.009905013
++ PCNM68        0.009807272
+
+         Df    AIC      F Pr(>F)  
++ PCNM73  1 -67.85 1.2918   0.04 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.01226307 
+Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 +      PCNM74 + PCNM31 + PCNM73 
+ 
+                R2.adjusted
++ PCNM44         0.01345213
+<All variables>  0.01342770
++ PCNM45         0.01341103
++ PCNM8          0.01338484
++ PCNM32         0.01326694
++ PCNM76         0.01324640
++ PCNM78         0.01323532
++ PCNM4          0.01322802
++ PCNM69         0.01321262
++ PCNM53         0.01309473
++ PCNM25         0.01299607
++ PCNM79         0.01289970
++ PCNM51         0.01288610
++ PCNM37         0.01286098
++ PCNM58         0.01283526
++ PCNM7          0.01283350
++ PCNM65         0.01281514
++ PCNM49         0.01279597
++ PCNM41         0.01265955
++ PCNM33         0.01262071
++ PCNM19         0.01258144
++ PCNM18         0.01257528
++ PCNM10         0.01257453
++ PCNM9          0.01255212
++ PCNM21         0.01249055
++ PCNM29         0.01247126
++ PCNM46         0.01246962
++ PCNM52         0.01244459
++ PCNM34         0.01241941
++ PCNM80         0.01240809
++ PCNM35         0.01240105
++ PCNM72         0.01239386
++ PCNM6          0.01236804
++ PCNM38         0.01235701
++ PCNM81         0.01233509
++ PCNM50         0.01230808
++ PCNM84         0.01229754
+<none>           0.01226307
++ PCNM39         0.01224953
++ PCNM20         0.01224014
++ PCNM36         0.01222806
++ PCNM60         0.01220235
++ PCNM83         0.01220072
++ PCNM14         0.01218682
++ PCNM61         0.01210977
++ PCNM1          0.01209761
++ PCNM12         0.01209143
++ PCNM42         0.01208902
++ PCNM16         0.01208528
++ PCNM57         0.01208104
++ PCNM59         0.01207690
++ PCNM24         0.01207232
++ PCNM15         0.01206547
++ PCNM5          0.01206363
++ PCNM70         0.01205894
++ PCNM48         0.01200084
++ PCNM23         0.01197535
++ PCNM82         0.01187505
++ PCNM47         0.01186460
++ PCNM71         0.01186322
++ PCNM3          0.01184273
++ PCNM17         0.01180651
++ PCNM40         0.01178292
++ PCNM28         0.01177833
++ PCNM13         0.01176803
++ PCNM11         0.01169960
++ PCNM43         0.01169596
++ PCNM30         0.01163863
++ PCNM75         0.01162794
++ PCNM66         0.01160157
++ PCNM67         0.01159970
++ PCNM54         0.01158524
++ PCNM26         0.01154417
++ PCNM2          0.01145652
++ PCNM63         0.01144346
++ PCNM64         0.01137841
++ PCNM77         0.01133975
++ PCNM62         0.01127286
++ PCNM68         0.01117465
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 +
+PCNM22 + PCNM27 + PCNM74 + PCNM31 + PCNM73, data = pcnm_df)
+
+              Inertia Proportion Rank
+Total         0.71540    1.00000     
+Constrained   0.03157    0.04413    7
+Unconstrained 0.68384    0.95587  210
+Inertia is variance 
+
+Eigenvalues for constrained axes:
+    RDA1     RDA2     RDA3     RDA4     RDA5     RDA6     RDA7 
+0.010326 0.005376 0.003844 0.003605 0.003060 0.002924 0.002433 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.06126 0.02458 0.01939 0.01663 0.01345 0.01039 0.00968 0.00920 
+(Showing 8 of 210 unconstrained eigenvalues)
+
+[1] "Summary of spatial selection process"
+                   R2.adj Df     AIC      F Pr(>F)  
++ PCNM55        0.0026417  1 -71.596 1.5748  0.026 *
++ PCNM56        0.0044920  1 -71.012 1.4015  0.032 *
++ PCNM22        0.0062783  1 -70.420 1.3865  0.034 *
++ PCNM27        0.0078705  1 -69.790 1.3434  0.044 *
++ PCNM74        0.0094165  1 -69.156 1.3324  0.036 *
++ PCNM31        0.0108970  1 -68.513 1.3173  0.032 *
++ PCNM73        0.0122631  1 -67.850 1.2918  0.040 *
+<All variables> 0.0134277                           
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+[1] "ANOVA on full spatial selection"
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = decostand(comm_obj, "hel") ~ PCNM55 + PCNM56 + PCNM22 + PCNM27 + PCNM74 + PCNM31 + PCNM73, data = pcnm_df)
+          Df Variance      F Pr(>F)    
+Model      7  0.03157 1.3849  0.001 ***
+Residual 210  0.68384                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities"
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = vegdist(comm_obj), X = ~., scores(UWpcnm), data =
+meta_sub)
+
+Explanatory tables:
+X1:  ~.
+X2:  scores(UWpcnm) 
+
+No. of explanatory tables: 2 
+Total variation (SS): 79.858 
+No. of observations: 218 
+
+Partition table:
+                      Df R.squared Adj.R.squared Testable
+[a+b] = X1            82   0.39006       0.01958     TRUE
+[b+c] = X2            84   0.39445       0.01201     TRUE
+[a+b+c] = X1+X2      166   0.77563       0.04533     TRUE
+Individual fractions                                     
+[a] = X1|X2           82                 0.03333     TRUE
+[b]                    0                -0.01375    FALSE
+[c] = X2|X1           84                 0.02575     TRUE
+[d] = Residuals                          0.95467    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+Warning messages:
+1: collinearity detected in X1: mm = 86, m = 82 
+2: collinearity detected in cbind(X1,X2): mm = 170, m = 166 
+[1] "Variation decomposition with parsimonious variables"
+Error in terms.formula(formula, data = data) : 
+  '.' in formula and no 'data' argument
+Calls: varpart ... model.frame -> model.frame.default -> terms -> terms.formula
+Execution halted
