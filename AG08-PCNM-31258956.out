@@ -44533,3 +44533,120 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 Step: R2.adj= 0.01090156 
 Call: decostand(comm_obj, "hel") ~ PCNM55 + PCNM74 + PCNM27 + PCNM56 +      PCNM22 
  
+                R2.adjusted
+<All variables> 0.013073837
++ PCNM73        0.012328349
++ PCNM45        0.012317879
++ PCNM31        0.012256828
++ PCNM44        0.012128634
++ PCNM78        0.012096035
++ PCNM8         0.012035037
++ PCNM4         0.012016830
++ PCNM32        0.011970397
++ PCNM76        0.011855637
++ PCNM69        0.011802313
++ PCNM53        0.011652965
++ PCNM7         0.011633650
++ PCNM25        0.011591496
++ PCNM65        0.011467648
++ PCNM58        0.011450558
++ PCNM9         0.011446190
++ PCNM37        0.011396744
++ PCNM51        0.011395491
++ PCNM49        0.011294081
++ PCNM19        0.011225881
++ PCNM79        0.011222752
++ PCNM18        0.011192104
++ PCNM33        0.011180616
++ PCNM41        0.011164480
++ PCNM46        0.011108357
++ PCNM35        0.011082674
++ PCNM60        0.011077119
++ PCNM50        0.011048807
++ PCNM38        0.011038557
++ PCNM29        0.011035247
++ PCNM21        0.011022275
++ PCNM52        0.011009304
++ PCNM84        0.011004446
++ PCNM72        0.010994750
++ PCNM14        0.010969534
++ PCNM10        0.010953948
++ PCNM48        0.010920962
++ PCNM34        0.010914604
++ PCNM80        0.010901571
+<none>          0.010901555
++ PCNM6         0.010870123
++ PCNM36        0.010852399
++ PCNM20        0.010841949
++ PCNM81        0.010796863
++ PCNM42        0.010764794
++ PCNM5         0.010748218
++ PCNM12        0.010743481
++ PCNM39        0.010731139
++ PCNM28        0.010682825
++ PCNM70        0.010680923
++ PCNM61        0.010659676
++ PCNM16        0.010655400
++ PCNM15        0.010645633
++ PCNM24        0.010639504
++ PCNM59        0.010630652
++ PCNM13        0.010611707
++ PCNM11        0.010610278
++ PCNM1         0.010607303
++ PCNM47        0.010580458
++ PCNM3         0.010514633
++ PCNM57        0.010506498
++ PCNM82        0.010471733
++ PCNM23        0.010437770
++ PCNM17        0.010416910
++ PCNM40        0.010359956
++ PCNM43        0.010337099
++ PCNM71        0.010331456
++ PCNM75        0.010266158
++ PCNM66        0.010193352
++ PCNM30        0.010176597
++ PCNM26        0.010165596
++ PCNM54        0.010123882
++ PCNM83        0.010076344
++ PCNM63        0.010075841
++ PCNM67        0.010054927
++ PCNM2         0.010001342
++ PCNM77        0.009974319
++ PCNM62        0.009943407
++ PCNM64        0.009867775
++ PCNM68        0.009738444
+
+         Df     AIC      F Pr(>F)  
++ PCNM73  1 -77.781 1.3063  0.062 .
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Call: rda(formula = decostand(comm_obj, "hel") ~ PCNM55 + PCNM74 +
+PCNM27 + PCNM56 + PCNM22, data = pcnm_df)
+
+              Inertia Proportion Rank
+Total         0.68662    1.00000     
+Constrained   0.02313    0.03369    5
+Unconstrained 0.66349    0.96631  212
+Inertia is variance 
+
+Eigenvalues for constrained axes:
+    RDA1     RDA2     RDA3     RDA4     RDA5 
+0.009237 0.004806 0.003415 0.003097 0.002578 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.06551 0.02490 0.02151 0.01762 0.01364 0.01004 0.00957 0.00909 
+(Showing 8 of 212 unconstrained eigenvalues)
+
+[1] "Summary of spatial selection process"
+                   R2.adj Df     AIC      F Pr(>F)   
++ PCNM55        0.0034023  1 -80.714 1.7408  0.006 **
++ PCNM74        0.0055014  1 -80.185 1.4559  0.022 * 
++ PCNM27        0.0074128  1 -79.621 1.4140  0.018 * 
++ PCNM56        0.0091764  1 -79.029 1.3809  0.040 * 
++ PCNM22        0.0109016  1 -78.435 1.3715  0.038 * 
+<All variables> 0.0130738                            
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+[1] "ANOVA on full spatial selection"
