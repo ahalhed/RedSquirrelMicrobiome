@@ -74,7 +74,7 @@ print("Plotting significant PCNM axes with ordisurf")
 
 print("AG 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_ordiSIG.pdf")
-par(mfrow=c(3,3))
+par(mfrow=c(2,4))
 ordisurf(XY_AG, scores(AG, choi=55), bubble = 4, main = "PCNM 55")
 ordisurf(XY_AG, scores(AG, choi=56), bubble = 4, main = "PCNM 56")
 ordisurf(XY_AG, scores(AG, choi=22), bubble = 4, main = "PCNM 22")
