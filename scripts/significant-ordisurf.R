@@ -91,11 +91,9 @@ dev.off()
 
 print("KL 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2008_ordiSIG.pdf")
-par(mfrow=c(2,2))
+par(mfrow=c(1,2))
 ordisurf(XY_KL8, scores(KL8, choi=2), bubble = 4, main = "PCNM 2")
-ordisurf(XY_KL8, scores(KL8, choi=14), bubble = 4, main = "PCNM 14")
 ordisurf(XY_KL8, scores(KL8, choi=33), bubble = 4, main = "PCNM 33")
-ordisurf(XY_KL8, scores(KL8, choi=13), bubble = 4, main = "PCNM 13")
 dev.off()
 
 print("KL 2009")
