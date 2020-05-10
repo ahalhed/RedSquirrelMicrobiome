@@ -75,8 +75,6 @@ print("Plotting significant PCNM axes with ordisurf")
 print("AG 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_AG2008_ordiSIG.pdf")
 par(mfrow=c(2,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_AG, scores(AG, choi=55), bubble = 4, main = "PCNM 55")
 ordisurf(XY_AG, scores(AG, choi=27), bubble = 4, main = "PCNM 27")
 ordisurf(XY_AG, scores(AG, choi=74), bubble = 4, main = "PCNM 74")
@@ -85,8 +83,6 @@ dev.off()
 print("CH 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_CH2008_ordiSIG.pdf")
 par(mfrow=c(1,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_CH, scores(CH, choi=8), bubble = 4, main = "PCNM 8")
 ordisurf(XY_CH, scores(CH, choi=15), bubble = 4, main = "PCNM 15")
 dev.off()
@@ -97,8 +93,6 @@ print("No significant core axes")
 print("KL 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_KL2008_ordiSIG.pdf")
 par(mfrow=c(2,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_KL8, scores(KL8, choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_KL8, scores(KL8, choi=14), bubble = 4, main = "PCNM 14")
 ordisurf(XY_KL8, scores(KL8, choi=33), bubble = 4, main = "PCNM 33")
@@ -111,8 +105,6 @@ print("No significant core axes")
 print("KL 2010")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_KL2010_ordiSIG.pdf")
 par(mfrow=c(1,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_KL10, scores(KL10, choi=4), bubble = 4, main = "PCNM 4")
 ordisurf(XY_KL10, scores(KL10, choi=37), bubble = 4, main = "PCNM 37")
 dev.off()
@@ -120,8 +112,6 @@ dev.off()
 print("LL 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_LL2008_ordiSIG.pdf")
 par(mfrow=c(1,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_LL, scores(LL, choi=13), bubble = 4, main = "PCNM 13")
 ordisurf(XY_LL, scores(LL, choi=21), bubble = 4, main = "PCNM 21")
 dev.off()
@@ -129,8 +119,6 @@ dev.off()
 print("SU 2008")
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_SU2008_ordiSIG.pdf")
 par(mfrow=c(2,2))
-# these can be adjusted afterwards, once we know which are significant
-# see section starting at 161
 ordisurf(XY_SU, scores(SU, choi=8), bubble = 4, main = "PCNM 8")
 ordisurf(XY_SU, scores(SU, choi=10), bubble = 4, main = "PCNM 10")
 ordisurf(XY_SU, scores(SU, choi=6), bubble = 4, main = "PCNM 6")
