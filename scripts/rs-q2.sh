@@ -89,16 +89,6 @@ qiime phylogeny midpoint-root \
   --i-tree ./trees/unrooted_tree.qza \
   --o-rooted-tree ./trees/rooted_tree.qza 
 
-# https://docs.qiime2.org/2019.10/plugins/available/phylogeny/raxml/
-qiime phylogeny raxml \
-  --i-alignment aligned_sequences.qza \
-  --o-tree ./trees/unrooted_tree_um_raxml.qza 
-
-qiime phylogeny midpoint-root \
-  --i-tree ./trees/unrooted_tree_raxml.qza \
-  --o-rooted-tree ./trees/rooted_tree_um_raxml.qza
-
-# haven't run insertion tree yet (but will add it in if it gets run)
 
 # NON-PHYLOGENETIC diversity analyses
 # so apparently not all the samples have metadata... see ./output/server5-jan16-26377006.out
@@ -510,12 +500,9 @@ qiime taxa collapse \
 
 # Obtaining SILVA reference database (much larger database, will likely do a better job at classifying)
 wget -O "silva-132-99-nb-classifier.qza" "https://data.qiime2.org/2019.10/common/silva-132-99-nb-classifier.qza"
-# SILVA job currently in the queue
 # Classifying taxonomies
 qiime feature-classifier classify-sklearn \
   --i-classifier ./references/silva-132-99-nb-classifier.qza \
-  --p-chunk-size 1000 \
-  --p-n-jobs 8 \
   --i-reads rep-seqs.qza \
   --o-classification ./taxonomy/SILVA-taxonomy.qza
 # Generating taxonomy visualization

@@ -148,6 +148,22 @@ pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core
 msoplot(mso_sub, ylim = c(0, 45), main="2008 SU")
 dev.off()
 
+print("CCA retaining spatial patterns for MSO")
+print("Constrained")
+cca_con <- cca(log(comm_obj + 1) ~ Age, meta_sub)
+mso_sub2 <- mso(cca_con, XY_sub)
+mso_sub2
+print("Unconstrained")
+cca_un <- cca(log(comm_obj + 1))
+mso_sub3 <- mso(cca_un, XY_sub)
+mso_sub3
+# plot
+pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_SU2008_mso2.pdf")
+par(mfrow=c(1,2))
+msoplot(mso_sub2, ylim = c(0,0.25), main="Constrained Ordination")
+msoplot(mso_sub3, ylim = c(0,0.25), main="Unconstrained Ordination")
+dev.off()
+
 # notes on data
 # Grids JO and SU only has females from month 5, late spring
 # Grids CH and LL only has females
