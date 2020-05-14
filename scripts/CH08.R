@@ -132,8 +132,8 @@ mso_sub3
 # plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/CH2008_mso2.pdf")
 par(mfrow=c(1,2))
-msoplot(mso_sub2, ylim = c(0,0.25), main="Constrained Ordination")
-msoplot(mso_sub3, ylim = c(0,0.25), main="Unconstrained Ordination")
+msoplot(mso_sub2, main="Constrained Ordination", legend = "bottomright")
+msoplot(mso_sub3, main="Unconstrained Ordination", legend = "bottomright")
 dev.off()
 
 # notes on data
