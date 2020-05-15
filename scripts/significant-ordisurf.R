@@ -36,7 +36,7 @@ colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "S
 
 # start analysis
 print("Starting initial data preparation")
-print("Access and plot XY data")
+print("Access XY data")
 XY_AG <- XY_year(rs_q2_metadata, "AG", 2008)
 XY_CH <- XY_year(rs_q2_metadata, "CH", 2008)
 XY_JO <- XY_year(rs_q2_metadata, "JO", 2008)
