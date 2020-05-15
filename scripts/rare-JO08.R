@@ -161,8 +161,8 @@ mso_sub3
 # plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_JO2008_mso2.pdf")
 par(mfrow=c(1,2))
-msoplot(mso_sub2, legend = "bottomleft", main="Constrained Ordination")
-msoplot(mso_sub3, legend = "bottomleft", main="Unconstrained Ordination")
+msoplot(mso_sub2, legend = "right", main="Constrained Ordination")
+msoplot(mso_sub3, legend = "right", main="Unconstrained Ordination")
 dev.off()
 # notes on data
 # Grids JO and SU only has females from month 5, late spring

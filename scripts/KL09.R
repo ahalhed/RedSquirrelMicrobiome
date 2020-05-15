@@ -129,8 +129,8 @@ mso_sub3
 # plot
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_mso2.pdf")
 par(mfrow=c(1,2))
-msoplot(mso_sub2, main="Constrained Ordination", legend = "bottomright")
-msoplot(mso_sub3, main="Unconstrained Ordination", legend = "bottomright")
+msoplot(mso_sub2, main="Constrained Ordination", legend = "right")
+msoplot(mso_sub3, main="Unconstrained Ordination", legend = "right")
 dev.off()
 
 # Variance partitioning
