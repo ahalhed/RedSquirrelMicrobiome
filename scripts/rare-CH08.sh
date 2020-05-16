@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=def-cottenie
 #SBATCH --time=0-01:30:00
-#SBATCH --mem-per-cpu 64G
+#SBATCH --mem-per-cpu=64G
 #SBATCH --job-name=rare-CH08
 #SBATCH --output=/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/%x-%j.out
 
