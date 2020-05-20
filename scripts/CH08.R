@@ -20,10 +20,11 @@ theme_set(theme_bw())
 print("Initiate functions for analysis")
 # subset the XY's by grid and year
 XY_year <- function(metadata, grid, year) {
-  df1 <- subset(metadata, Grid == grid, 
-         select = c("SampleID", "Location X", "Location Y", "Year"))
+  met <- rownames_to_column(metadata, var = "SampleID")
+  df1 <- subset(met, Grid == grid, 
+         select = c("SampleID", "Location.X", "Location.Y", "Year"))
   df2 <- subset(df1, Year == year, 
-         select = c("SampleID", "Location X", "Location Y"))
+         select = c("SampleID", "Location.X", "Location.Y"))
   df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
   return(df3)
 }
@@ -45,9 +46,11 @@ ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-tabl
                       taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
                       metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
 
+# based on the meta function from the microbiome package
+# I don't want to load a whole package for one function
 print("Read in the metadata")
-rs_q2_metadata <- read.table("/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv", sep="\t")
-colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+rs_q2_metadata <- as(sample_data(ps), "data.frame")
+rownames(rs_q2_metadata) <- sample_names(ps)
 
 # start analysis
 print("Starting initial data preparation")
@@ -55,7 +58,7 @@ print("Access and plot XY data")
 XY_sub <- XY_year(rs_q2_metadata, "CH", 2008)
 # plotting the locations
 pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/CH2008_XY.pdf")
-XY_sub %>% ggplot(aes(x = `Location X`, y = `Location Y`)) + 
+XY_sub %>% ggplot(aes(x = `Location.X`, y = `Location.Y`)) + 
   geom_point() + 
   coord_fixed()
 dev.off()
