@@ -1,5 +1,5 @@
 #---
-#title: "PCNM for Core Squirrel Microbiome by Month(SHARCNET)"
+#title: "PCNM for Squirrel Microbiome by Month (SHARCNET)"
 #author: "Alicia Halhed"
 #date: "05/22/2020"
 #---
