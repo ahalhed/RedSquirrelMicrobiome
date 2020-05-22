@@ -135,7 +135,7 @@ print("Accessing the XY data by month")
 met <- met_year(rs_q2_metadata, "KL", 2010)
 # loop to create individual month data frames
 for (month in unique(met$Month)) {
-  df <- XY_month(rs_q2_metadata, "AG", 2010, month)
+  df <- XY_month(rs_q2_metadata, "KL", 2010, month)
   assign(paste('Month',month,sep = ' '),df)
   rm(df, month)
 }
