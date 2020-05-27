@@ -29,3 +29,1403 @@ This is vegan 2.5-6
 [1] "Read in the metadata"
 [1] "Finding core microbiome"
 [1] "Accessing full OTU table as a community object"
+[1] "Transforming the OTU counts to relative abundance"
+[1] "Calculating 95% threshold"
+[1] 863.55
+[1] "Accessing the number of non-zero occurrences of each OTU"
+[1] "Calculating average relative abundance"
+[1] "Extract the OTUs that occur in >95% of samples"
+[1] "Find OTUs that occur in >95% of samples and have an average relative abundance >0.1%"
+Joining, by = "OTU"
+[1] "How many OTUs meet these criteria?"
+[1] 14
+[1] "Subset the OTU table to find core and rare OTUs"
+[1] "Accessing the XY data by month"
+[1] "Months in this Grid"
+[1] 5 4
+[1] "Computing Euclidean Distances"
+[1] "Maximum Euclidean Distance by Month"
+$`Month 4`
+[1] 20.30394
+
+$`Month 5`
+[1] 20.70024
+
+[1] "Build the community object (OTU table) for grid/year/month"
+[1] "Extract metadata for grid/year/month"
+[1] "Removing pobjects that are no longer needed"
+[1] "Unweighted PCNM - for use with all OTU tables"
+                              PCNM1       PCNM2       PCNM3        PCNM4
+P1060.8657.F.4.CH.2008   0.09044792  0.44247410 -0.12561626  0.118700236
+P1093.8588.F.3.CH.2008  -0.27489497 -0.14164682 -0.12096300  0.126806005
+P0640.10228.F.4.CH.2008 -0.19013750  0.21879772  0.24594115  0.001202901
+P1151.8505.F.3.CH.2008  -0.01655050  0.11468887 -0.01436416  0.301945291
+P1431.10061.F.4.CH.2008  0.21788927 -0.30042551  0.05686846  0.082194158
+P1453.10228.F.4.CH.2008 -0.26641971  0.05276553  0.25034294 -0.032044893
+P1094.10713.F.4.CH.2008 -0.07820764 -0.33817832 -0.28532500  0.434313604
+P0985.10264.F.2.CH.2008 -0.22319060  0.01950639  0.11917245 -0.378921397
+P1361.10125.F.3.CH.2008  0.24556765 -0.16456842 -0.01003538 -0.213376084
+P1337.8238.F.1.CH.2008   0.15214395  0.20319644 -0.45119209 -0.250965879
+P1165.10687.F.1.CH.2008 -0.26162993 -0.01498617  0.07987207 -0.329630399
+P0956.10125.F.3.CH.2008  0.24556765 -0.16456842 -0.01003538 -0.213376084
+P1026.10713.F.4.CH.2008 -0.23902138 -0.14158167 -0.15409918  0.270105850
+P1144.8095.F.3.CH.2008   0.05483259  0.26160544 -0.49059728 -0.073229007
+P1025.13676.F.1.CH.2008  0.23036991 -0.21910396  0.15433602 -0.102331013
+P0939.10082.F.4.CH.2008  0.24030875  0.08570717  0.13693257 -0.005891830
+P1346.10280.F.1.CH.2008 -0.30584174 -0.13582521 -0.07682440 -0.027618344
+P0744.8588.F.3.CH.2008  -0.29378100 -0.05544105  0.01584499 -0.203175670
+P1555.8701.F.1.CH.2008   0.24586525  0.15811579 -0.03297528 -0.033356951
+P1536.10239.F.2.CH.2008  0.18411335  0.05042479  0.37627967  0.086173067
+P1388.10262.F.2.CH.2008  0.02467943  0.36946881  0.27956862  0.360282282
+P0984.13677.F.1.CH.2008  0.21788927 -0.30042551  0.05686846  0.082194158
+                                PCNM5       PCNM6        PCNM7        PCNM8
+P1060.8657.F.4.CH.2008  -0.2212303004  0.19676568  0.106807539 -0.018101576
+P1093.8588.F.3.CH.2008  -0.1665320117 -0.20902833 -0.003611712 -0.550074993
+P0640.10228.F.4.CH.2008 -0.2988345950  0.03449524  0.199274361 -0.053367942
+P1151.8505.F.3.CH.2008   0.7655709943 -0.18339895  0.050676259 -0.086280279
+P1431.10061.F.4.CH.2008  0.0146269250  0.24418526  0.000801733 -0.004071668
+P1453.10228.F.4.CH.2008 -0.0096238525 -0.14222617 -0.374648445  0.193128659
+P1094.10713.F.4.CH.2008 -0.0379317035  0.28826248  0.199292279  0.102573563
+P0985.10264.F.2.CH.2008  0.2326496432  0.35917121  0.129339954  0.432546046
+P1361.10125.F.3.CH.2008  0.0464181388 -0.28505979  0.030776819  0.067377733
+P1337.8238.F.1.CH.2008   0.0007560654 -0.28589875  0.213038121  0.133789537
+P1165.10687.F.1.CH.2008  0.1366718012  0.18459177  0.123748603 -0.495697819
+P0956.10125.F.3.CH.2008  0.0464181388 -0.28505979  0.030776819  0.067377733
+P1026.10713.F.4.CH.2008 -0.2415844292 -0.34979189 -0.151260884  0.308500084
+P1144.8095.F.3.CH.2008   0.0432176129  0.27122340 -0.486948817 -0.054416418
+P1025.13676.F.1.CH.2008  0.0370413834 -0.01262428 -0.257474454 -0.176940532
+P0939.10082.F.4.CH.2008 -0.1644521700 -0.09969223  0.476578411 -0.023579235
+P1346.10280.F.1.CH.2008 -0.0394887744  0.09091801  0.165213377  0.176615835
+P0744.8588.F.3.CH.2008  -0.0138637480 -0.14543938 -0.089124197 -0.010047183
+P1555.8701.F.1.CH.2008  -0.1412682348  0.11534914 -0.133910850 -0.107824847
+P1536.10239.F.2.CH.2008 -0.1726029929  0.02718446 -0.279123421  0.073364244
+P1388.10262.F.2.CH.2008  0.1694151845 -0.05811235  0.048976773  0.029200724
+P0984.13677.F.1.CH.2008  0.0146269250  0.24418526  0.000801733 -0.004071668
+                               PCNM9        PCNM10
+P1060.8657.F.4.CH.2008   0.003993839 -1.014361e-01
+P1093.8588.F.3.CH.2008  -0.147373720 -6.508173e-04
+P0640.10228.F.4.CH.2008  0.226850784  7.498110e-02
+P1151.8505.F.3.CH.2008   0.179284571 -3.110929e-03
+P1431.10061.F.4.CH.2008 -0.014369783 -2.513940e-01
+P1453.10228.F.4.CH.2008 -0.433073210 -1.842965e-02
+P1094.10713.F.4.CH.2008 -0.196732820  1.381831e-03
+P0985.10264.F.2.CH.2008  0.076757721 -1.834332e-03
+P1361.10125.F.3.CH.2008 -0.133897094  2.977211e-02
+P1337.8238.F.1.CH.2008  -0.238718972 -2.098842e-02
+P1165.10687.F.1.CH.2008 -0.215496394  6.079299e-03
+P0956.10125.F.3.CH.2008 -0.133897094  2.977211e-02
+P1026.10713.F.4.CH.2008  0.275927197  3.825855e-03
+P1144.8095.F.3.CH.2008   0.047392065 -3.958839e-05
+P1025.13676.F.1.CH.2008  0.386237780  4.433557e-01
+P0939.10082.F.4.CH.2008  0.126429573 -6.445521e-02
+P1346.10280.F.1.CH.2008 -0.015009856  5.447925e-01
+P0744.8588.F.3.CH.2008   0.395694783 -5.704170e-01
+P1555.8701.F.1.CH.2008   0.202763034  1.646173e-01
+P1536.10239.F.2.CH.2008 -0.259084357 -5.708705e-02
+P1388.10262.F.2.CH.2008 -0.119308267  4.265924e-02
+P0984.13677.F.1.CH.2008 -0.014369783 -2.513940e-01
+                               PCNM1       PCNM2        PCNM3        PCNM4
+P3026.10228.F.4.CH.2008  0.039344220  0.35382127  0.223618370  0.077065832
+P3096.10086.F.4.CH.2008  0.299228892 -0.14481016 -0.052414716  0.051320324
+P3137.8636.F.4.CH.2008  -0.256468087 -0.11700582  0.003930415 -0.005459016
+P1445.10082.F.4.CH.2008  0.116520144 -0.27318508  0.138537901  0.055260230
+P1407.8636.F.4.CH.2008  -0.256468087 -0.11700582  0.003930415 -0.005459016
+P1873.10239.F.2.CH.2008  0.226365619 -0.16348365  0.173311444  0.065479493
+P1321.8259.F.4.CH.2008   0.063000905  0.33423153 -0.188158965  0.404415474
+P1442.8505.F.3.CH.2008   0.054322032  0.26239906 -0.166182982  0.267241342
+P1877.8657.F.4.CH.2008  -0.254797288 -0.11505438  0.014182978 -0.007686893
+P1548.8407.F.4.CH.2008  -0.233319233 -0.08814957 -0.274362498  0.041613169
+P1813.8636.F.4.CH.2008  -0.190408548 -0.18369403  0.111116408  0.049242608
+P1372.10264.F.2.CH.2008  0.060511488  0.34974596 -0.076578207  0.318260686
+P1274.8636.F.4.CH.2008  -0.256468087 -0.11700582  0.003930415 -0.005459016
+P1549.10065.F.4.CH.2008  0.301296705 -0.14914381 -0.049446662  0.054124411
+P1478.10082.F.4.CH.2008  0.097644407 -0.29937514 -0.080495748  0.084140593
+P1532.10713.F.4.CH.2008  0.061302115  0.22767153 -0.168675628 -0.490551655
+P1749.8095.F.3.CH.2008  -0.243177047 -0.02549313 -0.252933772  0.005992549
+P1420.10262.F.2.CH.2008 -0.177415732  0.09114871  0.315666379 -0.136718797
+P1414.10061.F.4.CH.2008  0.314918750 -0.10761105 -0.101131046 -0.184090561
+P1447.10228.F.4.CH.2008  0.006062751  0.30261660  0.334468649 -0.112461667
+P1002.10262.F.2.CH.2008 -0.092643678  0.04263987  0.513058842 -0.027539360
+P1801.8407.F.4.CH.2008  -0.245994200 -0.02768423 -0.252943270  0.006437230
+P1419.10693.F.3.CH.2008  0.105153219  0.20619501 -0.196909520 -0.567900773
+P1475.10086.F.4.CH.2008  0.235123122 -0.07828421 -0.148830647 -0.002746678
+P1410.10239.F.2.CH.2008  0.226365619 -0.16348365  0.173311444  0.065479493
+                               PCNM5        PCNM6        PCNM7        PCNM8
+P3026.10228.F.4.CH.2008 -0.254181361 -0.426730015 -0.117081042 -0.001051173
+P3096.10086.F.4.CH.2008 -0.147802686 -0.018521500  0.146460290  0.066446220
+P3137.8636.F.4.CH.2008  -0.059495475  0.104281652 -0.112993267  0.026163005
+P1445.10082.F.4.CH.2008 -0.019432761  0.168449911 -0.296818178  0.315565394
+P1407.8636.F.4.CH.2008  -0.059495475  0.104281652 -0.112993267  0.026163005
+P1873.10239.F.2.CH.2008  0.352942075 -0.188405172  0.089406075 -0.032795624
+P1321.8259.F.4.CH.2008   0.208218828  0.278066568 -0.075168576 -0.011137486
+P1442.8505.F.3.CH.2008   0.231631172  0.404467569  0.371984958 -0.006031270
+P1877.8657.F.4.CH.2008  -0.057537773  0.117618884 -0.120345652  0.021100171
+P1548.8407.F.4.CH.2008  -0.054882423 -0.232456551  0.101723445 -0.461939347
+P1813.8636.F.4.CH.2008   0.300111588 -0.098877592  0.024043782 -0.080003571
+P1372.10264.F.2.CH.2008 -0.045119666 -0.214698308 -0.513054400 -0.003576293
+P1274.8636.F.4.CH.2008  -0.059495475  0.104281652 -0.112993267  0.026163005
+P1549.10065.F.4.CH.2008 -0.139554222 -0.021421948  0.140521999  0.054748704
+P1478.10082.F.4.CH.2008 -0.106558992  0.026272345 -0.151433919 -0.571871173
+P1532.10713.F.4.CH.2008  0.195745555  0.041466594 -0.159161426 -0.081014831
+P1749.8095.F.3.CH.2008  -0.003615702 -0.250328264  0.236390570  0.328970090
+P1420.10262.F.2.CH.2008 -0.104079162  0.381256768  0.122096201 -0.143816841
+P1414.10061.F.4.CH.2008 -0.033369602 -0.006682755  0.018934231  0.066285712
+P1447.10228.F.4.CH.2008 -0.283163335 -0.087959478  0.413803774 -0.189441458
+P1002.10262.F.2.CH.2008  0.111968694  0.020254139 -0.070701092  0.192141338
+P1801.8407.F.4.CH.2008  -0.002461030 -0.249360945  0.232296249  0.322453791
+P1419.10693.F.3.CH.2008  0.178844668  0.037622533 -0.142972666  0.012577609
+P1475.10086.F.4.CH.2008 -0.502159517  0.195527432 -0.001350895  0.156696645
+P1410.10239.F.2.CH.2008  0.352942075 -0.188405172  0.089406075 -0.032795624
+                                PCNM9      PCNM10        PCNM11        PCNM12
+P3026.10228.F.4.CH.2008 -0.2943894152  0.15639533 -2.355677e-02 -9.413840e-04
+P3096.10086.F.4.CH.2008  0.0757153132 -0.24068794 -6.074987e-02 -5.605453e-01
+P3137.8636.F.4.CH.2008  -0.0338624853  0.04416646  2.907507e-01 -9.656095e-02
+P1445.10082.F.4.CH.2008 -0.2679166409  0.06965710  2.143424e-02  3.692507e-03
+P1407.8636.F.4.CH.2008  -0.0338624853  0.04416646  2.907507e-01 -9.656095e-02
+P1873.10239.F.2.CH.2008  0.0493251569 -0.04141138  1.119371e-03 -1.333494e-03
+P1321.8259.F.4.CH.2008   0.1486122582 -0.01130474  2.651502e-02 -3.735008e-04
+P1442.8505.F.3.CH.2008  -0.3813722485  0.19500968 -2.291935e-02 -8.846216e-04
+P1877.8657.F.4.CH.2008  -0.0217029192  0.03812325 -5.731645e-01  4.074855e-01
+P1548.8407.F.4.CH.2008  -0.1102613782  0.08929744 -9.055671e-03 -6.527620e-03
+P1813.8636.F.4.CH.2008   0.1186127739 -0.10909866 -3.034475e-01 -1.247244e-01
+P1372.10264.F.2.CH.2008  0.3243377966 -0.10678718 -3.458410e-06 -2.769035e-06
+P1274.8636.F.4.CH.2008  -0.0338624853  0.04416646  2.907507e-01 -9.656095e-02
+P1549.10065.F.4.CH.2008  0.0644058794 -0.23709615  3.368712e-01  6.774737e-01
+P1478.10082.F.4.CH.2008 -0.1222741629  0.07251442  7.947795e-03 -1.096469e-03
+P1532.10713.F.4.CH.2008 -0.3110736231 -0.57678339  1.031109e-02  4.893083e-04
+P1749.8095.F.3.CH.2008   0.0809271692 -0.04609991  2.367654e-01 -2.930833e-02
+P1420.10262.F.2.CH.2008  0.5143471496 -0.17695711  7.837644e-04  1.552544e-04
+P1414.10061.F.4.CH.2008  0.2672976701  0.49420783  2.518229e-04  4.588695e-05
+P1447.10228.F.4.CH.2008 -0.0001026048  0.02863445  3.362084e-02  7.449167e-03
+P1002.10262.F.2.CH.2008 -0.2046148697  0.08449626 -7.226915e-03 -8.271458e-03
+P1801.8407.F.4.CH.2008   0.0803975678 -0.04426398 -2.400033e-01  4.791494e-02
+P1419.10693.F.3.CH.2008  0.1221515791  0.37438061 -6.812319e-03 -1.779436e-03
+P1475.10086.F.4.CH.2008 -0.0801601526 -0.10331393 -3.020523e-01 -1.179013e-01
+P1410.10239.F.2.CH.2008  0.0493251569 -0.04141138  1.119371e-03 -1.333494e-03
+                               PCNM13        PCNM14
+P3026.10228.F.4.CH.2008 -7.289873e-03 -1.592136e-03
+P3096.10086.F.4.CH.2008 -2.995319e-01 -4.329815e-01
+P3137.8636.F.4.CH.2008   8.273714e-02 -7.299297e-02
+P1445.10082.F.4.CH.2008  7.924643e-03 -1.987078e-04
+P1407.8636.F.4.CH.2008   8.273714e-02 -7.299297e-02
+P1873.10239.F.2.CH.2008 -5.548276e-04  5.173478e-04
+P1321.8259.F.4.CH.2008   8.447960e-03  4.534711e-04
+P1442.8505.F.3.CH.2008  -7.172550e-03 -1.527516e-03
+P1877.8657.F.4.CH.2008  -4.648492e-01 -2.439722e-01
+P1548.8407.F.4.CH.2008  -6.547787e-03 -1.870693e-04
+P1813.8636.F.4.CH.2008   2.165585e-01  4.585715e-01
+P1372.10264.F.2.CH.2008 -1.352365e-04 -2.326230e-05
+P1274.8636.F.4.CH.2008   8.273714e-02 -7.299297e-02
+P1549.10065.F.4.CH.2008  8.318774e-02 -3.277007e-02
+P1478.10082.F.4.CH.2008 -4.944595e-03  8.347430e-04
+P1532.10713.F.4.CH.2008 -2.125141e-03 -7.451726e-03
+P1749.8095.F.3.CH.2008  -5.340938e-01  3.981506e-01
+P1420.10262.F.2.CH.2008  2.565166e-07 -2.585648e-05
+P1414.10061.F.4.CH.2008 -1.303452e-04 -3.742445e-04
+P1447.10228.F.4.CH.2008  1.351542e-02  2.983242e-04
+P1002.10262.F.2.CH.2008 -5.246158e-03  2.519428e-04
+P1801.8407.F.4.CH.2008   5.362075e-01 -3.898122e-01
+P1419.10693.F.3.CH.2008  3.405038e-03  6.536612e-03
+P1475.10086.F.4.CH.2008  2.157177e-01  4.637635e-01
+P1410.10239.F.2.CH.2008 -5.548276e-04  5.173478e-04
+[1] "Acessing PCNM scores"
+[1] "Analysis for Core OTUs"
+[1] "Variance partitioning - Core OTUs"
+Warning messages:
+1: collinearity detected in X2: mm = 13, m = 12 
+2: collinearity detected in cbind(X1,X2): mm = 23, m = 20 
+3: collinearity detected in X2: mm = 17, m = 16 
+4: collinearity detected in cbind(X1,X2): mm = 31, m = 24 
+$`Month 4`
+
+Partition of variance in RDA 
+
+Call: (function (Y, X, ..., data, chisquare = FALSE, transfo, scale =
+FALSE, add = FALSE, sqrt.dist = FALSE, permutations = 1000) { if
+(missing(data)) data <- parent.frame() X <- list(X, ...)  if
+((length(X) < 2 || length(X) > 4)) stop("needs two to four explanatory
+tables") if (inherits(Y, "dist")) { inert <- attr(Y, "method") inert <-
+paste(paste0(toupper(substring(inert, 1, 1)), substring(inert, 2)),
+"distance") if (sqrt.dist) Y <- sqrt(Y) else inert <- paste("squared",
+inert) if (is.logical(add) && isTRUE(add)) add <- "lingoes" if
+(is.character(add)) { add <- match.arg(add, c("lingoes", "cailliez"))
+if (add == "lingoes") { ac <- addLingoes(as.matrix(Y)) Y <- sqrt(Y^2 +
+2 * ac) } else if (add == "cailliez") { ac <- addCailliez(as.matrix(Y))
+Y <- Y + ac } if (ac > sqrt(.Machine$double.eps)) inert <-
+paste(paste0(toupper(substring(add, 1, 1)), substring(add, 2)),
+"adjusted", inert) } RDA <- "dbRDA" if (!missing(transfo) ||
+!missing(scale)) message("arguments 'transfo' and 'scale' are ignored
+with distances") } else if (chisquare) { inert = "Chi-square" RDA =
+"CCA" permutations = getPermuteMatrix(permutations, nrow(Y)) } else {
+inert <- "variance" RDA <- "RDA" if (!missing(transfo)) { Y <-
+decostand(Y, transfo) transfo <- attr(Y, "decostand") } if
+(!missing(transfo) && (is.null(dim(Y)) || ncol(Y) == 1))
+warning("transformations are probably meaningless with a single
+variable") if (scale && !missing(transfo)) warning("Y should not be
+both transformed and scaled (standardized)") Y <- scale(Y, center =
+TRUE, scale = scale) } Sets <- list() for (i in seq_along(X)) { if
+(is.data.frame(X[[i]]) || is.factor(X[[i]])) { mf <-
+as.data.frame(X[[i]]) mf <- model.matrix(~., mf) Sets[[i]] <- mf[, -1,
+drop = FALSE] } else if (inherits(X[[i]], "formula")) { mf <-
+model.frame(X[[i]], data, na.action = na.fail, drop.unused.levels =
+TRUE) trms <- attr(mf, "terms") Sets[[i]] <- model.matrix(trms, mf) if
+(any(colnames(Sets[[i]]) == "(Intercept)")) { xint <-
+which(colnames(Sets[[i]]) == "(Intercept)") Sets[[i]] <- (Sets[[i]])[,
+-xint, drop = FALSE] } } else Sets[[i]] <- as.matrix(X[[i]]) Sets[[i]]
+<- scale(Sets[[i]], center = TRUE, scale = TRUE) } out <- list()
+out$part <- switch(length(Sets), NULL, varpart2(Y, Sets[[1]],
+Sets[[2]], chisquare, permutations), varpart3(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], chisquare, permutations), varpart4(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], Sets[[4]], chisquare, permutations)) if (inherits(Y,
+"dist")) { out$part$ordination <- "dbrda" } else { if (chisquare)
+out$part$ordination <- "cca" else { out$part$ordination <- "rda" } } if
+(RDA == "RDA") { out$scale <- scale if (!missing(transfo)) out$transfo
+<- transfo } else { if (scale || !missing(transfo)) message("arguments
+'scale' and 'transfo' ignored: valid only in RDA") } out$inert <- inert
+out$RDA <- RDA out$call <- match.call() mx <- rep(" ", length(X)) for
+(i in seq_along(X)) mx[i] <- deparse(out$call[[i + 2]], width.cutoff =
+500) out$tables <- mx class(out) <- c("varpart", class(out)) out })(Y =
+dots[[1L]][[1L]], X = dots[[2L]][[1L]], ~., data = dots[[3L]][[1L]],
+transfo = "hel")
+Species transformation:  hellinger
+Explanatory tables:
+X1:  dots[[2L]][[1L]]
+X2:  ~. 
+
+No. of explanatory tables: 2 
+Total variation (SS): 4.936 
+            Variance: 0.23505 
+No. of observations: 22 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           10   0.53230       0.10712     TRUE
+[b+c] = X2           12   0.63208       0.14152     TRUE
+[a+b+c] = X1+X2      20   0.99427       0.87967     TRUE
+Individual fractions                                    
+[a] = X1|X2           8                 0.73815     TRUE
+[b]                   0                -0.63103    FALSE
+[c] = X2|X1          10                 0.77255     TRUE
+[d] = Residuals                         0.12033    FALSE
+---
+Use function ‘rda’ to test significance of fractions of interest
+
+$`Month 5`
+
+Partition of variance in RDA 
+
+Call: (function (Y, X, ..., data, chisquare = FALSE, transfo, scale =
+FALSE, add = FALSE, sqrt.dist = FALSE, permutations = 1000) { if
+(missing(data)) data <- parent.frame() X <- list(X, ...)  if
+((length(X) < 2 || length(X) > 4)) stop("needs two to four explanatory
+tables") if (inherits(Y, "dist")) { inert <- attr(Y, "method") inert <-
+paste(paste0(toupper(substring(inert, 1, 1)), substring(inert, 2)),
+"distance") if (sqrt.dist) Y <- sqrt(Y) else inert <- paste("squared",
+inert) if (is.logical(add) && isTRUE(add)) add <- "lingoes" if
+(is.character(add)) { add <- match.arg(add, c("lingoes", "cailliez"))
+if (add == "lingoes") { ac <- addLingoes(as.matrix(Y)) Y <- sqrt(Y^2 +
+2 * ac) } else if (add == "cailliez") { ac <- addCailliez(as.matrix(Y))
+Y <- Y + ac } if (ac > sqrt(.Machine$double.eps)) inert <-
+paste(paste0(toupper(substring(add, 1, 1)), substring(add, 2)),
+"adjusted", inert) } RDA <- "dbRDA" if (!missing(transfo) ||
+!missing(scale)) message("arguments 'transfo' and 'scale' are ignored
+with distances") } else if (chisquare) { inert = "Chi-square" RDA =
+"CCA" permutations = getPermuteMatrix(permutations, nrow(Y)) } else {
+inert <- "variance" RDA <- "RDA" if (!missing(transfo)) { Y <-
+decostand(Y, transfo) transfo <- attr(Y, "decostand") } if
+(!missing(transfo) && (is.null(dim(Y)) || ncol(Y) == 1))
+warning("transformations are probably meaningless with a single
+variable") if (scale && !missing(transfo)) warning("Y should not be
+both transformed and scaled (standardized)") Y <- scale(Y, center =
+TRUE, scale = scale) } Sets <- list() for (i in seq_along(X)) { if
+(is.data.frame(X[[i]]) || is.factor(X[[i]])) { mf <-
+as.data.frame(X[[i]]) mf <- model.matrix(~., mf) Sets[[i]] <- mf[, -1,
+drop = FALSE] } else if (inherits(X[[i]], "formula")) { mf <-
+model.frame(X[[i]], data, na.action = na.fail, drop.unused.levels =
+TRUE) trms <- attr(mf, "terms") Sets[[i]] <- model.matrix(trms, mf) if
+(any(colnames(Sets[[i]]) == "(Intercept)")) { xint <-
+which(colnames(Sets[[i]]) == "(Intercept)") Sets[[i]] <- (Sets[[i]])[,
+-xint, drop = FALSE] } } else Sets[[i]] <- as.matrix(X[[i]]) Sets[[i]]
+<- scale(Sets[[i]], center = TRUE, scale = TRUE) } out <- list()
+out$part <- switch(length(Sets), NULL, varpart2(Y, Sets[[1]],
+Sets[[2]], chisquare, permutations), varpart3(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], chisquare, permutations), varpart4(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], Sets[[4]], chisquare, permutations)) if (inherits(Y,
+"dist")) { out$part$ordination <- "dbrda" } else { if (chisquare)
+out$part$ordination <- "cca" else { out$part$ordination <- "rda" } } if
+(RDA == "RDA") { out$scale <- scale if (!missing(transfo)) out$transfo
+<- transfo } else { if (scale || !missing(transfo)) message("arguments
+'scale' and 'transfo' ignored: valid only in RDA") } out$inert <- inert
+out$RDA <- RDA out$call <- match.call() mx <- rep(" ", length(X)) for
+(i in seq_along(X)) mx[i] <- deparse(out$call[[i + 2]], width.cutoff =
+500) out$tables <- mx class(out) <- c("varpart", class(out)) out })(Y =
+dots[[1L]][[2L]], X = dots[[2L]][[2L]], ~., data = dots[[3L]][[2L]],
+transfo = "hel")
+Species transformation:  hellinger
+Explanatory tables:
+X1:  dots[[2L]][[2L]]
+X2:  ~. 
+
+No. of explanatory tables: 2 
+Total variation (SS): 4.6979 
+            Variance: 0.19575 
+No. of observations: 25 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           14   0.54280      -0.09727     TRUE
+[b+c] = X2           16   0.68137       0.04412     TRUE
+[a+b+c] = X1+X2      24   1.00000                   TRUE
+Individual fractions                                    
+[a] = X1|X2           8                             TRUE
+[b]                   0                            FALSE
+[c] = X2|X1          10                             TRUE
+[d] = Residuals                                    FALSE
+---
+Use function ‘rda’ to test significance of fractions of interest
+
+Warning messages:
+1: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+2: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+$`Month 4`
+NULL
+
+$`Month 5`
+NULL
+
+null device 
+          1 
+[1] "Testing with RDA (full model) - core OTUS"
+$`Month 4`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear,
+data = data)
+
+              Inertia Proportion Rank
+Total         0.23505    1.00000     
+Constrained   0.14857    0.63208   12
+Unconstrained 0.08648    0.36792    9
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.04985 0.03845 0.02296 0.01362 0.00987 0.00486 0.00401 0.00210 0.00181 0.00078 
+  RDA11   RDA12 
+0.00023 0.00003 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9 
+0.04068 0.02151 0.01030 0.00563 0.00457 0.00207 0.00123 0.00033 0.00015 
+
+
+$`Month 5`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear,
+data = data)
+
+              Inertia Proportion Rank
+Total         0.19575    1.00000     
+Constrained   0.13338    0.68137   14
+Unconstrained 0.06237    0.31863    8
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.05973 0.02878 0.01381 0.01247 0.00824 0.00320 0.00219 0.00203 0.00143 0.00063 
+  RDA11   RDA12   RDA13   RDA14 
+0.00055 0.00023 0.00007 0.00001 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8 
+0.03748 0.00957 0.00767 0.00402 0.00192 0.00103 0.00044 0.00023 
+
+
+$`Month 4`
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear, data = data)
+         Df Variance      F Pr(>F)
+Model    12 0.148568 1.2885  0.135
+Residual  9 0.086478              
+
+$`Month 5`
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear, data = data)
+         Df Variance      F Pr(>F)
+Model    16 0.133376 1.0692  0.417
+Residual  8 0.062369              
+
+$`Month 4`
+$`Month 4`$r.squared
+[1] 0.6320786
+
+$`Month 4`$adj.r.squared
+[1] 0.1415167
+
+
+$`Month 5`
+$`Month 5`$r.squared
+[1] 0.6813749
+
+$`Month 5`$adj.r.squared
+[1] 0.04412482
+
+
+[1] "Testing with partial RDA (fraction [a]) - core OTUS"
+$`Month 4`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear
++ Condition(scores(y)), data = data)
+
+               Inertia Proportion Rank
+Total         0.235046   1.000000     
+Conditional   0.125116   0.532302   10
+Constrained   0.108584   0.461968   10
+Unconstrained 0.001347   0.005730    1
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.03679 0.02406 0.01904 0.00930 0.00835 0.00658 0.00258 0.00097 0.00048 0.00044 
+
+Eigenvalues for unconstrained axes:
+      PC1 
+0.0013468 
+
+
+$`Month 5`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear
++ Condition(scores(y)), data = data)
+
+              Inertia Proportion Rank
+Total         0.19575    1.00000     
+Conditional   0.10625    0.54280   14
+Constrained   0.08949    0.45720   10
+Unconstrained 0.00000    0.00000    0
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.04810 0.01784 0.00821 0.00686 0.00441 0.00215 0.00118 0.00043 0.00024 0.00007 
+
+
+$`Month 4`
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear + Condition(scores(y)), data = data)
+         Df Variance      F Pr(>F)   
+Model    10 0.108584 8.0623  0.002 **
+Residual  1 0.001347                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$`Month 5`
+No residual component
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear + Condition(scores(y)), data = data)
+         Df Variance F Pr(>F)
+Model    10 0.089494         
+Residual  0 0.000000         
+
+$`Month 4`
+$`Month 4`$r.squared
+[1] 0.4619676
+
+$`Month 4`$adj.r.squared
+[1] 0.7725477
+
+
+$`Month 5`
+$`Month 5`$r.squared
+[1] 0.4571958
+
+$`Month 5`$adj.r.squared
+[1] NA
+
+
+[1] "Forward selection for parsimonious model - core OTUs"
+[1] "Environmental variables - core OTUs"
+Step: R2.adj= 0 
+Call: x ~ 1 
+ 
+                 R2.adjusted
+<All variables>   0.14151675
++ CollectionDate  0.10713364
++ Age             0.03843077
++ BirthYear       0.03843077
+<none>            0.00000000
++ Squirrel.ID    -0.04422964
+
+                 Df     AIC     F Pr(>F)
++ CollectionDate 10 -27.598 1.252  0.176
+
+Step: R2.adj= 0 
+Call: x ~ 1 
+ 
+                 R2.adjusted
++ CollectionDate 0.107428075
+<All variables>  0.044124821
++ Age            0.013347841
++ BirthYear      0.013347841
++ Squirrel.ID    0.007430998
+<none>           0.000000000
+
+$`Month 4`
+Call: rda(formula = x ~ 1, data = data)
+
+              Inertia Rank
+Total           0.235     
+Unconstrained   0.235   14
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9    PC10 
+0.07349 0.04644 0.04125 0.02017 0.01946 0.01320 0.00709 0.00495 0.00291 0.00229 
+   PC11    PC12    PC13    PC14 
+0.00185 0.00136 0.00054 0.00005 
+
+
+$`Month 5`
+Call: rda(formula = x ~ 1, data = data)
+
+              Inertia Rank
+Total          0.1957     
+Unconstrained  0.1957   14
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9    PC10 
+0.09315 0.03263 0.02072 0.01470 0.01405 0.00823 0.00446 0.00304 0.00162 0.00101 
+   PC11    PC12    PC13    PC14 
+0.00096 0.00067 0.00038 0.00013 
+
+
+[1] "Summary of environmental selection process - core OTUs"
+$`Month 4`
+NULL
+
+$`Month 5`
+NULL
+
+[1] "ANOVA on full environmental selection - core OTUs"
+$`Month 4`
+No constrained component
+
+Model: rda(formula = x ~ 1, data = data)
+         Df Variance  F Pr(>F)
+Model     0  0.00000  0       
+Residual 21  0.23505          
+
+$`Month 5`
+No constrained component
+
+Model: rda(formula = x ~ 1, data = data)
+         Df Variance  F Pr(>F)
+Model     0  0.00000  0       
+Residual 24  0.19575          
+
+$`Month 4`
+$species
+                                                 PC1          PC2
+7043c33d20fcae3fe26d9ce4b0c125e265e1abd0  0.25789634 -0.524521051
+196c5cfa4dc50b44d41aa0758e281103c5bdd5e2 -0.09062439 -0.137173774
+e99e61ca834a7c493182e0315e383ee41547dbd0 -0.08986757  0.007412076
+8e4cf2b1369f3463868939e2f33b57232bea618d  0.05204353  0.058349223
+b212ce219f884c266dda7a85b0a4fa6e797e0c54  0.38805812  0.247473661
+e6aa12974247b6ec7fae3e25aeffa1d7bd744ec2  0.05457894  0.206055918
+0d02df0bfe003e6a1c79cb70ea485a0d5572ce2d  0.01652003  0.083119391
+6263d2de888216e2ccb06dadb2eedafe1853eaeb -0.51117437  0.032122699
+ed431e1f7f124b162542909fd06aabe258956802 -0.32569493 -0.006383411
+d8f5b3d86a4953eb85a9db29ae3a8f1c088aeb3c  0.06335603 -0.029398482
+2657f398b7d9c27f3ca37479ca5030a17190cc42  0.02480578  0.023017293
+b6ffefa097567d8148f17ad0e06154f1647669ee  0.05813017  0.120914262
+c2a100a45b06564caab49637e5c2a042f0de5bfd  0.16666260 -0.032600007
+4f2c2b2652b4915634ce618875b7b0fd2fdebcd4  0.22842034  0.113185483
+
+$sites
+                                 PC1         PC2
+P1060.8657.F.4.CH.2008   0.014653701  0.05286907
+P1093.8588.F.3.CH.2008  -0.003034833  0.04094912
+P0640.10228.F.4.CH.2008  0.300559740  0.15862776
+P1151.8505.F.3.CH.2008  -0.439853190 -0.20046713
+P1431.10061.F.4.CH.2008 -0.371087721  0.03159843
+P1453.10228.F.4.CH.2008  0.014526669 -0.12301333
+P1094.10713.F.4.CH.2008 -0.477135467 -0.15110250
+P0985.10264.F.2.CH.2008 -0.117099951  0.01785889
+P1361.10125.F.3.CH.2008 -0.551805759  0.11411719
+P1337.8238.F.1.CH.2008   0.232596388  0.44362397
+P1165.10687.F.1.CH.2008  0.420115818 -0.30773902
+P0956.10125.F.3.CH.2008 -0.685980563 -0.04034090
+P1026.10713.F.4.CH.2008  0.302877884 -0.56141441
+P1144.8095.F.3.CH.2008   0.101555074  0.37840100
+P1025.13676.F.1.CH.2008  0.278746349  0.05878208
+P0939.10082.F.4.CH.2008  0.003925273  0.22919401
+P1346.10280.F.1.CH.2008  0.184703599  0.18208179
+P0744.8588.F.3.CH.2008   0.231230848 -0.77645623
+P1555.8701.F.1.CH.2008  -0.034668827  0.13129321
+P1536.10239.F.2.CH.2008  0.491380333  0.52324200
+P1388.10262.F.2.CH.2008  0.188531949 -0.51614564
+P0984.13677.F.1.CH.2008 -0.084737315  0.31404065
+
+attr(,"const")
+[1] 1.490538
+attr(,"class")
+[1] "ordiplot"
+
+$`Month 5`
+$species
+                                                  PC1         PC2
+7043c33d20fcae3fe26d9ce4b0c125e265e1abd0  0.287836192  0.26503105
+196c5cfa4dc50b44d41aa0758e281103c5bdd5e2 -0.848936105  0.01324721
+e99e61ca834a7c493182e0315e383ee41547dbd0  0.009458123 -0.07715625
+8e4cf2b1369f3463868939e2f33b57232bea618d  0.074083290  0.01577067
+b212ce219f884c266dda7a85b0a4fa6e797e0c54  0.016006583 -0.27099261
+e6aa12974247b6ec7fae3e25aeffa1d7bd744ec2  0.140417833 -0.12628030
+0d02df0bfe003e6a1c79cb70ea485a0d5572ce2d  0.289680158 -0.21807387
+6263d2de888216e2ccb06dadb2eedafe1853eaeb  0.197865083  0.06192747
+ed431e1f7f124b162542909fd06aabe258956802  0.144240307 -0.08641545
+d8f5b3d86a4953eb85a9db29ae3a8f1c088aeb3c  0.100754626 -0.02943247
+2657f398b7d9c27f3ca37479ca5030a17190cc42  0.050864152 -0.06650643
+b6ffefa097567d8148f17ad0e06154f1647669ee  0.009260453 -0.07617357
+c2a100a45b06564caab49637e5c2a042f0de5bfd  0.109664558  0.34867856
+4f2c2b2652b4915634ce618875b7b0fd2fdebcd4  0.183326069 -0.06114494
+
+$sites
+                                PC1         PC2
+P3026.10228.F.4.CH.2008 -0.47418086  0.06838446
+P3096.10086.F.4.CH.2008 -0.49517223  0.08721007
+P3137.8636.F.4.CH.2008  -0.40439469 -0.08388290
+P1445.10082.F.4.CH.2008 -0.28955879  0.05447542
+P1407.8636.F.4.CH.2008  -0.40099892 -0.06239899
+P1873.10239.F.2.CH.2008  0.02720112  0.48921218
+P1321.8259.F.4.CH.2008   0.04962586  0.24606502
+P1442.8505.F.3.CH.2008  -0.32388559  0.05891070
+P1877.8657.F.4.CH.2008   0.03214269 -0.38741370
+P1548.8407.F.4.CH.2008  -0.05084416  0.09164658
+P1813.8636.F.4.CH.2008  -0.03915449 -0.38844747
+P1372.10264.F.2.CH.2008 -0.15894100  0.19310214
+P1274.8636.F.4.CH.2008   0.10376632 -0.57512629
+P1549.10065.F.4.CH.2008  0.17410178 -0.15949148
+P1478.10082.F.4.CH.2008  0.32495443 -0.06471855
+P1532.10713.F.4.CH.2008 -0.31461284  0.01035172
+P1749.8095.F.3.CH.2008   0.25908045 -0.37025050
+P1420.10262.F.2.CH.2008 -0.02987147  0.03540954
+P1414.10061.F.4.CH.2008  0.12864083 -0.08035965
+P1447.10228.F.4.CH.2008  0.05961540 -0.14555900
+P1002.10262.F.2.CH.2008  0.04204285  0.18587548
+P1801.8407.F.4.CH.2008   0.38336752 -0.13954642
+P1419.10693.F.3.CH.2008  0.36985410  0.86093690
+P1475.10086.F.4.CH.2008  0.46988553  0.32649675
+P1410.10239.F.2.CH.2008  0.55733617 -0.25088203
+
+attr(,"const")
+[1] 1.47223
+attr(,"class")
+[1] "ordiplot"
+
+null device 
+          1 
+[1] "Spatial variables - core OTU"
+Step: R2.adj= 0 
+Call: x ~ 1 
+ 
+                 R2.adjusted
+<All variables>  0.107122759
++ PCNM1          0.057326507
++ PCNM5          0.040450556
++ PCNM2          0.019697645
++ PCNM9          0.007753903
++ PCNM10         0.004179758
+<none>           0.000000000
++ PCNM6         -0.003213972
++ PCNM4         -0.010588163
++ PCNM7         -0.012281094
++ PCNM3         -0.020070876
++ PCNM8         -0.024336747
+
+        Df     AIC      F Pr(>F)  
++ PCNM1  1 -31.251 2.2771  0.042 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.05732651 
+Call: x ~ PCNM1 
+ 
+                R2.adjusted
+<All variables>  0.10712276
++ PCNM5          0.10292322
++ PCNM2          0.08107806
++ PCNM9          0.06850570
++ PCNM10         0.06474344
+<none>           0.05732651
++ PCNM6          0.05696056
++ PCNM4          0.04919826
++ PCNM7          0.04741622
++ PCNM3          0.03921645
++ PCNM8          0.03472606
+
+        Df    AIC      F Pr(>F)  
++ PCNM5  1 -31.47 2.0166  0.056 .
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0 
+Call: x ~ 1 
+ 
+                 R2.adjusted
++ PCNM12         0.026244243
++ PCNM1          0.021992743
++ PCNM9          0.014967617
++ PCNM2          0.014107665
++ PCNM11         0.006632781
+<none>           0.000000000
++ PCNM14        -0.001690742
++ PCNM7         -0.004156724
++ PCNM4         -0.004367113
++ PCNM3         -0.011326643
++ PCNM13        -0.011658583
++ PCNM10        -0.015953079
++ PCNM5         -0.020694631
++ PCNM6         -0.025796151
++ PCNM8         -0.030592694
+<All variables> -0.097270013
+
+$`Month 4`
+Call: rda(formula = x ~ PCNM1, data = data)
+
+              Inertia Proportion Rank
+Total         0.23505    1.00000     
+Constrained   0.02403    0.10222    1
+Unconstrained 0.21102    0.89778   14
+Inertia is variance 
+
+Eigenvalues for constrained axes:
+    RDA1 
+0.024025 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9    PC10 
+0.06838 0.04224 0.02959 0.01979 0.01872 0.01287 0.00669 0.00423 0.00285 0.00208 
+   PC11    PC12    PC13    PC14 
+0.00184 0.00120 0.00050 0.00005 
+
+
+$`Month 5`
+Call: rda(formula = x ~ 1, data = data)
+
+              Inertia Rank
+Total          0.1957     
+Unconstrained  0.1957   14
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9    PC10 
+0.09315 0.03263 0.02072 0.01470 0.01405 0.00823 0.00446 0.00304 0.00162 0.00101 
+   PC11    PC12    PC13    PC14 
+0.00096 0.00067 0.00038 0.00013 
+
+
+[1] "Summary of spatial selection process - core OTU"
+$`Month 4`
+                  R2.adj Df     AIC      F Pr(>F)  
++ PCNM1         0.057327  1 -31.251 2.2771  0.042 *
+<All variables> 0.107123                           
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$`Month 5`
+NULL
+
+[1] "ANOVA on full spatial selection - core OTU"
+$`Month 4`
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = x ~ PCNM1, data = data)
+         Df Variance      F Pr(>F)  
+Model     1 0.024025 2.2771  0.026 *
+Residual 20 0.211021                
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$`Month 5`
+No constrained component
+
+Model: rda(formula = x ~ 1, data = data)
+         Df Variance  F Pr(>F)
+Model     0  0.00000  0       
+Residual 24  0.19575          
+
+$`Month 4`
+$species
+                                                RDA1         PC1
+7043c33d20fcae3fe26d9ce4b0c125e265e1abd0  0.33151191 -0.08370016
+196c5cfa4dc50b44d41aa0758e281103c5bdd5e2  0.14999626  0.18664283
+e99e61ca834a7c493182e0315e383ee41547dbd0 -0.04721626  0.07246442
+8e4cf2b1369f3463868939e2f33b57232bea618d -0.01606488 -0.06191345
+b212ce219f884c266dda7a85b0a4fa6e797e0c54  0.08742382 -0.41349201
+e6aa12974247b6ec7fae3e25aeffa1d7bd744ec2 -0.13088141 -0.13648686
+0d02df0bfe003e6a1c79cb70ea485a0d5572ce2d -0.04805312 -0.03982844
+6263d2de888216e2ccb06dadb2eedafe1853eaeb -0.18341147  0.46145722
+ed431e1f7f124b162542909fd06aabe258956802 -0.09532320  0.29777568
+d8f5b3d86a4953eb85a9db29ae3a8f1c088aeb3c  0.07635394 -0.03934614
+2657f398b7d9c27f3ca37479ca5030a17190cc42  0.02097758 -0.02435013
+b6ffefa097567d8148f17ad0e06154f1647669ee -0.01190066 -0.08503602
+c2a100a45b06564caab49637e5c2a042f0de5bfd  0.11121220 -0.12940644
+4f2c2b2652b4915634ce618875b7b0fd2fdebcd4 -0.06015445 -0.27659176
+
+$sites
+                               RDA1         PC1
+P1060.8657.F.4.CH.2008  -0.08472057 -0.06184057
+P1093.8588.F.3.CH.2008   0.06871394  0.09784276
+P0640.10228.F.4.CH.2008  0.17283734 -0.27578841
+P1151.8505.F.3.CH.2008  -0.39862367  0.46087853
+P1431.10061.F.4.CH.2008 -0.31277102  0.32010286
+P1453.10228.F.4.CH.2008  0.51100336  0.15741473
+P1094.10713.F.4.CH.2008 -0.15648081  0.56456802
+P0985.10264.F.2.CH.2008 -0.20829042  0.16848095
+P1361.10125.F.3.CH.2008 -0.77988938  0.43236009
+P1337.8238.F.1.CH.2008  -0.11007157 -0.36113755
+P1165.10687.F.1.CH.2008  0.64983592 -0.28205542
+P0956.10125.F.3.CH.2008 -0.73272474  0.60120484
+P1026.10713.F.4.CH.2008  0.98010971 -0.08285956
+P1144.8095.F.3.CH.2008  -0.34397960 -0.21134446
+P1025.13676.F.1.CH.2008  0.25058488 -0.35544166
+P0939.10082.F.4.CH.2008 -0.29297950 -0.13608171
+P1346.10280.F.1.CH.2008  0.09515064 -0.13160164
+P0744.8588.F.3.CH.2008   0.98393897  0.02563361
+P1555.8701.F.1.CH.2008  -0.10441503 -0.06095075
+P1536.10239.F.2.CH.2008 -0.07103648 -0.66900969
+P1388.10262.F.2.CH.2008  0.44462459 -0.12647966
+P0984.13677.F.1.CH.2008 -0.56081655 -0.07389531
+
+$centroids
+[1] NA
+
+$biplot
+      RDA1 PC1
+PCNM1   -1   0
+attr(,"const")
+[1] 1.490538
+attr(,"arrow.mul")
+[1] 0.8095182
+
+attr(,"const")
+[1] 1.490538
+attr(,"class")
+[1] "ordiplot"
+
+$`Month 5`
+$species
+                                                  PC1         PC2
+7043c33d20fcae3fe26d9ce4b0c125e265e1abd0  0.287836192  0.26503105
+196c5cfa4dc50b44d41aa0758e281103c5bdd5e2 -0.848936105  0.01324721
+e99e61ca834a7c493182e0315e383ee41547dbd0  0.009458123 -0.07715625
+8e4cf2b1369f3463868939e2f33b57232bea618d  0.074083290  0.01577067
+b212ce219f884c266dda7a85b0a4fa6e797e0c54  0.016006583 -0.27099261
+e6aa12974247b6ec7fae3e25aeffa1d7bd744ec2  0.140417833 -0.12628030
+0d02df0bfe003e6a1c79cb70ea485a0d5572ce2d  0.289680158 -0.21807387
+6263d2de888216e2ccb06dadb2eedafe1853eaeb  0.197865083  0.06192747
+ed431e1f7f124b162542909fd06aabe258956802  0.144240307 -0.08641545
+d8f5b3d86a4953eb85a9db29ae3a8f1c088aeb3c  0.100754626 -0.02943247
+2657f398b7d9c27f3ca37479ca5030a17190cc42  0.050864152 -0.06650643
+b6ffefa097567d8148f17ad0e06154f1647669ee  0.009260453 -0.07617357
+c2a100a45b06564caab49637e5c2a042f0de5bfd  0.109664558  0.34867856
+4f2c2b2652b4915634ce618875b7b0fd2fdebcd4  0.183326069 -0.06114494
+
+$sites
+                                PC1         PC2
+P3026.10228.F.4.CH.2008 -0.47418086  0.06838446
+P3096.10086.F.4.CH.2008 -0.49517223  0.08721007
+P3137.8636.F.4.CH.2008  -0.40439469 -0.08388290
+P1445.10082.F.4.CH.2008 -0.28955879  0.05447542
+P1407.8636.F.4.CH.2008  -0.40099892 -0.06239899
+P1873.10239.F.2.CH.2008  0.02720112  0.48921218
+P1321.8259.F.4.CH.2008   0.04962586  0.24606502
+P1442.8505.F.3.CH.2008  -0.32388559  0.05891070
+P1877.8657.F.4.CH.2008   0.03214269 -0.38741370
+P1548.8407.F.4.CH.2008  -0.05084416  0.09164658
+P1813.8636.F.4.CH.2008  -0.03915449 -0.38844747
+P1372.10264.F.2.CH.2008 -0.15894100  0.19310214
+P1274.8636.F.4.CH.2008   0.10376632 -0.57512629
+P1549.10065.F.4.CH.2008  0.17410178 -0.15949148
+P1478.10082.F.4.CH.2008  0.32495443 -0.06471855
+P1532.10713.F.4.CH.2008 -0.31461284  0.01035172
+P1749.8095.F.3.CH.2008   0.25908045 -0.37025050
+P1420.10262.F.2.CH.2008 -0.02987147  0.03540954
+P1414.10061.F.4.CH.2008  0.12864083 -0.08035965
+P1447.10228.F.4.CH.2008  0.05961540 -0.14555900
+P1002.10262.F.2.CH.2008  0.04204285  0.18587548
+P1801.8407.F.4.CH.2008   0.38336752 -0.13954642
+P1419.10693.F.3.CH.2008  0.36985410  0.86093690
+P1475.10086.F.4.CH.2008  0.46988553  0.32649675
+P1410.10239.F.2.CH.2008  0.55733617 -0.25088203
+
+attr(,"const")
+[1] 1.47223
+attr(,"class")
+[1] "ordiplot"
+
+null device 
+          1 
+[1] "Partition Bray-Curtis dissimilarities - core OTUs"
+Warning messages:
+1: collinearity detected in X1: mm = 13, m = 12 
+2: collinearity detected in cbind(X1,X2): mm = 23, m = 20 
+3: collinearity detected in X1: mm = 17, m = 16 
+4: collinearity detected in cbind(X1,X2): mm = 31, m = 24 
+$`Month 4`
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = x, X = ~., y, data = z)
+
+Explanatory tables:
+X1:  ~.
+X2:  y 
+
+No. of explanatory tables: 2 
+Total variation (SS): 3.8355 
+No. of observations: 22 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           12   0.64434       0.17012     TRUE
+[b+c] = X2           10   0.47922       0.00579     TRUE
+[a+b+c] = X1+X2      20   0.99198       0.83163     TRUE
+Individual fractions                                    
+[a] = X1|X2          10                 0.82584     TRUE
+[b]                   0                -0.65572    FALSE
+[c] = X2|X1           8                 0.66151     TRUE
+[d] = Residuals                         0.16837    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+
+$`Month 5`
+
+Partition of squared Bray distance in dbRDA 
+
+Call: varpart(Y = x, X = ~., y, data = z)
+
+Explanatory tables:
+X1:  ~.
+X2:  y 
+
+No. of explanatory tables: 2 
+Total variation (SS): 4.4635 
+No. of observations: 25 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           16   0.65298      -0.04106     TRUE
+[b+c] = X2           14   0.58067      -0.00639     TRUE
+[a+b+c] = X1+X2      24   1.00000                   TRUE
+Individual fractions                                    
+[a] = X1|X2          10                             TRUE
+[b]                   0                            FALSE
+[c] = X2|X1           8                             TRUE
+[d] = Residuals                                    FALSE
+---
+Use function ‘dbrda’ to test significance of fractions of interest
+
+Warning messages:
+1: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+2: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+[1] "Analysis for Rare OTUs"
+[1] "Variance partitioning - Rare OTUs"
+Warning messages:
+1: collinearity detected in X2: mm = 13, m = 12 
+2: collinearity detected in cbind(X1,X2): mm = 23, m = 20 
+3: collinearity detected in X2: mm = 17, m = 16 
+4: collinearity detected in cbind(X1,X2): mm = 31, m = 24 
+$`Month 4`
+
+Partition of variance in RDA 
+
+Call: (function (Y, X, ..., data, chisquare = FALSE, transfo, scale =
+FALSE, add = FALSE, sqrt.dist = FALSE, permutations = 1000) { if
+(missing(data)) data <- parent.frame() X <- list(X, ...)  if
+((length(X) < 2 || length(X) > 4)) stop("needs two to four explanatory
+tables") if (inherits(Y, "dist")) { inert <- attr(Y, "method") inert <-
+paste(paste0(toupper(substring(inert, 1, 1)), substring(inert, 2)),
+"distance") if (sqrt.dist) Y <- sqrt(Y) else inert <- paste("squared",
+inert) if (is.logical(add) && isTRUE(add)) add <- "lingoes" if
+(is.character(add)) { add <- match.arg(add, c("lingoes", "cailliez"))
+if (add == "lingoes") { ac <- addLingoes(as.matrix(Y)) Y <- sqrt(Y^2 +
+2 * ac) } else if (add == "cailliez") { ac <- addCailliez(as.matrix(Y))
+Y <- Y + ac } if (ac > sqrt(.Machine$double.eps)) inert <-
+paste(paste0(toupper(substring(add, 1, 1)), substring(add, 2)),
+"adjusted", inert) } RDA <- "dbRDA" if (!missing(transfo) ||
+!missing(scale)) message("arguments 'transfo' and 'scale' are ignored
+with distances") } else if (chisquare) { inert = "Chi-square" RDA =
+"CCA" permutations = getPermuteMatrix(permutations, nrow(Y)) } else {
+inert <- "variance" RDA <- "RDA" if (!missing(transfo)) { Y <-
+decostand(Y, transfo) transfo <- attr(Y, "decostand") } if
+(!missing(transfo) && (is.null(dim(Y)) || ncol(Y) == 1))
+warning("transformations are probably meaningless with a single
+variable") if (scale && !missing(transfo)) warning("Y should not be
+both transformed and scaled (standardized)") Y <- scale(Y, center =
+TRUE, scale = scale) } Sets <- list() for (i in seq_along(X)) { if
+(is.data.frame(X[[i]]) || is.factor(X[[i]])) { mf <-
+as.data.frame(X[[i]]) mf <- model.matrix(~., mf) Sets[[i]] <- mf[, -1,
+drop = FALSE] } else if (inherits(X[[i]], "formula")) { mf <-
+model.frame(X[[i]], data, na.action = na.fail, drop.unused.levels =
+TRUE) trms <- attr(mf, "terms") Sets[[i]] <- model.matrix(trms, mf) if
+(any(colnames(Sets[[i]]) == "(Intercept)")) { xint <-
+which(colnames(Sets[[i]]) == "(Intercept)") Sets[[i]] <- (Sets[[i]])[,
+-xint, drop = FALSE] } } else Sets[[i]] <- as.matrix(X[[i]]) Sets[[i]]
+<- scale(Sets[[i]], center = TRUE, scale = TRUE) } out <- list()
+out$part <- switch(length(Sets), NULL, varpart2(Y, Sets[[1]],
+Sets[[2]], chisquare, permutations), varpart3(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], chisquare, permutations), varpart4(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], Sets[[4]], chisquare, permutations)) if (inherits(Y,
+"dist")) { out$part$ordination <- "dbrda" } else { if (chisquare)
+out$part$ordination <- "cca" else { out$part$ordination <- "rda" } } if
+(RDA == "RDA") { out$scale <- scale if (!missing(transfo)) out$transfo
+<- transfo } else { if (scale || !missing(transfo)) message("arguments
+'scale' and 'transfo' ignored: valid only in RDA") } out$inert <- inert
+out$RDA <- RDA out$call <- match.call() mx <- rep(" ", length(X)) for
+(i in seq_along(X)) mx[i] <- deparse(out$call[[i + 2]], width.cutoff =
+500) out$tables <- mx class(out) <- c("varpart", class(out)) out })(Y =
+dots[[1L]][[1L]], X = dots[[2L]][[1L]], ~., data = dots[[3L]][[1L]],
+transfo = "hel")
+Species transformation:  hellinger
+Explanatory tables:
+X1:  dots[[2L]][[1L]]
+X2:  ~. 
+
+No. of explanatory tables: 2 
+Total variation (SS): 11.37 
+            Variance: 0.54141 
+No. of observations: 22 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           10   0.50651       0.05788     TRUE
+[b+c] = X2           12   0.61800       0.10867     TRUE
+[a+b+c] = X1+X2      20   0.97997       0.57946     TRUE
+Individual fractions                                    
+[a] = X1|X2           8                 0.47079     TRUE
+[b]                   0                -0.41291    FALSE
+[c] = X2|X1          10                 0.52158     TRUE
+[d] = Residuals                         0.42054    FALSE
+---
+Use function ‘rda’ to test significance of fractions of interest
+
+$`Month 5`
+
+Partition of variance in RDA 
+
+Call: (function (Y, X, ..., data, chisquare = FALSE, transfo, scale =
+FALSE, add = FALSE, sqrt.dist = FALSE, permutations = 1000) { if
+(missing(data)) data <- parent.frame() X <- list(X, ...)  if
+((length(X) < 2 || length(X) > 4)) stop("needs two to four explanatory
+tables") if (inherits(Y, "dist")) { inert <- attr(Y, "method") inert <-
+paste(paste0(toupper(substring(inert, 1, 1)), substring(inert, 2)),
+"distance") if (sqrt.dist) Y <- sqrt(Y) else inert <- paste("squared",
+inert) if (is.logical(add) && isTRUE(add)) add <- "lingoes" if
+(is.character(add)) { add <- match.arg(add, c("lingoes", "cailliez"))
+if (add == "lingoes") { ac <- addLingoes(as.matrix(Y)) Y <- sqrt(Y^2 +
+2 * ac) } else if (add == "cailliez") { ac <- addCailliez(as.matrix(Y))
+Y <- Y + ac } if (ac > sqrt(.Machine$double.eps)) inert <-
+paste(paste0(toupper(substring(add, 1, 1)), substring(add, 2)),
+"adjusted", inert) } RDA <- "dbRDA" if (!missing(transfo) ||
+!missing(scale)) message("arguments 'transfo' and 'scale' are ignored
+with distances") } else if (chisquare) { inert = "Chi-square" RDA =
+"CCA" permutations = getPermuteMatrix(permutations, nrow(Y)) } else {
+inert <- "variance" RDA <- "RDA" if (!missing(transfo)) { Y <-
+decostand(Y, transfo) transfo <- attr(Y, "decostand") } if
+(!missing(transfo) && (is.null(dim(Y)) || ncol(Y) == 1))
+warning("transformations are probably meaningless with a single
+variable") if (scale && !missing(transfo)) warning("Y should not be
+both transformed and scaled (standardized)") Y <- scale(Y, center =
+TRUE, scale = scale) } Sets <- list() for (i in seq_along(X)) { if
+(is.data.frame(X[[i]]) || is.factor(X[[i]])) { mf <-
+as.data.frame(X[[i]]) mf <- model.matrix(~., mf) Sets[[i]] <- mf[, -1,
+drop = FALSE] } else if (inherits(X[[i]], "formula")) { mf <-
+model.frame(X[[i]], data, na.action = na.fail, drop.unused.levels =
+TRUE) trms <- attr(mf, "terms") Sets[[i]] <- model.matrix(trms, mf) if
+(any(colnames(Sets[[i]]) == "(Intercept)")) { xint <-
+which(colnames(Sets[[i]]) == "(Intercept)") Sets[[i]] <- (Sets[[i]])[,
+-xint, drop = FALSE] } } else Sets[[i]] <- as.matrix(X[[i]]) Sets[[i]]
+<- scale(Sets[[i]], center = TRUE, scale = TRUE) } out <- list()
+out$part <- switch(length(Sets), NULL, varpart2(Y, Sets[[1]],
+Sets[[2]], chisquare, permutations), varpart3(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], chisquare, permutations), varpart4(Y, Sets[[1]], Sets[[2]],
+Sets[[3]], Sets[[4]], chisquare, permutations)) if (inherits(Y,
+"dist")) { out$part$ordination <- "dbrda" } else { if (chisquare)
+out$part$ordination <- "cca" else { out$part$ordination <- "rda" } } if
+(RDA == "RDA") { out$scale <- scale if (!missing(transfo)) out$transfo
+<- transfo } else { if (scale || !missing(transfo)) message("arguments
+'scale' and 'transfo' ignored: valid only in RDA") } out$inert <- inert
+out$RDA <- RDA out$call <- match.call() mx <- rep(" ", length(X)) for
+(i in seq_along(X)) mx[i] <- deparse(out$call[[i + 2]], width.cutoff =
+500) out$tables <- mx class(out) <- c("varpart", class(out)) out })(Y =
+dots[[1L]][[2L]], X = dots[[2L]][[2L]], ~., data = dots[[3L]][[2L]],
+transfo = "hel")
+Species transformation:  hellinger
+Explanatory tables:
+X1:  dots[[2L]][[2L]]
+X2:  ~. 
+
+No. of explanatory tables: 2 
+Total variation (SS): 15.022 
+            Variance: 0.6259 
+No. of observations: 25 
+
+Partition table:
+                     Df R.squared Adj.R.squared Testable
+[a+b] = X1           14   0.59116       0.01877     TRUE
+[b+c] = X2           16   0.69702       0.09106     TRUE
+[a+b+c] = X1+X2      24   1.00000                   TRUE
+Individual fractions                                    
+[a] = X1|X2           8                             TRUE
+[b]                   0                            FALSE
+[c] = X2|X1          10                             TRUE
+[d] = Residuals                                    FALSE
+---
+Use function ‘rda’ to test significance of fractions of interest
+
+Warning messages:
+1: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+2: collinearity detected: redundant variable(s)  between tables X1, X2
+results are probably incorrect: remove redundant variable(s) and repeat the analysis 
+$`Month 4`
+NULL
+
+$`Month 5`
+NULL
+
+null device 
+          1 
+[1] "Testing with RDA (full model) - rare OTUS"
+$`Month 4`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear,
+data = data)
+
+              Inertia Proportion Rank
+Total          0.5414     1.0000     
+Constrained    0.3346     0.6180   12
+Unconstrained  0.2068     0.3820    9
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.05063 0.04063 0.03407 0.02966 0.02781 0.02656 0.02491 0.02267 0.02173 0.01966 
+  RDA11   RDA12 
+0.01851 0.01774 
+
+Eigenvalues for unconstrained axes:
+    PC1     PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9 
+0.03543 0.02985 0.02839 0.02485 0.02224 0.02158 0.01846 0.01596 0.01006 
+
+
+$`Month 5`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear,
+data = data)
+
+              Inertia Proportion Rank
+Total          0.6259     1.0000     
+Constrained    0.4363     0.6970   16
+Unconstrained  0.1896     0.3030    8
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.06353 0.05254 0.04108 0.03283 0.03125 0.02996 0.02292 0.02274 0.02166 0.01953 
+  RDA11   RDA12   RDA13   RDA14   RDA15   RDA16 
+0.01883 0.01859 0.01706 0.01676 0.01408 0.01289 
+
+Eigenvalues for unconstrained axes:
+     PC1      PC2      PC3      PC4      PC5      PC6      PC7      PC8 
+0.030462 0.027403 0.025599 0.024332 0.023311 0.021404 0.020353 0.016772 
+
+
+$`Month 4`
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear, data = data)
+         Df Variance      F Pr(>F)   
+Model    12  0.33459 1.2134  0.004 **
+Residual  9  0.20682                 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$`Month 5`
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear, data = data)
+         Df Variance      F Pr(>F)  
+Model    16  0.43627 1.1503   0.02 *
+Residual  8  0.18964                
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$`Month 4`
+$`Month 4`$r.squared
+[1] 0.6180005
+
+$`Month 4`$adj.r.squared
+[1] 0.1086679
+
+
+$`Month 5`
+$`Month 5`$r.squared
+[1] 0.6970185
+
+$`Month 5`$adj.r.squared
+[1] 0.09105546
+
+
+[1] "Testing with partial RDA (fraction [a]) - rare OTUS"
+$`Month 4`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear
++ Condition(scores(y)), data = data)
+
+              Inertia Proportion Rank
+Total         0.54141    1.00000     
+Conditional   0.27423    0.50651   10
+Constrained   0.25634    0.47347   10
+Unconstrained 0.01084    0.02003    1
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.04345 0.03579 0.03102 0.02659 0.02484 0.02253 0.02101 0.01923 0.01712 0.01475 
+
+Eigenvalues for unconstrained axes:
+     PC1 
+0.010842 
+
+
+$`Month 5`
+Call: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear
++ Condition(scores(y)), data = data)
+
+              Inertia Proportion Rank
+Total          0.6259     1.0000     
+Conditional    0.3700     0.5912   14
+Constrained    0.2559     0.4088   10
+Unconstrained  0.0000     0.0000    0
+Inertia is variance 
+Some constraints were aliased because they were collinear (redundant)
+
+Eigenvalues for constrained axes:
+   RDA1    RDA2    RDA3    RDA4    RDA5    RDA6    RDA7    RDA8    RDA9   RDA10 
+0.05125 0.03679 0.03030 0.02660 0.02271 0.02209 0.02007 0.01719 0.01565 0.01323 
+
+
+$`Month 4`
+Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear + Condition(scores(y)), data = data)
+         Df Variance      F Pr(>F)  
+Model    10 0.256341 2.3643  0.015 *
+Residual  1 0.010842                
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+$`Month 5`
+No residual component
+
+Model: rda(formula = x ~ Age + Squirrel.ID + CollectionDate + BirthYear + Condition(scores(y)), data = data)
+         Df Variance F Pr(>F)
+Model    10   0.2559         
+Residual  0   0.0000         
+
+$`Month 4`
+$`Month 4`$r.squared
+[1] 0.4734659
+
+$`Month 4`$adj.r.squared
+[1] 0.5215772
+
+
+$`Month 5`
+$`Month 5`$r.squared
+[1] 0.4088441
+
+$`Month 5`$adj.r.squared
+[1] NA
+
+
+[1] "Forward selection for parsimonious model - rare OTUs"
+[1] "Environmental variables - rare OTUs"
+Step: R2.adj= 0 
+Call: x ~ 1 
+ 
+                  R2.adjusted
+<All variables>  0.1086679120
++ CollectionDate 0.0819676036
++ Squirrel.ID    0.0028595576
++ Age            0.0005030837
++ BirthYear      0.0005030837
+<none>           0.0000000000
+
+                 Df     AIC      F Pr(>F)   
++ CollectionDate 10 -8.6293 1.1875  0.008 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.0819676 
+Call: x ~ CollectionDate 
+ 
+                R2.adjusted
+<All variables>   0.1086679
++ Squirrel.ID     0.1040478
++ Age             0.0869991
++ BirthYear       0.0869991
+<none>            0.0819676
+
+              Df     AIC      F Pr(>F)
++ Squirrel.ID  1 -9.2618 1.2711   0.22
+
+Step: R2.adj= 0 
+Call: x ~ 1 
+ 
+                 R2.adjusted
+<All variables>  0.091055459
++ CollectionDate 0.078417526
++ Squirrel.ID    0.015505684
++ Age            0.009915503
++ BirthYear      0.009915503
+<none>           0.000000000
+
+                 Df     AIC      F Pr(>F)  
++ CollectionDate 14 -6.6628 1.1459   0.02 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.07841753 
+Call: x ~ CollectionDate 
+ 
+                R2.adjusted
+<All variables>  0.09105546
++ Age            0.08450921
++ BirthYear      0.08450921
++ Squirrel.ID    0.08242922
+<none>           0.07841753
+
