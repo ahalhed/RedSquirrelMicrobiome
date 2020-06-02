@@ -152,9 +152,14 @@ lapply(dist_list, max_dist)
 ## community objects
 # subset the samples from the core microbiome
 print("Build the community object (OTU table) for grid/year/month")
-commFull <- lapply(XY_list, comm_obj, c=OTU_full)
+# this is the OTU label for the troublesome OTU in the rare:
+# a7ca86df6f2c6f9b46a26f9087bfd0922e4790e4
+# going to remove it from the full just to be safe
+commFull <- subset(OTU_full, select=-c(a7ca86df6f2c6f9b46a26f9087bfd0922e4790e4)) %>%
+  lapply(XY_list, comm_obj, c=.)
 commCore <- lapply(XY_list, comm_obj, c=OTU_core)
-commRare <- lapply(XY_list, comm_obj, c=OTU_rare)
+# - select removes the troublesome OTU
+commRare <- lapply(XY_list, comm_obj, c=select(OTU_rare, -c(472079)))
 ## metadata
 # sample ID's are rownames
 # get the metadata subset
