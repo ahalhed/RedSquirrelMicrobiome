@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial")
+setwd("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial")
 
 # attach required packages
 library(tidyverse)
@@ -147,7 +147,7 @@ summary(cca_sub)
 print("Multiscale ordination")
 mso_sub <- mso(cca_sub, XY_sub)
 # plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_mso.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_AG2008_mso.pdf")
 msoplot(mso_sub, ylim = c(0, 45), main="2008 AG")
 dev.off()
 
@@ -161,7 +161,7 @@ cca_un <- cca(log(comm_obj + 1))
 mso_sub3 <- mso(cca_un, XY_sub)
 mso_sub3
 # plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_mso2.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_AG2008_mso2.pdf")
 par(mfrow=c(1,2))
 msoplot(mso_sub2, main="Constrained Ordination", legend = "right")
 msoplot(mso_sub3, main="Unconstrained Ordination", legend = "right")
@@ -171,7 +171,7 @@ dev.off()
 print("Variance partitioning")
 vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub, transfo = "hel")
 vp_mod1
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_vp_mod1.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_AG2008_vp_mod1.pdf")
 plot(vp_mod1)
 dev.off()
 
@@ -203,7 +203,7 @@ step.env$anova
 print("ANOVA on full environmental selection")
 anova(step.env)
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_step_env.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_AG2008_step_env.pdf")
 plot(step.env)
 dev.off()
 
@@ -220,7 +220,7 @@ step.space$anova
 print("ANOVA on full spatial selection")
 anova(step.space)
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_step_space.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_AG2008_step_space.pdf")
 plot(step.space)
 dev.off()
 
@@ -235,6 +235,6 @@ mod.pars <- varpart(comm_obj, ~ .,
                data = meta_sub[, names(step.env$terminfo$ordered)],
                transfo = "hel")
 mod.pars
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_AG2008_mod_pars.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_AG2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()

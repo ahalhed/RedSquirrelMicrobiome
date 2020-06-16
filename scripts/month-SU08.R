@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-#setwd("/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial")
+#setwd("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial")
 
 # attach required packages
 library(tidyverse)
@@ -191,7 +191,7 @@ vp_mod1_list <- mapply(varpart, commCore, scores_list, data=met_list,
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_SU2008_vp_mod1M.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_SU2008_vp_mod1M.pdf")
 # make plot
 # plotted in numerical order by month
 lapply(vp_mod1_list, plot)
@@ -237,7 +237,7 @@ print("ANOVA on full environmental selection - core OTUs")
 lapply(step.env, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_SU2008_step_envM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_SU2008_step_envM.pdf")
 # make plot
 lapply(step.env, plot)
 dev.off()
@@ -259,7 +259,7 @@ print("ANOVA on full spatial selection - core OTU")
 lapply(step.space, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/core_SU2008_step_spaceM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_SU2008_step_spaceM.pdf")
 # make plot
 lapply(step.space, plot)
 dev.off()
@@ -284,7 +284,7 @@ vp_mod1_list <- mapply(varpart, commRare, scores_list, data=met_list,
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_SU2008_vp_mod1M.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_SU2008_vp_mod1M.pdf")
 # make plot
 # plotted in numerical order by month
 lapply(vp_mod1_list, plot)
@@ -333,7 +333,7 @@ print("ANOVA on full environmental selection - rare OTUs")
 lapply(step.env, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_SU2008_step_envM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_SU2008_step_envM.pdf")
 # make plot
 lapply(step.env, plot)
 dev.off()
@@ -356,7 +356,7 @@ print("ANOVA on full spatial selection - rare OTU")
 lapply(step.space, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/rare_SU2008_step_spaceM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_SU2008_step_spaceM.pdf")
 # make plot
 lapply(step.space, plot)
 dev.off()
@@ -378,7 +378,7 @@ vp_mod1_list <- mapply(varpart, commCore, scores_list, data=met_list,
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/SU2008_vp_mod1M.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/SU2008_vp_mod1M.pdf")
 # make plot
 # plotted in numerical order by month
 lapply(vp_mod1_list, plot)
@@ -430,7 +430,7 @@ print("ANOVA on full environmental selection - all OTUs")
 lapply(step.env, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/SU2008_step_envM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/SU2008_step_envM.pdf")
 # make plot
 lapply(step.env, plot)
 dev.off()
@@ -453,7 +453,7 @@ print("ANOVA on full spatial selection - all OTU")
 lapply(step.space, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/SU2008_step_spaceM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/SU2008_step_spaceM.pdf")
 # make plot
 lapply(step.space, plot)
 dev.off()

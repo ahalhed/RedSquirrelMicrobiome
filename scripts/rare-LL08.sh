@@ -3,7 +3,7 @@
 #SBATCH --time=0-01:30:00
 #SBATCH --mem-per-cpu 64G
 #SBATCH --job-name=rare-LL08
-#SBATCH --output=/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/%x-%j.out
+#SBATCH --output=./outputs/%x-%j.out
 
 #---
 #title: "PCNM for Rare Squirrel Microbiome (SHARCNET)"
@@ -19,4 +19,4 @@ module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 
 # run R script
 # replace LL08 with specific grid/year combo being run
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/scripts/rare-LL08.R
+Rscript /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/scripts/rare-LL08.R

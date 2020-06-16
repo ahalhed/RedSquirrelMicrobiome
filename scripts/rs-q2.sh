@@ -9,6 +9,7 @@
 
 # Working in the below one drive folder
 cd /Users/aliciahalhed/OneDrive\ -\ University\ of\ Guelph/Alicia\'s\ Thesis/red-squirrel-data/rs-QIIME2-AH 
+# /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel-w2020/ for SHARCNET directory
 # Data in /Guelph/red-squirrel-data/original
 # Add '&' to the end to put the process in the background
 # To move a job currently running in the forground to the background, pause it with CTRL-Z and then run bg (moves last paused job to the backgroun)

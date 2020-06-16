@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/red-squirrel-w2020/R-env")
+setwd("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env")
 
 # attach required packages
 library(tidyverse)
@@ -28,14 +28,14 @@ XY_year <- function(metadata, grid, year) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
-                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
-                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/filtered-table.qza",
+                      tree = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/input/RS_meta.tsv")
 ps
 
 print("Read in the metadata")
-rs_q2_metadata <- read.table("/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv", sep="\t")
+rs_q2_metadata <- read.table("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/input/RS_meta.tsv", sep="\t")
 colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
 
 # start analysis

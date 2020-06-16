@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial")
+setwd("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial")
 
 # attach required packages
 library(tidyverse)
@@ -41,10 +41,10 @@ max_dist <- function(dm) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
-                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
-                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/filtered-table.qza",
+                      tree = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/input/RS_meta.tsv")
 
 # based on the meta function from the microbiome package
 # I don't want to load a whole package for one function
@@ -57,7 +57,7 @@ print("Starting initial data preparation")
 print("Access and plot XY data")
 XY_sub <- XY_year(rs_q2_metadata, "KL", 2009)
 # plotting the locations
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_XY.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_XY.pdf")
 XY_sub %>% ggplot(aes(x = `Location.X`, y = `Location.Y`)) + 
   geom_point() + 
   coord_fixed()
@@ -93,7 +93,7 @@ UWpcnm$vectors
 # plot with ordisurf
 print("Plotting first three PCNM axes with ordisurf")
 # replace grid-year with values used in this script
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_ordisurf123.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_ordisurf123.pdf")
 par(mfrow=c(1,3))
 ordisurf(XY_sub, scores(UWpcnm, choi=1), bubble = 4, main = "PCNM 1")
 ordisurf(XY_sub, scores(UWpcnm, choi=2), bubble = 4, main = "PCNM 2")
@@ -116,7 +116,7 @@ summary(cca_sub)
 print("Multiscale ordination")
 mso_sub <- mso(cca_sub, XY_sub)
 # plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_mso.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_mso.pdf")
 msoplot(mso_sub, ylim = c(0, 45), main="2009 KL")
 dev.off()
 
@@ -130,7 +130,7 @@ cca_un <- cca(log(comm_obj + 1))
 mso_sub3 <- mso(cca_un, XY_sub)
 mso_sub3
 # plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_mso2.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_mso2.pdf")
 par(mfrow=c(1,2))
 msoplot(mso_sub2, main="Constrained Ordination", legend = "right")
 msoplot(mso_sub3, main="Unconstrained Ordination", legend = "right")
@@ -140,7 +140,7 @@ dev.off()
 print("Variance partitioning")
 vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub, transfo = "hel")
 vp_mod1
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_vp_mod1.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_vp_mod1.pdf")
 plot(vp_mod1)
 dev.off()
 
@@ -172,7 +172,7 @@ step.env$anova
 print("ANOVA on full environmental selection")
 anova(step.env)
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_step_env.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_step_env.pdf")
 plot(step.env)
 dev.off()
 
@@ -188,7 +188,7 @@ step.space$anova
 print("ANOVA on full spatial selection")
 anova(step.space)
 # save plot
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_step_space.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_step_space.pdf")
 plot(step.space)
 dev.off()
 
@@ -205,6 +205,6 @@ mod.pars <- varpart(comm_obj, ~ .,
                data = meta_sub[, names(step.env$terminfo$ordered)],
                transfo = "hel")
 mod.pars
-pdf(file = "/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/plots/KL2009_mod_pars.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/KL2009_mod_pars.pdf")
 plot(mod.pars)
 dev.off()

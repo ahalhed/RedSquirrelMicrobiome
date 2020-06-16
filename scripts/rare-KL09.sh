@@ -3,7 +3,7 @@
 #SBATCH --time=1-00:00:00
 #SBATCH --mem-per-cpu 64G
 #SBATCH --job-name=rare-KL09
-#SBATCH --output=/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/%x-%j.out
+#SBATCH --output=./outputs/%x-%j.out
 
 #---
 #title: "PCNM for Rare Squirrel Microbiome (SHARCNET)"
@@ -18,4 +18,4 @@
 module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 
 # run R script
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/scripts/rare-KL09.R
+Rscript /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/scripts/rare-KL09.R

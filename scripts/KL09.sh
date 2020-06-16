@@ -3,7 +3,7 @@
 #SBATCH --time=1-00:00:00
 #SBATCH --mem-per-cpu 128G
 #SBATCH --job-name=KL09-PCNM
-#SBATCH --output=./%x-%j.out
+#SBATCH --output=./outputs/%x-%j.out
 
 #---
 #title: "PCNM for Squirrel Microbiome (SHARCNET)"
@@ -14,9 +14,9 @@
 #---
 
 #set up
-# cd /home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial
+# cd /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial
 module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 
 # run R script
 # replace KL08 with specific grid/year combo being run
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/scripts/KL09.R
+Rscript /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/scripts/KL09.R

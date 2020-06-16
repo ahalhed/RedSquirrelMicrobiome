@@ -14,9 +14,9 @@
 #---
 
 #set up
-# cd /home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial
+# cd /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial
 module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 
 # run R script
 # replace AG08 with specific grid/year combo being run
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/scripts/month-SU08.R
+Rscript /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/scripts/month-SU08.R

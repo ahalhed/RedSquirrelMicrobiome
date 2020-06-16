@@ -3,7 +3,7 @@
 #SBATCH --time=0-12:00:00
 #SBATCH --mem-per-cpu 64G
 #SBATCH --job-name=core-AG08
-#SBATCH --output=/home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/%x-%j.out
+#SBATCH --output=./outputs/%x-%j.out
 
 #---
 #title: "PCNM for Core Squirrel Microbiome (SHARCNET)"
@@ -14,9 +14,9 @@
 #---
 
 #set up
-# initiated frpm: /home/ahalhed/red-squirrel-w2020/R-env/
+# initiated frpm: /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial
 module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 
 # run R script
 # replace AG08 with specific grid/year combo being run
-Rscript /home/ahalhed/red-squirrel-w2020/R-env/RedSquirrelSpatial/scripts/core-AG08.R
+Rscript /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/scripts/core-AG08.R
