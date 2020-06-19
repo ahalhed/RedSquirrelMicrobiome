@@ -1,0 +1,335 @@
+---
+title: "Plots4Ch2"
+author: "Alicia Halhed"
+date: "15/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## What Can Be Found in This Script?
+This script contains the scripts for the arrangement of plots for the red squirrel chapter of Alicia's thesis. An R Project directory has been created to contain the input and output files relevant to this analysis
+
+
+## Coding Set Up
+```{r setup2}
+# set working directory to output the plots into
+setwd("/home/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots")
+# attaching required packages for full analysis
+# qiime2R to create phyloseq object
+library(qiime2R)
+library(phyloseq)
+library(vegan)
+library(tidyverse)
+```
+
+
+### Functions
+There are some instances in this script when certain code chunks would need to be replicated several times. In creating individual functions for the sections needing replication reduces the need to copy/paste code multiple times and avoids retyping errors.
+
+```{r nonzero}
+# for accessing non-zero occurreneces of each OTY
+nonzero <- function(x) sum(x!=0)
+```
+
+```{r XY_year}
+# subset the XY's by grid and year
+# relies on tidyverse
+XY_year <- function(metadata, grid, year) {
+  rn <- rownames_to_column(metadata, var = "SampleID")
+  df1 <- subset(rn, Grid == grid, 
+         select = c("SampleID", "Location.X", "Location.Y", "Year"))
+  df2 <- subset(df1, Year == year, 
+         select = c("SampleID", "Location.X", "Location.Y"))
+  df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
+  return(df3)
+}
+```
+
+```{r Comm}
+# subset an OTU table for grid/year based on XY data
+# relies on tidyverse, phyloseq
+Comm <- function(phy, XY) {
+  trans <- otu_table(phy) %>% 
+    as.matrix %>% as.data.frame %>% 
+    t %>% as.data.frame
+  sub <- subset(trans, rownames(trans) %in% rownames(XY))
+  nz <- sub[ , colSums(sub)>0 ]
+  return(nz)
+}
+```
+
+```{r PCNM_df}
+# compute PCNM scores and export as data frame
+# relies on vegan
+PCNM_df <- function(XY) {
+  eDIST <- dist(XY)
+  UWpcnm <- pcnm(eDIST)
+  pcnm_df <- as.data.frame(scores(UWpcnm))
+  return(pcnm_df)
+}
+```
+
+## Getting the data
+The phyloseq object was built in a SHARCNET interactive session and saved as an RData file due to the high memory requirement that was prohibitive to creating the phyloseq object locally. The code to create the phyloseq object from the QIIME2 artifacts is included below.
+
+```{r PHYLOSEQ, eval=FALSE}
+# directory for these files
+# pwd("/home/ahalhed/red-squirrel")
+# needs 64G RAM to build
+ps <- qza_to_phyloseq(features = "filtered-table.qza",
+                               tree = "trees/rooted_tree.qza",
+                               taxonomy = "taxonomy/GG-taxonomy.qza",
+                               metadata = "input/RS_meta.tsv")
+# load(file = "ps.RData")
+```
+
+
+```{r META}
+# extract the metadata as a data frame
+# based on code from meta function in the microbiome package
+meta <- as(sample_data(ps), "data.frame")
+rownames(meta) <- sample_names(ps)
+# not using the meta function avoid loading the whole library
+# just to use a single function one time
+```
+
+```{r T-OTU}
+# transpose and convert to data frame
+OTU_full <- otu_table(ps) %>% as.matrix %>% 
+    as.data.frame %>% 
+    t %>% as.data.frame 
+```
+
+
+## Core Microbial Community
+
+```{r TransformCounts}
+# transform the counts to relative abundance
+RA_full <- transform_sample_counts(ps, function(x) x/sum(x)) %>% 
+  otu_table %>% as.matrix %>% as.data.frame %>% 
+    t %>% as.data.frame
+```
+
+Presence in 95% of samples; relative abundace > 0.1%
+```{r 95Threshold}
+# 95% threshold
+# minimum number of samples that an OTU must occur in 
+# to be considered as part of the "core" microbiome
+print("Calculating 95% threshold")
+th <- 0.95*nrow(RA_full)
+th
+
+# Access the number of non-zero occurrences of each OTU
+# see nonzero function in the Functions section
+nz <- plyr::numcolwise(nonzero)(RA_full)
+```
+
+```{r RelativeAbundance}
+# total relative abundance
+# average relative abundance across all 909 samples
+RA <- RA_full %>% colSums() %>% as.data.frame
+RA_001 <- RA %>%
+  rownames_to_column(var = "OTU") %>% 
+  rename("ColSum" = ".") %>% 
+  mutate(RelativeAbundance = .$ColSum/nrow(OTU_full)) %>%
+  filter(RelativeAbundance > 0.001)
+```
+
+```{r Extract95}
+# extract the OTUs that fall above the 95% threshold
+# based on the number of non-zero occurrences of each OTU
+OTU95 <- t(nz) %>% as.data.frame %>% 
+  rownames_to_column(var = "OTU") %>% 
+  rename("Occurrences" = "V1") %>%
+  subset(., Occurrences > th)
+```
+
+```{r Join}
+# combine to ensure that those in 95% of the samples
+# have a total relative abundance of 0.1%
+cOTU <- inner_join(OTU95, RA_001)
+# how many OTUs meet this
+nrow(cOTU)
+```
+
+```{r Extract}
+# Subset the OTU table to find core and rare OTUs
+OTU_core <- OTU_full[, cOTU$OTU]
+OTU_rare <- OTU_full %>% 
+  select(-one_of(cOTU$OTU))
+```
+
+```{r Cleanup1}
+# Removing objects that are no longer needed
+rm(cOTU, OTU95, RA_001, RA)
+```
+
+### Plotting 
+```{r Plot1Prep}
+# create mini dataframes
+# with the number of non zero occurrences
+plo1 <- data.frame(t(nz))
+# and the relative abundance
+plo2 <- data.frame(colSums(RA_full[,]))
+# then merge them together
+plo <- merge(plo1,plo2,by="row.names",all.x=TRUE) %>%
+  rename("OTU Label" = "Row.names" , 
+         "Total Non-Zero Occurrences" = "t.nz.", 
+         "Total Relative Abundance" = "colSums.RA_full.....") %>%
+  # with a column for percentage
+  mutate("Presence (% of Samples)" = 100*`Total Non-Zero Occurrences`/909, 
+         "Relative Abundance (% of OTUs)" = 100*`Total Relative Abundance`/909)
+# remove the mini data frames we're done with
+rm(plo1, plo2)
+```
+
+This plot shows the fraction of the OTUs included in the core microbiome
+```{r Plot1a}
+# create the framework for the plot
+plot1a <- ggplot(plo, aes(x = `Presence (% of Samples)`, y = `Relative Abundance (% of OTUs)`)) + 
+  geom_point() +  theme_bw()
+plot1a
+```
+```{r Plot1b}
+plot1b <- plot1a + 
+  # adjust axes to remove buffer around ploting area
+  scale_x_continuous(limits = c(-1, 102), expand = c(0, 0)) +
+  scale_y_log10()
+plot1b
+```
+```{r Plot1c}
+plot1c <- plot1b + 
+  # non-text labelling for core area
+  geom_vline(xintercept = 95, linetype="dashed", colour = "red") +
+  geom_hline(yintercept=0.1, linetype="dashed", colour = "red") +
+  annotate("rect", ymin = 0.1, ymax = 6, xmin = 95, xmax = 100, 
+           alpha = 0.1, fill = "blue") 
+plot1c
+```
+```{r Plot1d}
+plot1d <- plot1c + 
+  # add annotations for different quadrants
+  annotate("text", x = 101, y = 0.9, label = "Core OTUs", angle = -90) +
+  annotate("text", x = 25, y = 5, label = "High abundance, low presence") + 
+  annotate("text", x = 25, y = 0.00005, label = "Low abundance, low presence") +
+  annotate("text", x = 101, y = 0.0005, label = "Low abundance, high presence", angle = -90)
+plot1d
+```
+
+```{r Export1}
+# export plot 1 to a file
+pdf(file = "figure1.pdf", width = 14)
+plot1d
+dev.off()
+```
+
+
+```{r Cleanup2}
+# remove plotting objects that are no longer needed
+remove(plot1a, plot1b, plot1c, plot1d)
+```
+
+## PCNM plots
+The calls for these plots were identified using forward selection in a separate script. The object names are being removed and reused for each year.
+
+### KL 2008
+#### Full Microbial Community
+
+```{r KL8PCNM}
+# extract the XY data for KL 2008
+XY_meta <- XY_year(meta, "KL", 2008)
+# extract the OTU data for KL 2008
+comm_obj <- Comm(ps, XY_meta)
+# build a dataframe with the PCNM scores
+pcnm_df <- PCNM_df(XY_meta)
+```
+
+```{r KL8plot}
+# compute the RDA
+callRDA <- rda(formula = decostand(comm_obj, "hel") ~ PCNM2 + PCNM33, data = pcnm_df)
+# save the plot to an object
+full8 <- plot(callRDA)
+full8
+```
+
+```{r KL8Cleanup}
+rm(XY_meta, comm_obj, pcnm_df, callRDA)
+```
+
+#### Core Microbial Community
+
+```{r rKL8PCNM}
+# extract the XY data for KL 2008
+XY_meta <- XY_year(meta, "KL", 2008)
+# extract the OTU data for KL 2008
+comm_obj <- Comm(ps, XY_meta)
+# build a dataframe with the PCNM scores
+pcnm_df <- PCNM_df(XY_meta)
+```
+
+```{r rKL8plot}
+# compute the RDA
+callRDA <- rda(formula = decostand(comm_obj, "hel") ~ PCNM2 + PCNM33, data = pcnm_df)
+# save the plot to an object
+full8 <- plot(callRDA)
+```
+
+```{r rKL8Cleanup}
+rm(XY_meta, comm_obj, pcnm_df, callRDA)
+```
+
+#### Rare Microbial Community
+
+
+### KL 2009
+#### Full Microbial Community
+
+```{r KL9PCNM}
+# extract the XY data for KL 2009
+XY_meta <- XY_year(meta, "KL", 2009)
+# extract the OTU data for KL 2009
+comm_obj <- Comm(ps, XY_meta)
+# build a dataframe with the PCNM scores
+pcnm_df <- PCNM_df(XY_meta)
+```
+
+```{r KL9plot}
+# compute the RDA
+callRDA <- rda(formula = decostand(comm_obj, "hel") ~ 1, data = meta_sub)
+# save the plot to an object
+full9 <- plot(callRDA)
+```
+
+```{r KL9Cleanup}
+rm(XY_meta, comm_obj, pcnm_df, callRDA)
+```
+
+### KL 2010
+#### Full Microbial Community
+
+```{r KL10PCNM}
+# extract the XY data for KL 2009
+XY_meta <- XY_year(meta, "KL", 2010)
+# extract the OTU data for KL 2009
+comm_obj <- Comm(ps, XY_meta)
+# build a dataframe with the PCNM scores
+pcnm_df <- PCNM_df(XY_meta)
+```
+
+```{r KL9plot}
+# compute the RDA
+callRDA <- rda(formula = decostand(comm_obj, "hel") ~ PCNM4 + PCNM37 + PCNM2, data = pcnm_df)
+# save the plot to an object
+full10 <- plot(callRDA)
+```
+
+```{r KL9Cleanup}
+rm(XY_meta, comm_obj, pcnm_df, callRDA)
+```
+
+
+### Export Panel
+
