@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env")
+setwd("/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/R-env")
 
 # attach required packages
 library(tidyverse)
@@ -28,15 +28,17 @@ XY_year <- function(metadata, grid, year) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/filtered-table.qza",
-                      tree = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/taxonomy/GG-taxonomy.qza",
-                      metadata = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/input/RS_meta.tsv")
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/filtered-table.qza",
+                      tree = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/input/RS_meta.tsv")
 ps
 
+# based on the meta function from the microbiome package
+# I don't want to load a whole package for one function
 print("Read in the metadata")
-rs_q2_metadata <- read.table("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/input/RS_meta.tsv", sep="\t")
-colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+rs_q2_metadata <- as(sample_data(ps), "data.frame")
+rownames(rs_q2_metadata) <- sample_names(ps)
 
 # start analysis
 print("Starting initial data preparation")

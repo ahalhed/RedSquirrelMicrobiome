@@ -35,8 +35,11 @@ ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/ahalhed/re
 ps
 
 print("Read in the metadata")
-rs_q2_metadata <- read.table("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/input/RS_meta.tsv", sep="\t")
-colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
+# based on the meta function from the microbiome package
+# I don't want to load a whole package for one function
+print("Read in the metadata")
+rs_q2_metadata <- as(sample_data(ps), "data.frame")
+rownames(rs_q2_metadata) <- sample_names(ps)
 
 # start analysis
 print("Starting initial data preparation")

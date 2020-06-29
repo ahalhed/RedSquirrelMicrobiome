@@ -9,7 +9,7 @@
 
 # Working in the below one drive folder
 cd /Users/aliciahalhed/OneDrive\ -\ University\ of\ Guelph/Alicia\'s\ Thesis/red-squirrel-data/rs-QIIME2-AH 
-# /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel-w2020/ for SHARCNET directory
+# /home/ahalhed/red-squirrel for SHARCNET directory
 # Data in /Guelph/red-squirrel-data/original
 # Add '&' to the end to put the process in the background
 # To move a job currently running in the forground to the background, pause it with CTRL-Z and then run bg (moves last paused job to the backgroun)
@@ -98,6 +98,25 @@ qiime feature-table filter-samples \
   --i-table OTU-table-dn-99.qza \
   --m-metadata-file ./input/RS_meta.tsv \
   --o-filtered-table filtered-table.qza
+# 541922 rows in this table
+
+# June 26, 2020 - additing the removal of singletons
+qiime feature-table filter-features \
+  --i-table filtered-table.qza \
+  --p-min-samples 2 \
+  --o-filtered-table filtered-table-no-singletons.qza
+# 162934 rows in this table
+# June 26, 2020 - dropping the samples with less than 10
+qiime feature-table filter-features \
+  --i-table filtered-table.qza \
+  --p-min-samples 10 \
+  --o-filtered-table filtered-table-10.qza
+# 23425 rows in this table
+# filter representative sequences for this group
+qiime feature-table filter-seqs \
+  --i-data rep-seqs.qza \
+  --i-table filtered-table-10.qza \
+  --o-filtered-data rep-seqs-10.qza
 
 # NON-PHYLOGENETIC alpha diversity
 qiime diversity core-metrics \
@@ -501,54 +520,55 @@ qiime taxa collapse \
 
 # Obtaining SILVA reference database (much larger database, will likely do a better job at classifying)
 wget -O "silva-132-99-nb-classifier.qza" "https://data.qiime2.org/2019.10/common/silva-132-99-nb-classifier.qza"
+# just doing this for OTUs that occur in ten or more samples (was taking forever to run otherwise)
 # Classifying taxonomies
 qiime feature-classifier classify-sklearn \
   --i-classifier ./references/silva-132-99-nb-classifier.qza \
-  --i-reads rep-seqs.qza \
-  --o-classification ./taxonomy/SILVA-taxonomy.qza
+  --i-reads rep-seqs-10.qza \
+  --o-classification ./taxonomy/SILVA-taxonomy-10.qza
 # Generating taxonomy visualization
 qiime taxa barplot \
-  --i-table filtered-table.qza \
-  --i-taxonomy ./taxonomy/SILVA-taxonomy.qza \
+  --i-table filtered-table-10.qza \
+  --i-taxonomy ./taxonomy/SILVA-taxonomy-10.qza \
   --m-metadata-file ./input/RS_meta.tsv \
-  --o-visualization ./taxonomy/SILVA-dn-taxa-bar-plots.qzv
+  --o-visualization ./taxonomy/SILVA-dn-taxa-bar-plots-10.qzv
 # Extracting Taxonomic Clasification
 # Phylum
 qiime taxa collapse \
-  --i-table filtered-table.qza \
-  --i-taxonomy ./taxonomy/SILVA-taxonomy.qza \
+  --i-table filtered-table-10.qza \
+  --i-taxonomy ./taxonomy/SILVA-taxonomy-10.qza \
   --p-level 2 \
-  --o-collapsed-table ./taxonomy/SILVA-table-l2.qza
+  --o-collapsed-table ./taxonomy/SILVA-table-10-l2.qza
 # Class
 qiime taxa collapse \
-  --i-table filtered-table.qza \
-  --i-taxonomy ./taxonomy/SILVA-taxonomy.qza \
+  --i-table filtered-table-10.qza \
+  --i-taxonomy ./taxonomy/SILVA-taxonomy-10.qza \
   --p-level 3 \
-  --o-collapsed-table ./taxonomy/SILVA-table-l3.qza
+  --o-collapsed-table ./taxonomy/SILVA-table-10-l3.qza
 # Order
 qiime taxa collapse \
-  --i-table filtered-table.qza \
-  --i-taxonomy ./taxonomy/SILVA-taxonomy.qza \
+  --i-table filtered-table-10.qza \
+  --i-taxonomy ./taxonomy/SILVA-taxonomy-10.qza \
   --p-level 4 \
-  --o-collapsed-table ./taxonomy/SILVA-table-l4.qza
+  --o-collapsed-table ./taxonomy/SILVA-table-10-l4.qza
 # Family
 qiime taxa collapse \
-  --i-table filtered-table.qza \
-  --i-taxonomy ./taxonomy/SILVA-taxonomy.qza \
+  --i-table filtered-table-10.qza \
+  --i-taxonomy ./taxonomy/SILVA-taxonomy-10.qza \
   --p-level 5 \
-  --o-collapsed-table ./taxonomy/SILVA-table-l5.qza
+  --o-collapsed-table ./taxonomy/SILVA-table-10-l5.qza
 # Genus
 qiime taxa collapse \
-  --i-table filtered-table.qza \
-  --i-taxonomy ./taxonomy/SILVA-taxonomy.qza \
+  --i-table filtered-table-10.qza \
+  --i-taxonomy ./taxonomy/SILVA-taxonomy-10.qza \
   --p-level 6 \
-  --o-collapsed-table ./taxonomy/SILVA-table-l6.qza
+  --o-collapsed-table ./taxonomy/SILVA-table-10-l6.qza
 # Species
 qiime taxa collapse \
-  --i-table filtered-table.qza \
-  --i-taxonomy ./taxonomy/SILVA-taxonomy.qza \
+  --i-table filtered-table-10.qza \
+  --i-taxonomy ./taxonomy/SILVA-taxonomy-10.qza \
   --p-level 7 \
-  --o-collapsed-table ./taxonomy/SILVA-table-l7.qza
+  --o-collapsed-table ./taxonomy/SILVA-table-10-l7.qza
 
 # Close QIIME2
 conda deactivate
