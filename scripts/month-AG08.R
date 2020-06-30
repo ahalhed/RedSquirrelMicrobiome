@@ -70,7 +70,7 @@ met_month <- function(XY, meta) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table.qza",
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
                       tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
                       taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
                       metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
@@ -80,12 +80,23 @@ print("Read in the metadata")
 rs_q2_metadata <- as(sample_data(ps), "data.frame")
 rownames(rs_q2_metadata) <- sample_names(ps)
 
+# example in https://github.com/ggloor/CoDaSeq/blob/master/Intro_tiger_ladybug.Rmd
+# rows are OTUs
+# impute the OTU table
+OTUimp <- otu_table(ps) %>% as.data.frame %>% # all OTUs
+  cmultRepl(., label=0, method="CZM")
+# compute the aitchison values
+OTUclr <- codaSeq.clr(OTUimp, aitch = T)
+mean.clr <- apply(OTUclr, 2, mean)
+var.clr <- apply(OTUclr, 2, var)
+plot(mean.clr, var.clr)
+abline(h=median(var.clr), lty=3, col="grey", lwd=2)
+
 ## Core and rare divide
 print("Finding core microbiome")
 print("Accessing full OTU table as a community object")
-OTU_full <- otu_table(ps) %>% as.matrix %>% 
-  as.data.frame %>% 
-  t %>% as.data.frame 
+# using the modified OTU table
+OTU_full <- OTUclr %>% t %>% as.data.frame 
 # transform the counts to relative abundance
 print("Transforming the OTU counts to relative abundance")
 RA_full <- transform_sample_counts(ps, function(x) x/sum(x)) %>% 
