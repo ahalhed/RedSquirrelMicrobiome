@@ -8,7 +8,7 @@
 # run on graham cluster
 # salloc --time=0-01:30:00 --mem=64G --account=def-cottenie
 # module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
-setwd("/home/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots")
+setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots")
 # attaching required packages for full analysis
 # qiime2R to create phyloseq object
 library(qiime2R)

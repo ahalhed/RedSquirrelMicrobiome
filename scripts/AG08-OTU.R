@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/R-env")
+setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env")
 
 # attach required packages
 library(tidyverse)
@@ -28,10 +28,10 @@ XY_year <- function(metadata, grid, year) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/filtered-table.qza",
-                      tree = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
-                      metadata = "/home/ahalhed/projects/def-cottenie/ahalhed/RedSquirrelMicrobiome/input/RS_meta.tsv")
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table.qza",
+                      tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
 ps
 
 # based on the meta function from the microbiome package
