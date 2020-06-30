@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env")
+setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env")
 
 # attach required packages
 library(tidyverse)
@@ -31,7 +31,7 @@ XY_year <- function(metadata, grid, year) {
 # get the data
 print("Read in the Data")
 print("Read in the metadata")
-rs_q2_metadata <- read.table("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/input/RS_meta.tsv", sep="\t")
+rs_q2_metadata <- read.table("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv", sep="\t")
 colnames(rs_q2_metadata) <- c("SampleID", "Grid", "Location X", "Location Y", "Sex", "Age", "Month", "Season", "Year", "Squirrel.ID", "SireID", "DamID", "CollectionDate", "FoodSupplement", "BirthYear", "Location", "Date")
 
 # start analysis
@@ -73,7 +73,7 @@ SU <- pcnm(d_SU)
 print("Plotting significant PCNM axes with ordisurf")
 # replace grid-year with values used in this script
 print("AG 2008")
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_AG2008_ordiSIG.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/core_AG2008_ordiSIG.pdf")
 par(mfrow=c(2,2))
 ordisurf(XY_AG, scores(AG, choi=55), bubble = 4, main = "PCNM 55")
 ordisurf(XY_AG, scores(AG, choi=27), bubble = 4, main = "PCNM 27")
@@ -81,7 +81,7 @@ ordisurf(XY_AG, scores(AG, choi=74), bubble = 4, main = "PCNM 74")
 dev.off()
 
 print("CH 2008")
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_CH2008_ordiSIG.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/core_CH2008_ordiSIG.pdf")
 par(mfrow=c(1,2))
 ordisurf(XY_CH, scores(CH, choi=8), bubble = 4, main = "PCNM 8")
 ordisurf(XY_CH, scores(CH, choi=15), bubble = 4, main = "PCNM 15")
@@ -91,7 +91,7 @@ print("JO 2008")
 print("No significant core axes")
 
 print("KL 2008")
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_KL2008_ordiSIG.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/core_KL2008_ordiSIG.pdf")
 par(mfrow=c(2,2))
 ordisurf(XY_KL8, scores(KL8, choi=2), bubble = 4, main = "PCNM 2")
 ordisurf(XY_KL8, scores(KL8, choi=14), bubble = 4, main = "PCNM 14")
@@ -103,21 +103,21 @@ print("KL 2009")
 print("No significant core axes")
 
 print("KL 2010")
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_KL2010_ordiSIG.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/core_KL2010_ordiSIG.pdf")
 par(mfrow=c(1,2))
 ordisurf(XY_KL10, scores(KL10, choi=4), bubble = 4, main = "PCNM 4")
 ordisurf(XY_KL10, scores(KL10, choi=37), bubble = 4, main = "PCNM 37")
 dev.off()
 
 print("LL 2008")
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_LL2008_ordiSIG.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/core_LL2008_ordiSIG.pdf")
 par(mfrow=c(1,2))
 ordisurf(XY_LL, scores(LL, choi=13), bubble = 4, main = "PCNM 13")
 ordisurf(XY_LL, scores(LL, choi=21), bubble = 4, main = "PCNM 21")
 dev.off()
 
 print("SU 2008")
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/core_SU2008_ordiSIG.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/core_SU2008_ordiSIG.pdf")
 par(mfrow=c(2,2))
 ordisurf(XY_SU, scores(SU, choi=8), bubble = 4, main = "PCNM 8")
 ordisurf(XY_SU, scores(SU, choi=10), bubble = 4, main = "PCNM 10")

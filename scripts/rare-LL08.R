@@ -6,7 +6,7 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-setwd("/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial")
+setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial")
 
 # attach required packages
 library(tidyverse)
@@ -41,10 +41,10 @@ max_dist <- function(dm) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/red-squirrel-w2020/filtered-table.qza",
-                      tree = "/home/ahalhed/red-squirrel-w2020/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/red-squirrel-w2020/taxonomy/GG-taxonomy.qza",
-                      metadata = "/home/ahalhed/red-squirrel-w2020/input/RS_meta.tsv")
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/ahalhed/Microbiome/RedSquirrelMicrobiome/filtered-table.qza",
+                      tree = "/home/ahalhed/projects/def-cottenie/ahalhed/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/ahalhed/Microbiome/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
+                      metadata = "/home/ahalhed/projects/def-cottenie/ahalhed/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
 
 # based on the meta function from the microbiome package
 # I don't want to load a whole package for one function
@@ -149,7 +149,7 @@ summary(cca_sub)
 print("Multiscale ordination")
 mso_sub <- mso(cca_sub, XY_sub)
 # plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_LL2008_mso.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_LL2008_mso.pdf")
 msoplot(mso_sub, ylim = c(0, 45), main="2008 LL")
 dev.off()
 
@@ -163,7 +163,7 @@ cca_un <- cca(log(comm_obj + 1))
 mso_sub3 <- mso(cca_un, XY_sub)
 mso_sub3
 # plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_LL2008_mso2.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_LL2008_mso2.pdf")
 par(mfrow=c(1,2))
 msoplot(mso_sub2, legend = "right", main="Constrained Ordination")
 msoplot(mso_sub3, legend = "right", main="Unconstrained Ordination")
@@ -177,7 +177,7 @@ dev.off()
 print("Variance partitioning")
 vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub, transfo = "hel")
 vp_mod1
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_LL2008_vp_mod1.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_LL2008_vp_mod1.pdf")
 plot(vp_mod1)
 dev.off()
 
@@ -209,7 +209,7 @@ step.env$anova
 print("ANOVA on full environmental selection")
 anova(step.env)
 # save plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_LL2008_step_env.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_LL2008_step_env.pdf")
 plot(step.env)
 dev.off()
 
@@ -225,7 +225,7 @@ step.space$anova
 print("ANOVA on full spatial selection")
 anova(step.space)
 # save plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_LL2008_step_space.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_LL2008_step_space.pdf")
 plot(step.space)
 dev.off()
 
@@ -242,6 +242,6 @@ mod.pars <- varpart(comm_obj, ~ .,
                data = meta_sub[, names(step.env$terminfo$ordered)],
                transfo = "hel")
 mod.pars
-pdf(file = "/home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/plots/rare_LL2008_mod_pars.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_LL2008_mod_pars.pdf")
 plot(mod.pars)
 dev.off()
