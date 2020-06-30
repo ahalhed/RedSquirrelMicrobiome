@@ -16,4 +16,4 @@
 module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 # run R script
 # replace AG08 with specific grid/year combo being run
-Rscript /home/ahalhed/projects/def-cottenie/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/scripts/ManuscriptFigures.R
+Rscript /home/ahalhed/red-squirrel/R-env/RedSquirrelSpatial/scripts/ManuscriptFigures.R
