@@ -9,10 +9,13 @@ print("Set up (working directory, theme, and packages)")
 setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial")
 
 # attach required packages
-library(tidyverse)
 library(qiime2R)
 library(phyloseq)
 library(vegan)
+library(zCompositions)
+# devtools::install_github('ggloor/CoDaSeq/CoDaSeq')
+library(CoDaSeq)
+library(tidyverse)
 
 # set theme for plots
 theme_set(theme_bw())
@@ -72,7 +75,7 @@ print("Read in the Data")
 print("Building phyloseq object")
 ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
                       tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza",
                       metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
 # based on the meta function from the microbiome package
 # I don't want to load a whole package for one function
