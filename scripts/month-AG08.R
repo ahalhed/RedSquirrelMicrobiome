@@ -201,7 +201,7 @@ scores_list <- lapply(pcnm_list, scores)
 print("Analysis for Core OTUs")
 print("Variance partitioning - Core OTUs")
 vp_mod1_list <- mapply(varpart, commCore, scores_list, data=met_list, 
-                       MoreArgs = list(~., transfo = "hel"),
+                       MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
@@ -293,7 +293,7 @@ rm(abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 print("Analysis for Rare OTUs")
 print("Variance partitioning - Rare OTUs")
 vp_mod1_list <- mapply(varpart, commRare, scores_list, data=met_list, 
-                       MoreArgs = list(~., transfo = "hel"),
+                       MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
@@ -388,7 +388,7 @@ rm(abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 print("Analysis for All OTUs")
 print("Variance partitioning - All OTUs")
 vp_mod1_list <- mapply(varpart, commFull, scores_list, data=met_list, 
-                       MoreArgs = list(~., transfo = "hel"),
+                       MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
