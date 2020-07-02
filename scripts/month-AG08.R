@@ -251,7 +251,16 @@ lapply(step.env, anova)
 # save plot
 pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/core_AG2008_step_envM.pdf")
 # make plot
-lapply(step.env, plot)
+#lapply(step.env, plot)
+plot(step.env[[1]])
+plot(step.env[[2]])
+plot(step.env[[3]])
+plot(step.env[[4]])
+plot(step.env[[5]])
+# subscript out of bounds error for # 6
+# not sure how to correct this error, so
+# I will just leave this off the plot for now
+#plot(step.env[[6]])
 dev.off()
 
 # spatial variables
