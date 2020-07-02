@@ -309,7 +309,7 @@ rm(vp_mod1_list)
 print("Testing with RDA (full model) - rare OTUS")
 # create a tiny anonymous function to include formula syntax in call
 abFrac <- mapply(function(x,data) rda(x~., data), 
-                 commCore, met_list, SIMPLIFY=FALSE)
+                 commRare, met_list, SIMPLIFY=FALSE)
 abFrac # Full model
 # anova
 lapply(abFrac, anova, step=200, perm.max=1000)
@@ -320,7 +320,7 @@ lapply(abFrac, RsquareAdj)
 print("Testing with partial RDA (fraction [a]) - rare OTUS")
 # create a tiny anonymous function to include formula syntax in call
 aFrac <- mapply(function(x,y,data) rda(x~.+Condition(scores(y)), data), 
-                commCore, pcnm_list, met_list, SIMPLIFY=FALSE)
+                commRare, pcnm_list, met_list, SIMPLIFY=FALSE)
 aFrac
 # anova
 lapply(aFrac, anova, step=200, perm.max=1000)
@@ -333,7 +333,7 @@ print("Forward selection for parsimonious model - rare OTUs")
 print("Environmental variables - rare OTUs")
 # create a tiny anonymous function to include formula syntax in call
 abFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  commCore, met_list, SIMPLIFY=FALSE) # Reduced model
+                  commRare, met_list, SIMPLIFY=FALSE) # Reduced model
 
 step.env <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                    abFrac0, abFrac, SIMPLIFY=FALSE)
@@ -354,9 +354,9 @@ dev.off()
 print("Spatial variables - rare OTU")
 pcnm_df <- lapply(pcnm_list, function(x) as.data.frame(scores(x)))
 bcFrac <- mapply(function(x,data) rda(x~., data), 
-                 commCore, pcnm_df, SIMPLIFY=FALSE) # Full model
+                 commRare, pcnm_df, SIMPLIFY=FALSE) # Full model
 bcFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  commCore, pcnm_df, SIMPLIFY=FALSE) # Reduced model
+                  commRare, pcnm_df, SIMPLIFY=FALSE) # Reduced model
 step.space <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                      bcFrac0, bcFrac, SIMPLIFY=FALSE)
 step.space
@@ -382,7 +382,7 @@ pbcd
 #cleanup
 # remove objects to be replaced
 rm(vdist,pbcd)
-rm(commCore, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
+rm(commRare, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 
 # analysis for all OTUs
 print("Analysis for All OTUs")
