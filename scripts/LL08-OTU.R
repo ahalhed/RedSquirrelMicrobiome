@@ -18,9 +18,9 @@ print("Initiate function for analysis")
 # subset the XY's by grid and year
 XY_year <- function(metadata, grid, year) {
   df1 <- subset(metadata, Grid == grid, 
-                select = c("SampleID", "Location X", "Location Y", "Year"))
+                select = c("SampleID", "Location.X", "Location.Y", "Year"))
   df2 <- subset(df1, Year == year, 
-                select = c("SampleID", "Location X", "Location Y"))
+                select = c("SampleID", "Location.X", "Location.Y"))
   df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
   return(df3)
 }

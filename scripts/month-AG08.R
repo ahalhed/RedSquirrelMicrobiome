@@ -84,16 +84,15 @@ rs_q2_metadata <- as(sample_data(ps), "data.frame")
 rownames(rs_q2_metadata) <- sample_names(ps)
 
 # example in https://github.com/ggloor/CoDaSeq/blob/master/Intro_tiger_ladybug.Rmd
+print("Aitchison transformation")
 # rows are OTUs
 # impute the OTU table
 OTUimp <- otu_table(ps) %>% as.data.frame %>% # all OTUs
   cmultRepl(., label=0, method="CZM")
 # compute the aitchison values
-OTUclr <- codaSeq.clr(OTUimp, aitch = T)
+OTUclr <- codaSeq.clr(OTUimp)
 mean.clr <- apply(OTUclr, 2, mean)
 var.clr <- apply(OTUclr, 2, var)
-plot(mean.clr, var.clr)
-abline(h=median(var.clr), lty=3, col="grey", lwd=2)
 
 ## Core and rare divide
 print("Finding core microbiome")

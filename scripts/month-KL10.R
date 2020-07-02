@@ -6,13 +6,16 @@
 
 print("Set up (working directory, theme, and packages)")
 # set working directory
-#setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial")
+setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial")
 
 # attach required packages
-library(tidyverse)
 library(qiime2R)
 library(phyloseq)
 library(vegan)
+library(zCompositions)
+# devtools::install_github('ggloor/CoDaSeq/CoDaSeq')
+library(CoDaSeq)
+library(tidyverse)
 
 # set theme for plots
 theme_set(theme_bw())
@@ -70,9 +73,9 @@ met_month <- function(XY, meta) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table.qza",
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
                       tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza",
                       metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
 # based on the meta function from the microbiome package
 # I don't want to load a whole package for one function
@@ -80,12 +83,22 @@ print("Read in the metadata")
 rs_q2_metadata <- as(sample_data(ps), "data.frame")
 rownames(rs_q2_metadata) <- sample_names(ps)
 
+# example in https://github.com/ggloor/CoDaSeq/blob/master/Intro_tiger_ladybug.Rmd
+print("Aitchison transformation")
+# rows are OTUs
+# impute the OTU table
+OTUimp <- otu_table(ps) %>% as.data.frame %>% # all OTUs
+  cmultRepl(., label=0, method="CZM")
+# compute the aitchison values
+OTUclr <- codaSeq.clr(OTUimp)
+mean.clr <- apply(OTUclr, 2, mean)
+var.clr <- apply(OTUclr, 2, var)
+
 ## Core and rare divide
 print("Finding core microbiome")
 print("Accessing full OTU table as a community object")
-OTU_full <- otu_table(ps) %>% as.matrix %>% 
-  as.data.frame %>% 
-  t %>% as.data.frame 
+# using the modified OTU table
+OTU_full <- OTUclr %>% t %>% as.data.frame 
 # transform the counts to relative abundance
 print("Transforming the OTU counts to relative abundance")
 RA_full <- transform_sample_counts(ps, function(x) x/sum(x)) %>% 
@@ -186,7 +199,7 @@ scores_list <- lapply(pcnm_list, scores)
 print("Analysis for Core OTUs")
 print("Variance partitioning - Core OTUs")
 vp_mod1_list <- mapply(varpart, commCore, scores_list, data=met_list, 
-                       MoreArgs = list(~., transfo = "hel"),
+                       MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
@@ -200,10 +213,9 @@ rm(vp_mod1_list)
 
 # test with RDA
 print("Testing with RDA (full model) - core OTUS")
-deco_list <- lapply(commCore, decostand, "hel")
 # create a tiny anonymous function to include formula syntax in call
 abFrac <- mapply(function(x,data) rda(x~., data), 
-                 deco_list, met_list, SIMPLIFY=FALSE)
+                 commCore, met_list, SIMPLIFY=FALSE)
 abFrac # Full model
 lapply(abFrac, anova, step=200, perm.max=1000)
 # RsquareAdj gives the same result as component [a] of varpart
@@ -213,7 +225,7 @@ lapply(abFrac, RsquareAdj)
 print("Testing with partial RDA (fraction [a]) - core OTUS")
 # create a tiny anonymous function to include formula syntax in call
 aFrac <- mapply(function(x,y,data) rda(x~.+Condition(scores(y)), data), 
-                deco_list, pcnm_list, met_list, SIMPLIFY=FALSE)
+                commCore, pcnm_list, met_list, SIMPLIFY=FALSE)
 aFrac
 lapply(aFrac, anova, step=200, perm.max=1000)
 # RsquareAdj gives the same result as component [a] of varpart
@@ -225,7 +237,7 @@ print("Forward selection for parsimonious model - core OTUs")
 print("Environmental variables - core OTUs")
 # create a tiny anonymous function to include formula syntax in call
 abFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  deco_list, met_list, SIMPLIFY=FALSE) # Reduced model
+                  commCore, met_list, SIMPLIFY=FALSE) # Reduced model
 step.env <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                    abFrac0, abFrac, SIMPLIFY=FALSE)
 step.env # an rda model, with the final model predictor variables
@@ -245,9 +257,9 @@ dev.off()
 print("Spatial variables - core OTU")
 pcnm_df <- lapply(pcnm_list, function(x) as.data.frame(scores(x)))
 bcFrac <- mapply(function(x,data) rda(x~., data), 
-                 deco_list, pcnm_df, SIMPLIFY=FALSE) # Full model
+                 commCore, pcnm_df, SIMPLIFY=FALSE) # Full model
 bcFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  deco_list, pcnm_df, SIMPLIFY=FALSE) # Reduced model
+                  commCore, pcnm_df, SIMPLIFY=FALSE) # Reduced model
 step.space <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                      bcFrac0, bcFrac, SIMPLIFY=FALSE)
 step.space
@@ -272,14 +284,14 @@ pbcd
 #cleanup
 # remove objects to be replaced
 rm(vdist,pbcd)
-rm(deco_list, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
+rm(commCore, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 
 
 # Rare OTUs
 print("Analysis for Rare OTUs")
 print("Variance partitioning - Rare OTUs")
 vp_mod1_list <- mapply(varpart, commRare, scores_list, data=met_list, 
-                       MoreArgs = list(~., transfo = "hel"),
+                       MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
@@ -293,10 +305,9 @@ rm(vp_mod1_list)
 
 # test with RDA
 print("Testing with RDA (full model) - rare OTUS")
-deco_list <- lapply(commRare, decostand, "hel")
 # create a tiny anonymous function to include formula syntax in call
 abFrac <- mapply(function(x,data) rda(x~., data), 
-                 deco_list, met_list, SIMPLIFY=FALSE)
+                 commRare, met_list, SIMPLIFY=FALSE)
 abFrac # Full model
 # anova
 lapply(abFrac, anova, step=200, perm.max=1000)
@@ -307,7 +318,7 @@ lapply(abFrac, RsquareAdj)
 print("Testing with partial RDA (fraction [a]) - rare OTUS")
 # create a tiny anonymous function to include formula syntax in call
 aFrac <- mapply(function(x,y,data) rda(x~.+Condition(scores(y)), data), 
-                deco_list, pcnm_list, met_list, SIMPLIFY=FALSE)
+                commRare, pcnm_list, met_list, SIMPLIFY=FALSE)
 aFrac
 # anova
 lapply(aFrac, anova, step=200, perm.max=1000)
@@ -320,7 +331,7 @@ print("Forward selection for parsimonious model - rare OTUs")
 print("Environmental variables - rare OTUs")
 # create a tiny anonymous function to include formula syntax in call
 abFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  deco_list, met_list, SIMPLIFY=FALSE) # Reduced model
+                  commRare, met_list, SIMPLIFY=FALSE) # Reduced model
 
 step.env <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                    abFrac0, abFrac, SIMPLIFY=FALSE)
@@ -341,9 +352,9 @@ dev.off()
 print("Spatial variables - rare OTU")
 pcnm_df <- lapply(pcnm_list, function(x) as.data.frame(scores(x)))
 bcFrac <- mapply(function(x,data) rda(x~., data), 
-                 deco_list, pcnm_df, SIMPLIFY=FALSE) # Full model
+                 commRare, pcnm_df, SIMPLIFY=FALSE) # Full model
 bcFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  deco_list, pcnm_df, SIMPLIFY=FALSE) # Reduced model
+                  commRare, pcnm_df, SIMPLIFY=FALSE) # Reduced model
 step.space <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                      bcFrac0, bcFrac, SIMPLIFY=FALSE)
 step.space
@@ -369,11 +380,13 @@ pbcd
 #cleanup
 # remove objects to be replaced
 rm(vdist,pbcd)
-rm(deco_list, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
+rm(commRare, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 
+# analysis for all OTUs
+print("Analysis for All OTUs")
 print("Variance partitioning - All OTUs")
 vp_mod1_list <- mapply(varpart, commCore, scores_list, data=met_list, 
-                       MoreArgs = list(~., transfo = "hel"),
+                       MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
@@ -387,10 +400,9 @@ rm(vp_mod1_list)
 
 # test with RDA
 print("Testing with RDA (full model) - all OTUS")
-deco_list <- lapply(commFull, decostand, "hel")
 # create a tiny anonymous function to include formula syntax in call
 abFrac <- mapply(function(x,data) rda(x~., data), 
-                 deco_list, met_list, SIMPLIFY=FALSE)
+                 commFull, met_list, SIMPLIFY=FALSE)
 
 abFrac # Full model
 
@@ -402,7 +414,7 @@ lapply(abFrac, RsquareAdj)
 print("Testing with partial RDA (fraction [a]) - all OTUS")
 # create a tiny anonymous function to include formula syntax in call
 aFrac <- mapply(function(x,y,data) rda(x~.+Condition(scores(y)), data), 
-                deco_list, pcnm_list, met_list, SIMPLIFY=FALSE)
+                commFull, pcnm_list, met_list, SIMPLIFY=FALSE)
 aFrac
 # anova
 lapply(aFrac, anova, step=200, perm.max=1000)
@@ -416,7 +428,7 @@ print("Forward selection for parsimonious model - all OTUs")
 print("Environmental variables - all OTUs")
 # create a tiny anonymous function to include formula syntax in call
 abFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  deco_list, met_list, SIMPLIFY=FALSE) # Reduced model
+                  commFull, met_list, SIMPLIFY=FALSE) # Reduced model
 
 step.env <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                    abFrac0, abFrac, SIMPLIFY=FALSE)
@@ -438,9 +450,9 @@ dev.off()
 print("Spatial variables - all OTU")
 pcnm_df <- lapply(pcnm_list, function(x) as.data.frame(scores(x)))
 bcFrac <- mapply(function(x,data) rda(x~., data), 
-                 deco_list, pcnm_df, SIMPLIFY=FALSE) # Full model
+                 commFull, pcnm_df, SIMPLIFY=FALSE) # Full model
 bcFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  deco_list, pcnm_df, SIMPLIFY=FALSE) # Reduced model
+                  commFull, pcnm_df, SIMPLIFY=FALSE) # Reduced model
 step.space <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                      bcFrac0, bcFrac, SIMPLIFY=FALSE)
 step.space
@@ -466,7 +478,7 @@ pbcd
 #cleanup
 # remove objects to be replaced
 rm(vdist,pbcd)
-rm(deco_list, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
+rm(commFull, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 
 # I have removed the variation decomposition with parsimonious variables, 
 # since it was frequently failing and would likely cause issues.
