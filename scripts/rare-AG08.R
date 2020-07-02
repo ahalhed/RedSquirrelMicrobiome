@@ -9,10 +9,13 @@ print("Set up (working directory, theme, and packages)")
 setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial")
 
 # attach required packages
-library(tidyverse)
 library(qiime2R)
 library(phyloseq)
 library(vegan)
+library(zCompositions)
+# devtools::install_github('ggloor/CoDaSeq/CoDaSeq')
+library(CoDaSeq)
+library(tidyverse)
 
 # set theme for plots
 theme_set(theme_bw())
@@ -41,9 +44,9 @@ max_dist <- function(dm) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table.qza",
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
                       tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza",
                       metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
 
 # based on the meta function from the microbiome package
@@ -51,6 +54,21 @@ ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome
 print("Read in the metadata")
 rs_q2_metadata <- as(sample_data(ps), "data.frame")
 rownames(rs_q2_metadata) <- sample_names(ps)
+
+# example in https://github.com/ggloor/CoDaSeq/blob/master/Intro_tiger_ladybug.Rmd
+print("Aitchison transformation")
+# rows are OTUs
+# impute the OTU table
+OTUimp <- otu_table(ps) %>% as.data.frame %>% # all OTUs
+  cmultRepl(., label=0, method="CZM")
+# compute the aitchison values
+OTUclr <- codaSeq.clr(OTUimp)
+mean.clr <- apply(OTUclr, 2, mean)
+var.clr <- apply(OTUclr, 2, var)
+# unload packages we'r done with
+detach("package:CoDaSeq", unload = TRUE)
+detach("package:qiime2R", unload = TRUE)
+detach("package:zCompositions", unload = TRUE)
 
 # start analysis
 print("Starting initial data preparation")
@@ -64,9 +82,7 @@ max_dist(eDIST)
 # get OTUs (aka a community matrix)
 print("Finding core microbiome")
 print("Accessing full OTU table as a community object")
-OTU_full <- otu_table(ps) %>% as.matrix %>% 
-  as.data.frame %>% 
-  t %>% as.data.frame 
+OTU_full <- OTUclr %>% t %>% as.data.frame 
 # transform the counts to relative abundance
 print("Transforming the OTU counts to relative abundance")
 RA_full <- transform_sample_counts(ps, function(x) x/sum(x)) %>% 
@@ -117,11 +133,13 @@ comm_obj <- OTU_rare %>%
 # get the metadata subset
 print("Extract metadata for grid/year")
 meta_sub <- rs_q2_metadata %>% 
-  subset(., SampleID %in% rownames(XY_sub)) %>%
+  subset(., rownames(.) %in% rownames(XY_sub)) %>%
   select_if(~ !any(is.na(.))) %>% 
   # age and birth year are collinear
-  # should I add the squirrel id here? dam/sire id has misssingness
-  select(Sex, Age, Month, Season, CollectionDate, BirthYear)
+  # remove location information
+  subset(., select = -c(Location.X, Location.Y, Location, Date)) %>% 
+  # select columns with more than one level
+  .[sapply(., function(x) length(unique(x))>1)]
 
 # Remove objects we're done with
 print("Removing pobjects that are no longer needed")
@@ -132,44 +150,11 @@ print("Unweighted PCNM")
 UWpcnm <- pcnm(eDIST)
 UWpcnm$vectors
 
-# weighted PCNM
-print("Weighted PCNM")
-Wpcnm <- pcnm(eDIST, w = rowSums(comm_obj)/sum(comm_obj))
-Wpcnm$vectors
-
-# computing CCA with weighted PCNM
-print("CCA with weighted PCNM")
-# not including Birth year here due to collinearity with age (same information)
-cca_sub <- cca(comm_obj ~ scores(Wpcnm) + Sex + Season + Age, meta_sub)
-summary(cca_sub)
-
-# Spatial partitioning of CCA (mso)
-print("Multiscale ordination")
-mso_sub <- mso(cca_sub, XY_sub)
-# plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_AG2008_mso.pdf")
-msoplot(mso_sub, ylim = c(0, 45), main="2008 AG")
-dev.off()
-
-print("CCA retaining spatial patterns for MSO")
-print("Constrained")
-cca_con <- cca(log(comm_obj + 1) ~ Sex + Season + Age, meta_sub)
-mso_sub2 <- mso(cca_con, XY_sub)
-mso_sub2
-print("Unconstrained")
-cca_un <- cca(log(comm_obj + 1))
-mso_sub3 <- mso(cca_un, XY_sub)
-mso_sub3
-# plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_AG2008_mso2.pdf")
-par(mfrow=c(1,2))
-msoplot(mso_sub2, main="Constrained Ordination", legend = "right")
-msoplot(mso_sub3, main="Unconstrained Ordination", legend = "right")
-dev.off()
+# removed the MSO - throws errors with aitchison
 
 # Variance partitioning
 print("Variance partitioning")
-vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub, transfo = "hel")
+vp_mod1 <- varpart(comm_obj,  ~ ., scores(UWpcnm), data=meta_sub)
 vp_mod1
 pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_AG2008_vp_mod1.pdf")
 plot(vp_mod1)
@@ -177,7 +162,7 @@ dev.off()
 
 # test with RDA
 print("Testing with RDA (full model)")
-abFrac <- rda(decostand(comm_obj, "hel") ~ ., meta_sub)
+abFrac <- rda(comm_obj ~ ., meta_sub)
 abFrac # Full model
 anova(abFrac, step=200, perm.max=1000)
 # RsquareAdj gives the same result as component [a] of varpart
@@ -185,7 +170,7 @@ RsquareAdj(abFrac)
 
 # Test fraction [a] using partial RDA:
 print("Testing with partial RDA (fraction [a])")
-aFrac <- rda(decostand(comm_obj, "hel") ~ . + Condition(scores(UWpcnm)), data = meta_sub)
+aFrac <- rda(comm_obj ~ . + Condition(scores(UWpcnm)), data = meta_sub)
 # the anova was taking forever to run
 anova(aFrac, step=200, perm.max=1000)
 # RsquareAdj gives the same result as component [a] of varpart
@@ -195,7 +180,7 @@ RsquareAdj(aFrac)
 print("Forward selection for parsimonious model")
 # env variables
 print("Environmental variables")
-abFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, meta_sub) # Reduced model
+abFrac0 <- rda(comm_obj ~ 1, meta_sub) # Reduced model
 step.env <- ordiR2step(abFrac0, scope = formula(abFrac))
 step.env # an rda model, with the final model predictor variables
 print("Summary of environmental selection process")
@@ -210,8 +195,8 @@ dev.off()
 # spatial variables
 print("Spatial variables")
 pcnm_df <- as.data.frame(scores(UWpcnm))
-bcFrac <- rda(decostand(comm_obj, "hel") ~ ., pcnm_df) # Full model
-bcFrac0 <- rda(decostand(comm_obj, "hel") ~ 1, pcnm_df) # Reduced model
+bcFrac <- rda(comm_obj ~ ., pcnm_df) # Full model
+bcFrac0 <- rda(comm_obj ~ 1, pcnm_df) # Reduced model
 step.space <- ordiR2step(bcFrac0, scope = formula(bcFrac))
 step.space
 # summary of selection process
@@ -232,8 +217,7 @@ varpart(vegdist(comm_obj), ~ ., scores(UWpcnm), data = meta_sub)
 print("Variation decomposition with parsimonious variables")
 mod.pars <- varpart(comm_obj, ~ ., 
                pcnm_df[, names(step.space$terminfo$ordered)], 
-               data = meta_sub[, names(step.env$terminfo$ordered)],
-               transfo = "hel")
+               data = meta_sub[, names(step.env$terminfo$ordered)])
 mod.pars
 pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/plots/rare_AG2008_mod_pars.pdf")
 plot(mod.pars)

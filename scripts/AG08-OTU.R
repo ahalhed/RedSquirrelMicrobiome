@@ -15,22 +15,49 @@ library(phyloseq)
 library(vegan)
 
 print("Initiate function for analysis")
+# subset the metadata by grid and year
+met_year <- function(metadata, grid, year) {
+  met <- rownames_to_column(metadata, var = "SampleID")
+  df1 <- subset(met, Grid == grid)
+  df2 <- subset(df1, Year == year)
+  df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
+  return(df3)
+}
+# subset the XY's by grid, year, month
+XY_month <- function(metadata, grid, year, month) {
+  met <- rownames_to_column(metadata, var = "SampleID")
+  df1 <- subset(met, Grid == grid, 
+                select = c("SampleID", "Location.X", "Location.Y", "Year", "Month"))
+  df2 <- subset(df1, Year == year, 
+                select = c("SampleID", "Location.X", "Location.Y", "Month"))
+  df3 <- subset(df2, Month == month, 
+                select = c("SampleID", "Location.X", "Location.Y"))
+  df4 <- column_to_rownames(remove_rownames(df3), var = "SampleID")
+  return(df4)
+}
+# build community object
+comm_obj <- function(XY, c) {
+  # subset the OTUs (c is OTU table being subset)
+  comm <- c %>%
+    subset(., rownames(.) %in% rownames(XY)) %>%
+    .[ , colSums(.)>0 ]
+  return(comm)
+}
 # subset the XY's by grid and year
 XY_year <- function(metadata, grid, year) {
   df1 <- subset(metadata, Grid == grid, 
-                select = c("SampleID", "Location X", "Location Y", "Year"))
+                select = c("Location.X", "Location.Y", "Year"))
   df2 <- subset(df1, Year == year, 
-                select = c("SampleID", "Location X", "Location Y"))
-  df3 <- column_to_rownames(remove_rownames(df2), var = "SampleID")
-  return(df3)
+                select = c("Location.X", "Location.Y"))
+  return(df2)
 }
 
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table.qza",
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
                       tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/GG-taxonomy.qza",
+                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza",
                       metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
 ps
 
@@ -42,11 +69,21 @@ rownames(rs_q2_metadata) <- sample_names(ps)
 
 # start analysis
 print("Starting initial data preparation")
-print("Access and plot XY data")
+print("Access XY data")
+# for all months
 XY_sub <- XY_year(rs_q2_metadata, "AG", 2008)
-# plotting the locations
-print("Computing Euclidean Distances")
-eDIST <- dist(XY_sub)
+# for individual months
+met <- met_year(rs_q2_metadata, "AG", 2008)
+# loop to create individual month data frames
+for (month in unique(met$Month)) {
+  df <- XY_month(rs_q2_metadata, "AG", 2008, month)
+  assign(paste('Month',month,sep = ' '),df)
+  rm(df, month)
+}
+# make a list of the data frames generated from the loop
+XY_list <- do.call("list",
+                   # searching the global environment for the pattern
+                   mget(grep("Month", names(.GlobalEnv), value=TRUE)))
 
 # get OTUs (aka a community matrix)
 print("Finding core microbiome")
@@ -98,23 +135,29 @@ OTU_rare <- OTU_full %>%
   select(-one_of(cOTU$OTU))
 # subset the samples from the core microbiome
 print("Build the core community object (OTU table) for grid/year")
-comm_core <- OTU_core %>% 
-  subset(., rownames(.) %in% rownames(XY_sub)) %>%
-  .[ , colSums(.)>0 ]
+comm_core <- comm_obj(XY_sub, OTU_core)
 print("Number of OTUs (columns) in core OTU table for AG 2008")
 ncol(comm_core)
 # subset the samples from the rare microbiome
 print("Build the rare community object (OTU table) for grid/year")
-comm_rare <- OTU_rare %>% 
-  subset(., rownames(.) %in% rownames(XY_sub)) %>%
-  .[ , colSums(.)>0 ]
+comm_rare <- comm_obj(XY_sub, OTU_rare)
 print("Number of OTUs (columns) in rare OTU table for AG 2008")
 ncol(comm_rare)
-
+# subset the samples from the full microbiome
 print("Building community matrix for full OTU table")
-comm_full <- OTU_full %>% 
-  subset(., rownames(.) %in% rownames(XY_sub)) %>%
-  .[ , colSums(.)>0 ]
-
+comm_full <- comm_obj(XY_sub, OTU_full)
 print("Number of OTUs (columns) in full OTU table for AG 2008")
 ncol(comm_full)
+
+print("Build the community object (OTU table) for grid/year/month")
+mFull <- lapply(XY_list, comm_obj, c=OTU_full)
+mCore <- lapply(XY_list, comm_obj, c=OTU_core)
+mRare <- lapply(XY_list, comm_obj, c=OTU_rare)
+
+print("Number of OTUs (columns) in full OTU table for months")
+lapply(mFull, ncol)
+print("Number of OTUs (columns) in core OTU table for months")
+lapply(mCore, ncol)
+print("Number of OTUs (columns) in rare OTU table for months")
+lapply(mRare, ncol)
+

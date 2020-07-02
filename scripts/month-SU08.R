@@ -386,7 +386,7 @@ rm(commCore, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.spa
 # analysis for all OTUs
 print("Analysis for All OTUs")
 print("Variance partitioning - All OTUs")
-vp_mod1_list <- mapply(varpart, commCore, scores_list, data=met_list, 
+vp_mod1_list <- mapply(varpart, commFull, scores_list, data=met_list, 
                        MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
@@ -403,7 +403,7 @@ rm(vp_mod1_list)
 print("Testing with RDA (full model) - all OTUS")
 # create a tiny anonymous function to include formula syntax in call
 abFrac <- mapply(function(x,data) rda(x~., data), 
-                 commCore, met_list, SIMPLIFY=FALSE)
+                 commFull, met_list, SIMPLIFY=FALSE)
 
 abFrac # Full model
 
@@ -415,7 +415,7 @@ lapply(abFrac, RsquareAdj)
 print("Testing with partial RDA (fraction [a]) - all OTUS")
 # create a tiny anonymous function to include formula syntax in call
 aFrac <- mapply(function(x,y,data) rda(x~.+Condition(scores(y)), data), 
-                commCore, pcnm_list, met_list, SIMPLIFY=FALSE)
+                commFull, pcnm_list, met_list, SIMPLIFY=FALSE)
 aFrac
 # anova
 lapply(aFrac, anova, step=200, perm.max=1000)
@@ -429,7 +429,7 @@ print("Forward selection for parsimonious model - all OTUs")
 print("Environmental variables - all OTUs")
 # create a tiny anonymous function to include formula syntax in call
 abFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  commCore, met_list, SIMPLIFY=FALSE) # Reduced model
+                  commFull, met_list, SIMPLIFY=FALSE) # Reduced model
 
 step.env <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                    abFrac0, abFrac, SIMPLIFY=FALSE)
@@ -451,9 +451,9 @@ dev.off()
 print("Spatial variables - all OTU")
 pcnm_df <- lapply(pcnm_list, function(x) as.data.frame(scores(x)))
 bcFrac <- mapply(function(x,data) rda(x~., data), 
-                 commCore, pcnm_df, SIMPLIFY=FALSE) # Full model
+                 commFull, pcnm_df, SIMPLIFY=FALSE) # Full model
 bcFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  commCore, pcnm_df, SIMPLIFY=FALSE) # Reduced model
+                  commFull, pcnm_df, SIMPLIFY=FALSE) # Reduced model
 step.space <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                      bcFrac0, bcFrac, SIMPLIFY=FALSE)
 step.space
@@ -479,7 +479,7 @@ pbcd
 #cleanup
 # remove objects to be replaced
 rm(vdist,pbcd)
-rm(commCore, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
+rm(commFull, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 
 # I have removed the variation decomposition with parsimonious variables, 
 # since it was frequently failing and would likely cause issues.

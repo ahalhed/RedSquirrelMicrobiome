@@ -386,7 +386,7 @@ rm(commRare, abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.spa
 # analysis for all OTUs
 print("Analysis for All OTUs")
 print("Variance partitioning - All OTUs")
-vp_mod1_list <- mapply(varpart, commCore, scores_list, data=met_list, 
+vp_mod1_list <- mapply(varpart, commFull, scores_list, data=met_list, 
                        MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
