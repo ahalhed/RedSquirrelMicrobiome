@@ -87,7 +87,7 @@ rownames(rs_q2_metadata) <- sample_names(ps)
 print("Aitchison transformation")
 # rows are OTUs
 # impute the OTU table
-OTUimp <- otu_table(ps) %>% as.data.frame %>% # all OTUs
+OTUimp <- t(otu_table(ps)) %>% # all OTUs
   cmultRepl(., label=0, method="CZM")
 # compute the aitchison values
 OTUclr <- codaSeq.clr(OTUimp)
