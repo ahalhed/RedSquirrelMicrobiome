@@ -99,48 +99,19 @@ print("Finding core microbiome")
 print("Accessing full OTU table as a community object")
 # using the modified OTU table
 OTU_full <- OTUclr %>% t %>% as.data.frame 
-# transform the counts to relative abundance
-print("Transforming the OTU counts to relative abundance")
-RA_full <- transform_sample_counts(ps, function(x) x/sum(x)) %>% 
-  otu_table %>% as.matrix %>% as.data.frame %>% 
-  t %>% as.data.frame
-# 95% threshold
-# minimum number of samples that an OTU must occur in 
-# to be considered as part of the "core" microbiome
-print("Calculating 95% threshold")
-th <- 0.95*nrow(RA_full)
-th
-# Access the number of non-zero occurrences of each OTU
-print("Accessing the number of non-zero occurrences of each OTU")
-nonzero <- function(x) sum(x!=0)
-nz <- plyr::numcolwise(nonzero)(RA_full)
-# average relative abundance across all 909 samples
-print("Calculating average relative abundance")
-RA <- RA_full %>% colSums() %>% as.data.frame
-RA_001 <- RA %>%
-  rownames_to_column(var = "OTU") %>% 
-  rename("ColSum" = ".") %>% 
-  mutate(RelativeAbundance = .$ColSum/nrow(OTU_full)) %>%
-  # greater than 0.001 (or 0.1%)
-  filter(RelativeAbundance > 0.001)
-# extract the OTUs that fall above the 95% threshold
-# based on the number of non-zero occurrences of each OTU
-print("Extract the OTUs that occur in >95% of samples")
-OTU95 <- t(nz) %>% as.data.frame %>% 
-  rownames_to_column(var = "OTU") %>% 
-  rename("Occurrences" = "V1") %>%
-  subset(., Occurrences > th)
-# combine to ensure that those in 95% of the samples
-# have a total relative abundance of 0.1%
-print("Find OTUs that occur in >95% of samples and have an average relative abundance >0.1%")
-cOTU <- inner_join(OTU95, RA_001)
-print("How many OTUs meet these criteria?")
-nrow(cOTU)
+# new core phyloseq
+print("Subset phyloseq object to 95/0.1%")
+# find OTUs with at least one occurrence in 95% of samples
+cOTU <- filter_taxa(ps, function(x) sum(x > 0) > (0.95*length(x)), TRUE) %>%
+  # transform to relative abundance
+  transform_sample_counts(., function(x) x / sum(x) ) %>% 
+  # filter out low mean abundance
+  filter_taxa(., function(x) mean(x) > 0.001, TRUE)
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
-OTU_core <- OTU_full[, cOTU$OTU]
+OTU_core <- OTU_full[, taxa_names(cOTU)]
 OTU_rare <- OTU_full %>% 
-  select(-one_of(cOTU$OTU))
+  select(-one_of(taxa_names(cOTU)))
 
 ## XY data
 print("Accessing the XY data by month")
@@ -179,7 +150,7 @@ met_list <- lapply(XY_list, met_month, meta=rs_q2_metadata)
 ## Clean up 1
 # Remove objects we're done with
 print("Removing pobjects that are no longer needed")
-rm(rs_q2_metadata, cOTU, OTU95, RA_001, RA, RA_full, OTU_full, ps, OTU_core, OTU_rare, nz)
+rm(rs_q2_metadata, cOTU, OTU_full, ps, OTU_core, OTU_rare)
 # not removing the Months because they're small and not the same across all
 
 
