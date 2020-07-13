@@ -73,9 +73,9 @@ met_month <- function(XY, meta) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/filtered-table-10.qza",
-                      tree = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/trees/rooted_tree.qza",
-                      metadata = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/input/RS_meta.tsv") %>%
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
+                      tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
+                      metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv") %>%
   phyloseq(otu_table(t(otu_table(.)), taxa_are_rows = F), phy_tree(.), sample_data(.))
 # based on the meta function from the microbiome package
 # I don't want to load a whole package for one function
