@@ -73,10 +73,10 @@ met_month <- function(XY, meta) {
 # get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
-                      tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
-                      taxonomy = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza",
-                      metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv")
+ps <- qza_to_phyloseq(features = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/filtered-table-10.qza",
+                      tree = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/trees/rooted_tree.qza",
+                      metadata = "~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020/input/RS_meta.tsv") %>%
+  phyloseq(otu_table(t(otu_table(.)), taxa_are_rows = F), phy_tree(.), sample_data(.))
 # based on the meta function from the microbiome package
 # I don't want to load a whole package for one function
 print("Read in the metadata")
@@ -85,10 +85,9 @@ rownames(rs_q2_metadata) <- sample_names(ps)
 
 # example in https://github.com/ggloor/CoDaSeq/blob/master/Intro_tiger_ladybug.Rmd
 print("Aitchison transformation")
-# rows are OTUs
+# rows are OTUs, then transposed to OTUs as column
 # impute the OTU table
-OTUimp <- t(otu_table(ps)) %>% # all OTUs
-  cmultRepl(., label=0, method="CZM")
+OTUimp <- cmultRepl(otu_table(ps), label=0, method="CZM") # all OTUs
 # compute the aitchison values
 OTUclr <- codaSeq.clr(OTUimp)
 mean.clr <- apply(OTUclr, 2, mean)
@@ -96,9 +95,6 @@ var.clr <- apply(OTUclr, 2, var)
 
 ## Core and rare divide
 print("Finding core microbiome")
-print("Accessing full OTU table as a community object")
-# using the modified OTU table
-OTU_full <- OTUclr %>% t %>% as.data.frame 
 # new core phyloseq
 print("Subset phyloseq object to 95/0.1%")
 # find OTUs with at least one occurrence in 95% of samples
@@ -109,9 +105,8 @@ cOTU <- filter_taxa(ps, function(x) sum(x > 0) > (0.95*length(x)), TRUE) %>%
   filter_taxa(., function(x) mean(x) > 0.001, TRUE)
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
-OTU_core <- OTU_full[, taxa_names(cOTU)]
-OTU_rare <- OTU_full %>% 
-  select(-one_of(taxa_names(cOTU)))
+OTU_core <- OTUclr[, taxa_names(cOTU)]
+OTU_rare <- OTUclr[ , -which(colnames(OTUclr) %in% c(taxa_names(cOTU)))]
 
 ## XY data
 print("Accessing the XY data by month")
@@ -136,7 +131,7 @@ lapply(dist_list, max_dist)
 ## community objects
 # subset the samples from the core microbiome
 print("Build the community object (OTU table) for grid/year/month")
-commFull <- lapply(XY_list, comm_obj, c=OTU_full)
+commFull <- lapply(XY_list, comm_obj, c=OTUclr)
 commCore <- lapply(XY_list, comm_obj, c=OTU_core)
 commRare <- lapply(XY_list, comm_obj, c=OTU_rare)
 ## metadata
@@ -150,7 +145,7 @@ met_list <- lapply(XY_list, met_month, meta=rs_q2_metadata)
 ## Clean up 1
 # Remove objects we're done with
 print("Removing pobjects that are no longer needed")
-rm(rs_q2_metadata, cOTU, OTU_full, ps, OTU_core, OTU_rare)
+rm(rs_q2_metadata, cOTU, OTUclr, ps, OTU_core, OTU_rare)
 # not removing the Months because they're small and not the same across all
 
 
