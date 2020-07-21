@@ -95,18 +95,17 @@ var.clr <- apply(OTUclr, 2, var)
 
 ## Core and rare divide
 print("Finding core microbiome")
-# new core phyloseq
-print("Subset phyloseq object to 95/0.1%")
+print("Extract 95% Occupancy from BC Similarity Core")
 # find OTUs with at least one occurrence in 95% of samples
-cOTU <- filter_taxa(ps, function(x) sum(x > 0) > (0.95*length(x)), TRUE) %>%
-  # transform to relative abundance
-  transform_sample_counts(., function(x) x / sum(x) ) %>% 
-  # filter out low mean abundance
-  filter_taxa(., function(x) mean(x) > 0.001, TRUE)
+cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/core.csv") %>%
+  # get the OTUs identified as core contributors to beta diversity
+  .[which(.$fill == "core"),] %>%
+  # subset these ones to high occupancy OTUs
+  .[which(.$otu_occ > 0.95),]
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
-OTU_core <- OTUclr[, taxa_names(cOTU)]
-OTU_rare <- OTUclr[ , -which(colnames(OTUclr) %in% c(taxa_names(cOTU)))]
+OTU_core <- OTUclr[, cOTU]
+OTU_rare <- OTUclr[ , -which(colnames(OTUclr) %in% c(cOTU)]
 
 ## XY data
 print("Accessing the XY data by month")
