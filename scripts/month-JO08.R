@@ -104,8 +104,8 @@ cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicr
   .[which(.$otu_occ > 0.95),]
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
-OTU_core <- OTUclr[, cOTU]
-OTU_rare <- OTUclr[ , -which(colnames(OTUclr) %in% c(cOTU)]
+OTU_core <- OTUclr[, cOTU$otu]
+OTU_rare <- OTUclr[ , !colnames(OTUclr) %in% c(cOTU$otu)]
 
 ## XY data
 print("Accessing the XY data by month")

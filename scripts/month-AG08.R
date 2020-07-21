@@ -44,7 +44,7 @@ XY_month <- function(metadata, grid, year, month) {
 # maximum distance
 max_dist <- function(dm) {
   df1 <- as.data.frame(as.matrix(dm))
-  # functions is soft deprecated (replace with functions or lambdas)
+  # message: `summarise_each_()` is deprecated as of dplyr 0.7.0. (use across)
   summ <- summarise_each(df1, ~ max(df1, na.rm=TRUE))
   m <- apply(summ, 1, max)
   return(m)
@@ -104,8 +104,8 @@ cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicr
   .[which(.$otu_occ > 0.95),]
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
-OTU_core <- OTUclr[, cOTU]
-OTU_rare <- OTUclr[ , -which(colnames(OTUclr) %in% c(cOTU)]
+OTU_core <- OTUclr[, cOTU$otu]
+OTU_rare <- OTUclr[ , !colnames(OTUclr) %in% c(cOTU$otu)]
 
 ## XY data
 print("Accessing the XY data by month")
