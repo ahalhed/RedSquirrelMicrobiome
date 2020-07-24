@@ -16,3 +16,4 @@
 module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 # run R script
 Rscript /home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/scripts/ManuscriptFigures.R
+# resulting tsv files get gzipped after running the script, as they are large and won't commit to github
