@@ -205,7 +205,7 @@ rare_bray<- bc(OTU_rare, meta)
 write.table(rare_bray, file='./data/rare-bc.tsv', quote=FALSE, sep='\t', row.names = F)
 # rare_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
 full_bray<- bc(OTU_full, meta)
-write.table(full_bray, file='./data/rare-bc.tsv', quote=FALSE, sep='\t', row.names = F)
+write.table(full_bray, file='./data/full-bc.tsv', quote=FALSE, sep='\t', row.names = F)
 # full_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
 
 # mutate jaccard distance df to include date columns
