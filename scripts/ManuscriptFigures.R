@@ -131,10 +131,6 @@ print("Finding core microbiome")
 print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
 occ_abun <- read.csv("./data/core.csv")
-# add threshold for core
-occ_abun$Community <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
-                             ifelse(occ_abun$otu_occ < 0.95 & occ_abun$fill == "core", "Core Candidate",
-                                    "Confirmed Rare"))
 # find OTUs with at least one occurrence in 95% of samples
 cOTU <-  occ_abun[which(occ_abun$Community == "Confirmed Core"), ]
 # make the new data frames
