@@ -264,7 +264,7 @@ rm(linesC, linesR, linesF,
    full_ssDL, full_ssSL, full_dsDL, full_dsSL)
 
 # peripheral by year
-rareYP <- ggplot(linesYR, aes(x = int, y = Jaccard, color = Location)) +
+rareYP <- ggplot(linesYR, aes(x = int, y = BrayCurtis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Bray-Curtis Dissimilarity",
        color = "Samples Being Compared") + 
@@ -273,7 +273,7 @@ rareYP <- ggplot(linesYR, aes(x = int, y = Jaccard, color = Location)) +
 rareYP
 
 # core by year
-coreYP <- ggplot(linesYC, aes(x = int, y = Jaccard, color = Location)) +
+coreYP <- ggplot(linesYC, aes(x = int, y = BrayCurtis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Bray-Curtis Dissimilarity",
        color = "Samples Being Compared") + 
@@ -283,7 +283,7 @@ coreYP
 
 
 # core by year
-fullYP <- ggplot(linesYF, aes(x = int, y = Jaccard, color = Location)) +
+fullYP <- ggplot(linesYF, aes(x = int, y = BrayCurtis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Bray-Curtis Dissimilarity",
        color = "Samples Being Compared") + 
@@ -292,6 +292,6 @@ fullYP <- ggplot(linesYF, aes(x = int, y = Jaccard, color = Location)) +
 fullYP
 # export figure 2
 pdf("./plots/figure4.pdf", width = 14)
-ggarrange(coreYP, rareYP, fullYP + ylim(0.4,1), 
+ggarrange(coreYP + ylim(0.4,1), rareYP + ylim(0.4,1), fullYP + ylim(0.4,1), 
           nrow=1, common.legend = T)
 dev.off()
