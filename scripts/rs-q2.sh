@@ -119,9 +119,10 @@ qiime feature-table filter-seqs \
   --o-filtered-data rep-seqs-10.qza
 
 # NON-PHYLOGENETIC alpha diversity
+# original publication rarefied to 4000, so doing that here
 qiime diversity core-metrics \
-  --i-table filtered-table.qza \
-  --p-sampling-depth 909 \
+  --i-table filtered-table-10.qza \
+  --p-sampling-depth 4000 \
   --m-metadata-file ./input/RS_meta.tsv \
   --output-dir core-metrics-non-phylogenetic
 
@@ -295,11 +296,11 @@ qiime diversity mantel \
 
 # PHYLOGENETIC diversity analysis
 # PHYLOGENETIC alpha diversity
-# number is iterations and should be approximately the sample size
+# original publication rarefied to 4000, so doing that here
 qiime diversity core-metrics-phylogenetic \
-  --i-table filtered-table.qza \
+  --i-table filtered-table-10.qza \
   --i-phylogeny ./trees/rooted_tree.qza \
-  --p-sampling-depth 909 \
+  --p-sampling-depth 4000 \
   --m-metadata-file ./input/RS_meta.tsv \
   --output-dir ./core-metrics-phylogenetic
 
