@@ -90,8 +90,6 @@ print("Aitchison transformation")
 OTUimp <- cmultRepl(otu_table(ps), label=0, method="CZM") # all OTUs
 # compute the aitchison values
 OTUclr <- codaSeq.clr(OTUimp)
-mean.clr <- apply(OTUclr, 2, mean)
-var.clr <- apply(OTUclr, 2, var)
 
 ## Core and rare divide
 print("Finding core microbiome")
@@ -105,7 +103,7 @@ cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicr
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
 OTU_core <- OTUclr[, cOTU$otu]
-OTU_rare <- OTUclr[ , !colnames(OTUclr) %in% c(cOTU$otu)]
+OTU_rare <- select(as.data.frame(OTUclr), -one_of(cOTU$otu))
 
 ## XY data
 print("Accessing the XY data by month")

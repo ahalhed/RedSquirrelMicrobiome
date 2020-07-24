@@ -130,13 +130,15 @@ OTU_full <- otu_table(ps) %>% as.data.frame
 print("Finding core microbiome")
 print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
-occ_abun <- read.csv("./data/core.csv")
-# find OTUs with at least one occurrence in 95% of samples
-cOTU <-  occ_abun[which(occ_abun$Community == "Confirmed Core"), ]
+cOTU <- read.csv("./data/core.csv") %>%
+  # get the OTUs identified as core contributors to beta diversity
+  .[which(.$fill == "core"),] %>%
+  # subset these ones to high occupancy OTUs
+  .[which(.$otu_occ > 0.95),]
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
-OTU_core <- OTU_full[, colnames(OTU_full) %in% c(cOTU$otu)]
-OTU_rare <- OTU_full[, !colnames(OTU_full) %in% c(cOTU$otu)]
+OTU_core <- OTU_full[, cOTU$otu]
+OTU_rare <- select(OTU_full, -one_of(cOTU$otu))
 
 # Removing objects that are no longer needed
 rm(cOTU, tax, tax1, tax2)
