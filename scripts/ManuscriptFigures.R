@@ -266,7 +266,6 @@ rareYP <- ggplot(linesYR, aes(x = int, y = BrayCurtis, color = Location)) +
        color = "Samples Being Compared") + 
   scale_colour_viridis_d() +
   ggtitle("Rare Microbiome Within Collection Year")
-rareYP
 
 # core by year
 coreYP <- ggplot(linesYC, aes(x = int, y = BrayCurtis, color = Location)) +
@@ -275,8 +274,6 @@ coreYP <- ggplot(linesYC, aes(x = int, y = BrayCurtis, color = Location)) +
        color = "Samples Being Compared") + 
   ggtitle("Core Microbiome Within Collection Year") +
   scale_colour_viridis_d()
-coreYP
-
 
 # core by year
 fullYP <- ggplot(linesYF, aes(x = int, y = BrayCurtis, color = Location)) +
@@ -285,9 +282,9 @@ fullYP <- ggplot(linesYF, aes(x = int, y = BrayCurtis, color = Location)) +
        color = "Samples Being Compared") + 
   ggtitle("Full Microbiome Within Collection Year") +
   scale_colour_viridis_d()
-fullYP
+
 # export figure 2
 pdf("./plots/figure4.pdf", width = 14)
-ggarrange(coreYP + ylim(0.4,1), rareYP + ylim(0.4,1), fullYP + ylim(0.4,1), 
+ggarrange(coreYP + ylim(0,1.1), rareYP + ylim(0,1.1), fullYP + ylim(0,1.1), 
           nrow=1, common.legend = T)
 dev.off()
