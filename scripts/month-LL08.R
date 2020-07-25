@@ -95,7 +95,7 @@ OTUclr <- codaSeq.clr(OTUimp)
 print("Finding core microbiome")
 print("Extract 95% Occupancy from BC Similarity Core")
 # find OTUs with at least one occurrence in 95% of samples
-cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/core.csv") %>%
+cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/data/core.csv") %>%
   # get the OTUs identified as core contributors to beta diversity
   .[which(.$fill == "core"),] %>%
   # subset these ones to high occupancy OTUs
