@@ -6,7 +6,7 @@
 #---
 # set working directory to output the plots into
 # run on graham cluster
-# salloc --time=0-00:30:00 --mem=16G --account=def-cottenie
+# salloc --time=0-00:30:00 --mem=8G --account=def-cottenie
 # module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/")
 # attaching required packages for full analysis
@@ -137,11 +137,11 @@ cOTU <- read.csv("./data/core.csv") %>%
   .[which(.$otu_occ > 0.95),]
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
-OTU_core <- OTU_full[, cOTU$otu]
+OTU_core <- select(OTU_full, one_of(cOTU$otu))
 OTU_rare <- select(OTU_full, -one_of(cOTU$otu))
 
 # Removing objects that are no longer needed
-rm(cOTU, tax, tax1, tax2)
+rm(tax, tax1, tax2)
 
 
 ## Figure 1 - Core Community Cutoff
