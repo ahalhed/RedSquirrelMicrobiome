@@ -20,7 +20,7 @@ library(tidyverse)
 # set theme for ggplots
 theme_set(theme_bw())
 
-# calculate jaccard distance from an community matrix formatted OTU table
+# calculate bray-curtis dissimilarity from an community matrix formatted OTU table
 # relies on tidyverse, vegan
 bc <- function(OTU, met) {
   # OTU is the community matrix containing the OTUs
