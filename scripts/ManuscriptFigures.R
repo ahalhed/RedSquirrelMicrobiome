@@ -6,7 +6,7 @@
 #---
 # set working directory to output the plots into
 # run on graham cluster
-# salloc --time=0-01:30:00 --mem=64G --account=def-cottenie
+# salloc --time=0-00:30:00 --mem=16G --account=def-cottenie
 # module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/")
 # attaching required packages for full analysis
@@ -20,7 +20,7 @@ library(tidyverse)
 # set theme for ggplots
 theme_set(theme_bw())
 
-# calculate jaccard distance from an community matrix formatted OTU table
+# calculate bray-curtis dissimilarity from an community matrix formatted OTU table
 # relies on tidyverse, vegan
 bc <- function(OTU, met) {
   # OTU is the community matrix containing the OTUs
@@ -147,7 +147,7 @@ rm(cOTU, tax, tax1, tax2)
 ## Figure 1 - Core Community Cutoff
 # This plot shows the fraction of the OTUs included in the core microbiome
 # create the framework for the plot
-fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, color = Community)) + 
+fig1 <- ggplot(cOTU, aes(y = otu_occ, x = otu_rel, color = Community)) + 
   geom_point() +
   # log transform the x axis
   scale_x_log10() +
