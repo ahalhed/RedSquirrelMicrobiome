@@ -103,17 +103,6 @@ elbow <- which.max(BC_ranked$fo_diffs)
 #B) Final increase in BC similarity of equal or greater then 2% 
 lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
 
-#Creating plot of Bray-Curtis similarity
-pdf("plots/bcDis.pdf", width = 12)
-ggplot(BC_ranked, aes(x=factor(BC_ranked$rank, levels=BC_ranked$rank))) +
-  geom_point(aes(y=proportionBC)) +
-  theme_classic() + theme(strip.background = element_blank(),axis.text.x = element_text(size=7, angle=45)) +
-  geom_vline(xintercept=elbow, lty=3, col='red', cex=.5) +
-  geom_vline(xintercept=last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)])), lty=3, col='blue', cex=.5) +
-  labs(x='ranked OTUs',y='Bray-Curtis similarity') +
-  annotate(geom="text", x=elbow+14, y=.3, label=paste("Elbow method"," (",elbow,")", sep=''), color="red")+    
-  annotate(geom="text", x=last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))+3, y=.3, label=paste("Last 2% increase (",last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)])),")",sep=''), color="blue")
-dev.off()
 #Creating occupancy abundance plot
 occ_abun$fill <- 'no'
 occ_abun$fill[occ_abun$otu %in% otu_ranked$otu[1:last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))]] <- 'core'
@@ -121,6 +110,29 @@ occ_abun$fill[occ_abun$otu %in% otu_ranked$otu[1:last(as.numeric(BC_ranked$rank[
 occ_abun$Community <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
                              ifelse(occ_abun$otu_occ < 0.95 & occ_abun$fill == "core", "Core Candidate",
                                     "Confirmed Rare"))
+# add a taxonomy column
+tax <- read_qza("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza")$data %>%
+  rename("otu" = "Feature.ID")
+# clean up/separatee taxonomy labels
+tax$Taxon <- tax$Taxon %>%
+  str_replace_all("D_0__", "") %>%
+  str_replace_all("D_1__", "") %>%
+  str_replace_all("D_2__", "") %>%
+  str_replace_all("D_3__", "") %>%
+  str_replace_all("D_4__", "") %>%
+  str_replace_all("D_5__", "") %>%
+  str_replace_all("D_6__", "")
+occ_abunT <- tax %>% 
+  mutate("Kingdom" = word(.$Taxon, 1, sep = ";"), #k__
+         "Phylum" = word(.$Taxon, 2, sep = ";"), #p__
+         "Class" = word(.$Taxon, 3, sep = ";"), #c__
+         "Order" = word(.$Taxon, 4, sep = ";"), #o__
+         "Family" = word(.$Taxon, 5, sep = ";"), #f__
+         "Genus" = word(.$Taxon, 6, sep = ";"), #g__
+         "Species" = word(.$Taxon, 7, sep = ";")) %>% #s__
+  # join to core labels
+  right_join(occ_abun)
+
 # exporting the data frame with which are core
 # to load into manuscript figure file
-write.table(occ_abun, file = "core.csv", sep = ",", quote = F, row.names = F)
+write.table(occ_abunT, file = "./data/core.csv", sep = ",", quote = F, row.names = F)

@@ -5,7 +5,7 @@
 #output: html_document
 #---
 # set working directory to output the plots into
-# run on graham cluster
+# run on graham cluster interactively
 # salloc --time=0-00:30:00 --mem=8G --account=def-cottenie
 # module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/")
@@ -130,11 +130,11 @@ OTU_full <- otu_table(ps) %>% as.data.frame
 print("Finding core microbiome")
 print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
-cOTU <- read.csv("./data/core.csv") %>%
+occ_abun <- read.csv("./data/core.csv")
+cOTU <- occ_abun %>%
   # get the OTUs identified as core contributors to beta diversity
-  .[which(.$fill == "core"),] %>%
-  # subset these ones to high occupancy OTUs
-  .[which(.$otu_occ > 0.95),]
+  # and greater than 95% occupancy (confirmed core)
+  .[which(.$Community == "Confirmed Core"),]
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
 OTU_core <- select(OTU_full, one_of(cOTU$otu))
@@ -147,7 +147,7 @@ rm(tax, tax1, tax2)
 ## Figure 1 - Core Community Cutoff
 # This plot shows the fraction of the OTUs included in the core microbiome
 # create the framework for the plot
-fig1 <- ggplot(cOTU, aes(y = otu_occ, x = otu_rel, color = Community)) + 
+fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, color = Community)) + 
   geom_point() +
   # log transform the x axis
   scale_x_log10() +
@@ -194,8 +194,8 @@ dev.off()
 
 
 ## Figure 4 - LOESS regression
-# calculate jaccard distances
-# saving in case the figures need to be modified
+# calculate bray-curtis dissimilarity
+# saving in case the figures need to be modified (gzip after)
 core_bray <- bc(OTU_core, meta)
 write.table(core_bray, file='./data/core-bc.tsv', quote=FALSE, sep='\t', row.names = F)
 # core_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/core-jaccard.tsv", sep = "\t", header = T)
