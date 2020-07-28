@@ -285,7 +285,7 @@ fullYP <- ggplot(linesYF, aes(x = int, y = BrayCurtis, color = Location)) +
   ggtitle("Full Microbiome Within Collection Year") +
   scale_colour_viridis_d()
 
-# export figure 2
+# export figure 4
 pdf("./plots/figure4.pdf", width = 14)
 ggarrange(coreYP + ylim(0,1.1), rareYP + ylim(0,1.1), fullYP + ylim(0,1.1), 
           nrow=1, common.legend = T)
