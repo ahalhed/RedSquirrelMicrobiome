@@ -4,6 +4,8 @@
 #date: "04/22/2020"
 #---
 
+# salloc --time=0-00:10:00 --mem=4G --account=def-cottenie
+# module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
 print("Set up (working directory, theme, and packages)")
 # set working directory
 setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env")
