@@ -14,20 +14,23 @@ setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-en
 library(qiime2R)
 library(phyloseq)
 library(vegan)
+library(zCompositions)
+#devtools::install_github('ggloor/CoDaSeq/CoDaSeq')
+library(CoDaSeq)
 library(lubridate)
 library(ggpubr)
 library(tidyverse)
 # set theme for ggplots
 theme_set(theme_bw())
 
-# calculate bray-curtis dissimilarity from an community matrix formatted OTU table
+# calculate euclidean dissimilarity from an community matrix formatted OTU table
 # relies on tidyverse, vegan
-bc <- function(OTU, met) {
+dis <- function(OTU, met) {
   # OTU is the community matrix containing the OTUs
   # met is a data frame containing the environmental metadata
   m <- rownames_to_column(met, var = "SampleID")
   df <- OTU %>% data.matrix(rownames.force = T) %>%
-    vegdist(method = "bray") %>% 
+    vegdist(method = "euclidean") %>% 
     as.matrix %>% as.data.frame %>%
     rownames_to_column("sampleid1") %>%
     pivot_longer(-sampleid1, names_to = "sampleid2", values_to = "BrayCurtis") %>%
@@ -124,7 +127,12 @@ meta <- as(sample_data(ps), "data.frame")
 rownames(meta) <- sample_names(ps)
 
 print("Full OTU table")
-OTU_full <- otu_table(ps) %>% as.data.frame
+print("Aitchison transformation")
+# rows are OTUs, then transposed to OTUs as column
+# impute the OTU table
+OTUimp <- cmultRepl(otu_table(ps), label=0, method="CZM") # all OTUs
+# compute the aitchison values
+OTU_full <- codaSeq.clr(OTUimp) %>% as.data.frame
 
 ## Core and rare divide
 print("Finding core microbiome")
@@ -196,14 +204,14 @@ dev.off()
 ## Figure 4 - LOESS regression
 # calculate bray-curtis dissimilarity
 # saving in case the figures need to be modified (gzip after)
-core_bray <- bc(OTU_core, meta)
-write.table(core_bray, file='./data/core-bc.tsv', quote=FALSE, sep='\t', row.names = F)
+core_bray <- dis(OTU_core, meta)
+write.table(core_bray, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 # core_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/core-jaccard.tsv", sep = "\t", header = T)
-rare_bray<- bc(OTU_rare, meta)
-write.table(rare_bray, file='./data/rare-bc.tsv', quote=FALSE, sep='\t', row.names = F)
+rare_bray<- dis(OTU_rare, meta)
+write.table(rare_bray, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 # rare_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
 full_bray<- bc(OTU_full, meta)
-write.table(full_bray, file='./data/full-bc.tsv', quote=FALSE, sep='\t', row.names = F)
+write.table(full_bray, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 # full_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
 
 # mutate jaccard distance df to include date columns
@@ -264,25 +272,25 @@ rm(linesC, linesR, linesF,
 # peripheral by year
 rareYP <- ggplot(linesYR, aes(x = int, y = BrayCurtis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Bray-Curtis Dissimilarity",
+  labs(x = "Days between Sample Collection", y = "Dissimilarity",
        color = "Samples Being Compared") + 
   scale_colour_viridis_d() +
-  ggtitle("Rare Microbiome Within Collection Year")
+  ggtitle("Rare Microbial Community")
 
 # core by year
 coreYP <- ggplot(linesYC, aes(x = int, y = BrayCurtis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Bray-Curtis Dissimilarity",
+  labs(x = "Days between Sample Collection", y = "Dissimilarity",
        color = "Samples Being Compared") + 
-  ggtitle("Core Microbiome Within Collection Year") +
+  ggtitle("Core Microbial Community") +
   scale_colour_viridis_d()
 
 # core by year
 fullYP <- ggplot(linesYF, aes(x = int, y = BrayCurtis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Bray-Curtis Dissimilarity",
+  labs(x = "Days between Sample Collection", y = "Dissimilarity",
        color = "Samples Being Compared") + 
-  ggtitle("Full Microbiome Within Collection Year") +
+  ggtitle("Full Microbial Community") +
   scale_colour_viridis_d()
 
 # export figure 4
