@@ -14,6 +14,20 @@ The following have been reloaded with a version change:
 Loading required package: permute
 Loading required package: lattice
 This is vegan 2.5-6
+Loading required package: MASS
+Loading required package: NADA
+Loading required package: survival
+
+Attaching package: ‘NADA’
+
+The following object is masked from ‘package:stats’:
+
+    cor
+
+Loading required package: truncnorm
+Loading required package: ALDEx2
+Loading required package: car
+Loading required package: carData
 
 Attaching package: ‘lubridate’
 
@@ -33,7 +47,10 @@ Loading required package: ggplot2
 ✖ dplyr::filter()          masks stats::filter()
 ✖ lubridate::intersect()   masks base::intersect()
 ✖ dplyr::lag()             masks stats::lag()
+✖ dplyr::recode()          masks car::recode()
+✖ dplyr::select()          masks MASS::select()
 ✖ lubridate::setdiff()     masks base::setdiff()
+✖ purrr::some()            masks car::some()
 ✖ lubridate::union()       masks base::union()
 [1] "Read in the Data"
 [1] "Building phyloseq object"
@@ -44,9 +61,23 @@ This could introduce artifacts.
 Check your taxonomyTable, or coerce to matrix manually.
 [1] "Read in the metadata"
 [1] "Full OTU table"
+[1] "Aitchison transformation"
+No. corrected values:  11401016 
 [1] "Finding core microbiome"
 [1] "Extract 95% Occupancy from BC Similarity Core"
 [1] "Subset the OTU table to find core and rare OTUs"
-Error in ggplot(cOTU, aes(y = otu_occ, x = otu_rel, color = Community)) : 
-  object 'cOTU' not found
-Execution halted
+null device 
+          1 
+`geom_smooth()` using formula 'y ~ x'
+Warning messages:
+1: Removed 43 rows containing non-finite values (stat_smooth). 
+2: Removed 43 rows containing missing values (geom_point). 
+null device 
+          1 
+Warning messages:
+1: Removed 3 rows containing non-finite values (stat_smooth). 
+2: Removed 3 rows containing non-finite values (stat_smooth). 
+3: Removed 1416 rows containing non-finite values (stat_smooth). 
+4: Removed 1463 rows containing non-finite values (stat_smooth). 
+null device 
+          1 
