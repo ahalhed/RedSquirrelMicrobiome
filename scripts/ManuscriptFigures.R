@@ -33,7 +33,7 @@ dis <- function(OTU, met) {
     vegdist(method = "euclidean") %>% 
     as.matrix %>% as.data.frame %>%
     rownames_to_column("sampleid1") %>%
-    pivot_longer(-sampleid1, names_to = "sampleid2", values_to = "BrayCurtis") %>%
+    pivot_longer(-sampleid1, names_to = "sampleid2", values_to = "EucDis") %>%
     unique() %>% left_join(., m, 
                            by = c("sampleid1" = "SampleID")) %>%
     # .x for sample 1, .y for sample 2
@@ -234,6 +234,8 @@ rare_dis$int <- INT(rare_dis)
 # full
 full_dis <- gr(full_dis)
 full_dis$int <- INT(full_dis)
+# Warning message:
+# tz(): Don't know how to compute timezone for object of class factor; returning "UTC". This warning will become an error in the next major version of lubridate. 
 
 # break up different groups
 # core
@@ -270,7 +272,7 @@ rm(linesC, linesR, linesF,
    full_ssDL, full_ssSL, full_dsDL, full_dsSL)
 
 # peripheral by year
-rareYP <- ggplot(linesYR, aes(x = int, y = BrayCurtis, color = Location)) +
+rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Dissimilarity",
        color = "Samples Being Compared") + 
@@ -278,7 +280,7 @@ rareYP <- ggplot(linesYR, aes(x = int, y = BrayCurtis, color = Location)) +
   ggtitle("Rare Microbial Community")
 
 # core by year
-coreYP <- ggplot(linesYC, aes(x = int, y = BrayCurtis, color = Location)) +
+coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Dissimilarity",
        color = "Samples Being Compared") + 
@@ -286,7 +288,7 @@ coreYP <- ggplot(linesYC, aes(x = int, y = BrayCurtis, color = Location)) +
   scale_colour_viridis_d()
 
 # core by year
-fullYP <- ggplot(linesYF, aes(x = int, y = BrayCurtis, color = Location)) +
+fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Dissimilarity",
        color = "Samples Being Compared") + 
@@ -295,6 +297,6 @@ fullYP <- ggplot(linesYF, aes(x = int, y = BrayCurtis, color = Location)) +
 
 # export figure 4
 pdf("./plots/figure4.pdf", width = 14)
-ggarrange(coreYP + ylim(0,1.1), rareYP + ylim(0,1.1), fullYP + ylim(0,1.1), 
+ggarrange(coreYP + ylim(2,100), rareYP + ylim(2,100), fullYP + ylim(2,100), 
           nrow=1, common.legend = T)
 dev.off()
