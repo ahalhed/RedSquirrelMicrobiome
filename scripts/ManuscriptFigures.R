@@ -204,53 +204,53 @@ dev.off()
 ## Figure 4 - LOESS regression
 # calculate bray-curtis dissimilarity
 # saving in case the figures need to be modified (gzip after)
-core_bray <- dis(OTU_core, meta)
-write.table(core_bray, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# core_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/core-jaccard.tsv", sep = "\t", header = T)
-rare_bray<- dis(OTU_rare, meta)
-write.table(rare_bray, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# rare_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
-full_bray<- bc(OTU_full, meta)
-write.table(full_bray, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# full_bray <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
+core_dis <- dis(OTU_core, meta)
+write.table(core_dis, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
+# core_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/core-jaccard.tsv", sep = "\t", header = T)
+rare_dis <- dis(OTU_rare, meta)
+write.table(rare_dis, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
+# rare_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
+full_dis <- dis(OTU_full, meta)
+write.table(full_dis, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
+# full_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
 
 # mutate jaccard distance df to include date columns
-core_bray <- core_bray %>%
+core_dis <- core_dis %>%
   mutate(CollectionDate.x = as_date(.$CollectionDate.x),
          CollectionDate.y = as_date(.$CollectionDate.y))
-rare_bray <- rare_bray %>%
+rare_dis <- rare_dis %>%
   mutate(CollectionDate.x = as_date(.$CollectionDate.x),
          CollectionDate.y = as_date(.$CollectionDate.y))
-full_bray <- full_bray %>%
+full_dis <- full_dis %>%
   mutate(CollectionDate.x = as_date(.$CollectionDate.x),
          CollectionDate.y = as_date(.$CollectionDate.y))
 # add the interval column between collection dates and locations
 # core
-core_bray <- gr(core_bray)
-core_bray$int <- INT(core_bray)
+core_dis <- gr(core_dis)
+core_dis$int <- INT(core_dis)
 # rare
-rare_bray <- gr(rare_bray)
-rare_bray$int <- INT(rare_bray)
+rare_dis <- gr(rare_dis)
+rare_dis$int <- INT(rare_dis)
 # full
-full_bray <- gr(full_bray)
-full_bray$int <- INT(full_bray)
+full_dis <- gr(full_dis)
+full_dis$int <- INT(full_dis)
 
 # break up different groups
 # core
-core_dsSL <- filter(core_bray, Location %in% "Different Squirrel, Same Location")
-core_dsDL <- filter(core_bray, Location %in% "Different Squirrel, Different Location")
-core_ssSL <- filter(core_bray, Location %in% "Same Squirrel, Same Location")
-core_ssDL <- filter(core_bray, Location %in% "Same Squirrel, Different Location")
+core_dsSL <- filter(core_dis, Location %in% "Different Squirrel, Same Location")
+core_dsDL <- filter(core_dis, Location %in% "Different Squirrel, Different Location")
+core_ssSL <- filter(core_dis, Location %in% "Same Squirrel, Same Location")
+core_ssDL <- filter(core_dis, Location %in% "Same Squirrel, Different Location")
 # rare
-rare_dsSL <- filter(rare_bray, Location %in% "Different Squirrel, Same Location")
-rare_dsDL <- filter(rare_bray, Location %in% "Different Squirrel, Different Location")
-rare_ssSL <- filter(rare_bray, Location %in% "Same Squirrel, Same Location")
-rare_ssDL <- filter(rare_bray, Location %in% "Same Squirrel, Different Location")
+rare_dsSL <- filter(rare_dis, Location %in% "Different Squirrel, Same Location")
+rare_dsDL <- filter(rare_dis, Location %in% "Different Squirrel, Different Location")
+rare_ssSL <- filter(rare_dis, Location %in% "Same Squirrel, Same Location")
+rare_ssDL <- filter(rare_dis, Location %in% "Same Squirrel, Different Location")
 # full
-full_dsSL <- filter(full_bray, Location %in% "Different Squirrel, Same Location")
-full_dsDL <- filter(full_bray, Location %in% "Different Squirrel, Different Location")
-full_ssSL <- filter(full_bray, Location %in% "Same Squirrel, Same Location")
-full_ssDL <- filter(full_bray, Location %in% "Same Squirrel, Different Location")
+full_dsSL <- filter(full_dis, Location %in% "Different Squirrel, Same Location")
+full_dsDL <- filter(full_dis, Location %in% "Different Squirrel, Different Location")
+full_ssSL <- filter(full_dis, Location %in% "Same Squirrel, Same Location")
+full_ssDL <- filter(full_dis, Location %in% "Same Squirrel, Different Location")
 
 # bind the four together (10% of different location, different location)
 linesC <- rbind(core_ssDL, core_dsSL) %>%
