@@ -274,29 +274,32 @@ rm(linesC, linesR, linesF,
 # peripheral by year
 rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Dissimilarity",
+  labs(x = "Days between Sample Collection", y = "Euclidean Distance",
        color = "Samples Being Compared") + 
-  scale_colour_viridis_d() +
-  ggtitle("Rare Microbial Community")
+  scale_colour_viridis_d()
 
 # core by year
 coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Dissimilarity",
+  labs(x = "Days between Sample Collection", y = "Euclidean Distance",
        color = "Samples Being Compared") + 
-  ggtitle("Core Microbial Community") +
   scale_colour_viridis_d()
 
 # core by year
 fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, color = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Dissimilarity",
+  labs(x = "Days between Sample Collection", y = "Euclidean Distance",
        color = "Samples Being Compared") + 
   ggtitle("Full Microbial Community") +
   scale_colour_viridis_d()
 
 # export figure 4
 pdf("./plots/figure4.pdf", width = 14)
-ggarrange(coreYP + ylim(2,100), rareYP + ylim(2,100), fullYP + ylim(2,100), 
+ggarrange(coreYP, rareYP, labels = c("A", "B"),
           nrow=1, common.legend = T)
+dev.off()
+
+# putting full in a supplemental figure
+pdf("./plots/supp4full.pdf")
+fullYP
 dev.off()
