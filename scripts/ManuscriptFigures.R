@@ -155,7 +155,7 @@ rm(tax, tax1, tax2)
 ## Figure 1 - Core Community Cutoff
 # This plot shows the fraction of the OTUs included in the core microbiome
 # create the framework for the plot
-fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, color = Community)) + 
+fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, color = Community, shape = Community)) + 
   geom_point() +
   # log transform the x axis
   scale_x_log10() +
@@ -191,7 +191,7 @@ adj <- adj %>%
   pivot_longer(-c(Grid, Year, Month), names_to = "Community", values_to = "Adjusted R2 Value")
 
 fig3 <- ggplot(adj, aes(Month, `Adjusted R2 Value`, colour = Community)) +
-  geom_smooth(method = "lm") + 
+  geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
   scale_color_viridis_d() +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year") 
@@ -287,7 +287,7 @@ coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location)) +
 
 # core by year
 fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, color = Location)) +
-  geom_smooth(method='loess', formula= y~x) + 
+  geom_smooth(method='loess', formula= y~x, aes(linetype = Location)) + 
   labs(x = "Days between Sample Collection", y = "Euclidean Distance",
        color = "Samples Being Compared") + 
   ggtitle("Full Microbial Community") +
