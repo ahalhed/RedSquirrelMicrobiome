@@ -206,13 +206,13 @@ dev.off()
 # saving in case the figures need to be modified (gzip after)
 core_dis <- dis(OTU_core, meta)
 write.table(core_dis, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# core_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/core-jaccard.tsv", sep = "\t", header = T)
+# core_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/core-dis.tsv.gz", sep = "\t", header = T)
 rare_dis <- dis(OTU_rare, meta)
 write.table(rare_dis, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# rare_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
+# rare_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-dis.tsv.gz", sep = "\t", header = T)
 full_dis <- dis(OTU_full, meta)
 write.table(full_dis, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# full_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-jaccard.tsv", sep = "\t", header = T)
+# full_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/full-dis.tsv", sep = "\t", header = T)
 
 # mutate jaccard distance df to include date columns
 core_dis <- core_dis %>%
@@ -272,31 +272,34 @@ rm(linesC, linesR, linesF,
    full_ssDL, full_ssSL, full_dsDL, full_dsSL)
 
 # peripheral by year
-rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, color = Location)) +
+rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Euclidean Distance",
        color = "Samples Being Compared") + 
-  scale_colour_viridis_d()
+  scale_colour_viridis_d() +
+  scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
 
 # core by year
-coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location)) +
+coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Euclidean Distance",
        color = "Samples Being Compared") + 
-  scale_colour_viridis_d()
+  scale_colour_viridis_d() +
+  scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
 
 # core by year
-fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, color = Location)) +
-  geom_smooth(method='loess', formula= y~x, aes(linetype = Location)) + 
+fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
+  geom_smooth(method='loess', formula= y~x) + 
   labs(x = "Days between Sample Collection", y = "Euclidean Distance",
        color = "Samples Being Compared") + 
   ggtitle("Full Microbial Community") +
-  scale_colour_viridis_d()
+  scale_colour_viridis_d() +
+  scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
 
 # export figure 4
-pdf("./plots/figure4.pdf", width = 14)
+pdf("./plots/figure4.pdf", height = 10, width = 12)
 ggarrange(coreYP, rareYP, labels = c("A", "B"),
-          nrow=1, common.legend = T)
+          nrow=2, common.legend = T)
 dev.off()
 
 # putting full in a supplemental figure
