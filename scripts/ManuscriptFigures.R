@@ -197,9 +197,11 @@ fig3 <- ggplot(adj, aes(Month, `Adjusted R2 Value`, colour = Community)) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year") 
 # exporting figure 3
 pdf("./plots/figure3.pdf", width = 10)
-fig3
+fig3 #+ stat_regline_equation(label.y = c(0.21, 0.095, 0.075))
 dev.off()
 
+# is there a significant difference in the R2adj values based on the month and community of origin?
+lm(`Adjusted R2 Value` ~ Community*Month, data = adj) %>% anova
 
 ## Figure 4 - LOESS regression
 # calculate bray-curtis dissimilarity
