@@ -52,30 +52,18 @@ EUCaddition <- NULL
 
 # calculating EUC dissimilarity based on the 1st ranked OTU
 otu_start=otu_ranked$otu[1]                   
-start_matrix <- as.matrix(otu[otu_start,])
+start_matrix <- as.matrix(OTUclr[otu_start,])
 start_matrix <- t(start_matrix)
 x <- apply(combn(ncol(start_matrix), 2), 2, function(x) dist(start_matrix[,x[1:2]]))
 x_names <- apply(combn(ncol(start_matrix), 2), 2, function(x) paste(colnames(start_matrix)[x], collapse=' - '))
 df_s <- data.frame(x_names,x)
 names(df_s)[2] <- 1 
 EUCaddition <- rbind(EUCaddition,df_s)
-# calculating EUC dissimilarity based on additon of ranked OTUs from 2nd to 500th. Can be set to the entire length of OTUs in the dataset, however it might take some time if more than 5000 OTUs are included.
-for(i in 2:500){                              
-  otu_add=otu_ranked$otu[i]                       
-  add_matrix <- as.matrix(otu[otu_add,])
-  add_matrix <- t(add_matrix)
-  start_matrix <- rbind(start_matrix, add_matrix)
-  x <- apply(combn(ncol(start_matrix), 2), 2, function(x) dist(start_matrix[,x[1:2]]))
-  x_names <- apply(combn(ncol(start_matrix), 2), 2, function(x) paste(colnames(start_matrix)[x], collapse=' - '))
-  df_a <- data.frame(x_names,x)
-  names(df_a)[2] <- i 
-  EUCaddition <- left_join(EUCaddition, df_a, by=c('x_names'))
-}
-# calculating the EUC dissimilarity of the whole dataset (not needed if the second loop is already including all OTUs) 
-x <-  apply(combn(ncol(otu), 2), 2, function(x) dist(start_matrix[,x[1:2]]))   
-x_names <- apply(combn(ncol(otu), 2), 2, function(x) paste(colnames(otu)[x], collapse=' - '))
+# calculating the EUC dissimilarity of the whole dataset 
+x <-  apply(combn(ncol(OTUclr), 2), 2, function(x) dist(start_matrix[,x[1:2]]))   
+x_names <- apply(combn(ncol(OTUclr), 2), 2, function(x) paste(colnames(OTUclr)[x], collapse=' - '))
 df_full <- data.frame(x_names,x)
-names(df_full)[2] <- length(rownames(otu))
+names(df_full)[2] <- length(rownames(OTUclr))
 EUCfull <- left_join(EUCaddition,df_full, by='x_names')
 
 rownames(EUCfull) <- EUCfull$x_names
@@ -142,4 +130,6 @@ occ_abunT <- tax %>%
 
 # exporting the data frame with which are core
 # to load into manuscript figure file
-write.table(occ_abunT, file = "./data/core.csv", sep = ",", quote = F, row.names = F)
+write.table(occ_abunT, file = "./data/coreA.csv", sep = ",", quote = F, row.names = F)
+
+# so apparently with the aitchison, this doesn't work and everything is rare
