@@ -13,6 +13,8 @@ otu <- read_qza("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicro
 map <- read_q2metadata("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv") # this is metadata
 #~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020
 #otu <- otu[which(rownames(otu) %in% occ_abun[which(occ_abun$fill == "core"),]$otu),]
+
+# code from: https://github.com/ShadeLab/PAPER_Shade_CurrOpinMicro
 otu_PA <- 1*((otu>0)==1)                                               # presence-absence data
 otu_occ <- rowSums(otu_PA)/ncol(otu_PA)                                # occupancy calculation
 otu_rel <- apply(decostand(otu, method="total", MARGIN=2),1, mean)     # mean relative abundance
@@ -48,7 +50,7 @@ BCaddition <- NULL
 otu_start=otu_ranked$otu[1]                   
 start_matrix <- as.matrix(otu[otu_start,])
 start_matrix <- t(start_matrix)
-x <- x <- apply(combn(ncol(start_matrix), 2), 2, function(x) sum(abs(start_matrix[,x[1]]- start_matrix[,x[2]]))/(2*nReads))
+x <- apply(combn(ncol(start_matrix), 2), 2, function(x) sum(abs(start_matrix[,x[1]]- start_matrix[,x[2]]))/(2*nReads))
 x_names <- apply(combn(ncol(start_matrix), 2), 2, function(x) paste(colnames(start_matrix)[x], collapse=' - '))
 df_s <- data.frame(x_names,x)
 names(df_s)[2] <- 1 
@@ -103,6 +105,9 @@ elbow <- which.max(BC_ranked$fo_diffs)
 
 #B) Final increase in BC similarity of equal or greater then 2% 
 lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
+
+# writing out to file here b/c assigning the fill column threw an error... gotta test
+write.table(occ_abun, file = "./data/coreTest.csv", sep = ",", quote = F, row.names = F)
 
 #Creating occupancy abundance plot
 occ_abun$fill <- 'no'
