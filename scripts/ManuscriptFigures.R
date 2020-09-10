@@ -276,7 +276,7 @@ rm(linesC, linesR, linesF,
 # peripheral by year
 rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Euclidean Distance",
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance",
        color = "Samples Being Compared") + 
   scale_colour_viridis_d() +
   scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
@@ -284,7 +284,7 @@ rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, color = Location, linetype = 
 # core by year
 coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Euclidean Distance",
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance",
        color = "Samples Being Compared") + 
   scale_colour_viridis_d() +
   scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
@@ -292,7 +292,7 @@ coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location, linetype = 
 # core by year
 fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
   geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Euclidean Distance",
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance",
        color = "Samples Being Compared") + 
   ggtitle("Full Microbial Community") +
   scale_colour_viridis_d() +
