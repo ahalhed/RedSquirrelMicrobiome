@@ -177,26 +177,23 @@ dev.off()
 
 # read in the data
 # values taken from output files from monthly PCNM analyses
-adj <- read.csv("./data/A-FullAdjR2.csv",
-                na.strings = ("NS")) # this is the advantage of read.csv instead of read_csv
 # pivot the data of interest into long format
-adj <- adj %>% 
-  # take only the spatial value rows (don't need environmental here)
-  filter(VariableType == "Spatial") %>%
+adj <- read.csv("./data/A-FullAdjR2.csv", # this is the advantage of read.csv instead of read_csv 
+                na.strings = ("NS")) %>% 
   # take the grid/date labels and adjusted R squared column for core/peripheral
-  select(Grid, Year, Month, CoreR2Adj, RareR2Adj, FullR2Adj) %>%
+  select(Grid, Year, Month, VariableType, CoreR2Adj, RareR2Adj, FullR2Adj) %>%
   # rename columns (don't need to know the values are R2Adj)
   rename("Core" = "CoreR2Adj", "Rare" = "RareR2Adj", "Full" = "FullR2Adj") %>%
   # pivot to long format
-  pivot_longer(-c(Grid, Year, Month), names_to = "Community", values_to = "Adjusted R2 Value")
+  pivot_longer(-c(VariableType, Grid, Year, Month), names_to = "Community", values_to = "Adjusted R2 Value")
 
 fig3 <- ggplot(adj, aes(Month, `Adjusted R2 Value`, colour = Community)) +
   geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
-  scale_color_viridis_d() +
+  scale_color_viridis_d() + facet_grid(~VariableType) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year") 
 # exporting figure 3
-pdf("./plots/figure3.pdf", width = 10)
+pdf("./plots/figure3.pdf", width = 15)
 fig3 #+ stat_regline_equation(label.y = c(0.21, 0.095, 0.075))
 dev.off()
 
