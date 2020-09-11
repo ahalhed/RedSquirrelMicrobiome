@@ -196,7 +196,11 @@ fig3 <- ggplot(adj, aes(Month, `Adjusted R2 Value`, colour = Community)) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year") 
 # exporting figure 3
 pdf("./plots/figure3.pdf", width = 15)
-fig3 #+ stat_regline_equation(label.y = c(0.21, 0.095, 0.075))
+fig3
+dev.off()
+# exporting figure 3 with equations
+pdf("./plots/figure3eq.pdf", width = 15)
+fig3 + stat_regline_equation()
 dev.off()
 
 # is there a significant difference in the R2adj values based on the month and community of origin?
