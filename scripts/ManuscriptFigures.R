@@ -139,10 +139,11 @@ print("Finding core microbiome")
 print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
 occ_abun <- read.csv("./data/core.csv")
-cOTU <- occ_abun %>%
-  # get the OTUs identified as core contributors to beta diversity
-  # and greater than 95% occupancy (confirmed core)
-  .[which(.$Community == "Confirmed Core"),]
+# new column for just core and rare
+occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core Taxon", "Rare Taxon")
+# get the OTUs identified as core contributors to beta diversity
+# and greater than 95% occupancy (confirmed core)
+cOTU <- occ_abun[which(occ_abun$Community == "Confirmed Core"),]
 # make the new data frames
 print("Subset the OTU table to find core and rare OTUs")
 OTU_core <- select(OTU_full, one_of(cOTU$otu))
@@ -155,14 +156,15 @@ rm(tax, tax1, tax2)
 ## Figure 1 - Core Community Cutoff
 # This plot shows the fraction of the OTUs included in the core microbiome
 # create the framework for the plot
-fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, color = Community, shape = Community)) + 
+fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, shape = plot, color = plot)) + #, color = plot
   geom_point() +
   # log transform the x axis
   scale_x_log10() +
-  # set discrete viridis colour scheme
-  scale_colour_viridis_d() + 
+  # manually specifying viridis colors (yellow wasn't nice to look at)
+  scale_color_manual(values=c("#440154FF", "#29AF7FFF")) +
   # add axis labels
-  labs(x = "Mean Relative Abundance of Each OTU (log10)", y = "Occupancy (Proportion of Samples)")
+  labs(x = "Mean Relative Abundance of Each OTU (log10)", y = "Occupancy (Proportion of Samples)",
+       color = "Community", shape = "Community")
 
 # export plot 1 to a file
 pdf(file = "./plots/figure1.pdf", width = 14)
@@ -201,7 +203,7 @@ dev.off()
 lm(`Adjusted R2 Value` ~ Community*Month, data = adj) %>% anova
 
 ## Figure 4 - LOESS regression
-# calculate bray-curtis dissimilarity
+# calculate Aitchison dissimilarity (euclidean distance on CLR transformed OTU table)
 # saving in case the figures need to be modified (gzip after)
 core_dis <- dis(OTU_core, meta)
 write.table(core_dis, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
