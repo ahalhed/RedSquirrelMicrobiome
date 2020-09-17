@@ -105,9 +105,9 @@ elbow <- which.max(BC_ranked$fo_diffs)
 
 #B) Final increase in BC similarity of equal or greater then 2% 
 lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
-# dealing with the non-finite rankings
-as.numeric(BC_ranked)[!is.finite(as.numeric(BC_ranked))] <- 0
-otu_ranked[!is.finite(otu_ranked)] <- 0
+# dealing with the non-finite rankings - this caused a problem too... taking out to write to file
+#as.numeric(BC_ranked)[!is.finite(as.numeric(BC_ranked))] <- 0
+#otu_ranked[!is.finite(otu_ranked)] <- 0
 # writing out to file here b/c assigning the fill column threw an error... gotta test
 write.table(occ_abun, file = "./data/coreTest.csv", sep = ",", quote = F, row.names = F)
 write.table(BC_ranked, file = "./data/BC_ranked.csv", sep = ",", quote = F, row.names = F)
