@@ -105,17 +105,9 @@ elbow <- which.max(BC_ranked$fo_diffs)
 
 #B) Final increase in BC similarity of equal or greater then 2% 
 lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
-# dealing with the non-finite rankings - this caused a problem too... taking out to write to file
-#as.numeric(BC_ranked)[!is.finite(as.numeric(BC_ranked))] <- 0
-#otu_ranked[!is.finite(otu_ranked)] <- 0
-# writing out to file here b/c assigning the fill column threw an error... gotta test
-write.table(occ_abun, file = "./data/coreTest.csv", sep = ",", quote = F, row.names = F)
-write.table(BC_ranked, file = "./data/BC_ranked.csv", sep = ",", quote = F, row.names = F)
-write.table(otu_ranked, file = "./data/otu_ranked.csv", sep = ",", quote = F, row.names = F)
-#occ_abun <- read_csv("./data/coreTest.csv")
 #Creating occupancy abundance plot
-occ_abun$fill <- 'no'
-occ_abun$fill[occ_abun$otu %in% otu_ranked$otu[1:last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))]] <- 'core'
+occ_abun$fill <- 'no'# correcting the NA issue with the cbinds
+occ_abun$fill[occ_abun$otu %in% cbind(BC_ranked, otu_ranked)$otu[cbind(BC_ranked, otu_ranked)$IncreaseBC>=1.02]] <- 'core'
 # add 95% occupancy threshold for core
 occ_abun$candidacy <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
                              ifelse(occ_abun$otu_occ < 0.95 & occ_abun$fill == "core", "Core Candidate",
