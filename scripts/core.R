@@ -56,7 +56,7 @@ df_s <- data.frame(x_names,x)
 names(df_s)[2] <- 1 
 BCaddition <- rbind(BCaddition,df_s)
 # calculating BC dissimilarity based on additon of ranked OTUs from 2nd to 500th. Can be set to the entire length of OTUs in the dataset, however it might take some time if more than 5000 OTUs are included.
-for(i in 2:500){                              
+for(i in 2:23425){                              
   otu_add=otu_ranked$otu[i]                       
   add_matrix <- as.matrix(otu[otu_add,])
   add_matrix <- t(add_matrix)
@@ -106,7 +106,8 @@ elbow <- which.max(BC_ranked$fo_diffs)
 #B) Final increase in BC similarity of equal or greater then 2% 
 lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
 #Creating occupancy abundance plot
-occ_abun$fill <- 'no'# correcting the NA issue with the cbinds
+occ_abun$fill <- 'no'
+# correcting the NA issue with the cbinds
 occ_abun$fill[occ_abun$otu %in% cbind(BC_ranked, otu_ranked)$otu[cbind(BC_ranked, otu_ranked)$IncreaseBC>=1.02]] <- 'core'
 # add 95% occupancy threshold for core
 occ_abun$candidacy <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
