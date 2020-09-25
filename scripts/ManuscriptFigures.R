@@ -47,7 +47,7 @@ gr <- function(df){
   # create a new grid column
   df$Grid <- ifelse(df$Grid.x == df$Grid.y, "Same Grid", "Different Grid")
   # add location information
-  df$Location <- ifelse(df$sampleid1 == df$sampleid2, "Same Sample",
+  df$LocationIndividual <- ifelse(df$sampleid1 == df$sampleid2, "Same Sample",
                         ifelse(df$`Grid.x` != df$`Grid.y`, "Different Grid",
                                ifelse(df$`Squirrel.ID.x` == df$`Squirrel.ID.y` &
                                         df$`Location.X.x` == df$`Location.X.y` &
@@ -69,7 +69,6 @@ gr <- function(df){
   df$CollectionDate <- ifelse(df$CollectionDate.x == df$CollectionDate.y, "Same Date", "Different Date")
   return(df)
 }
-
 
 # add interval column
 INT <- function(df) {
@@ -211,15 +210,15 @@ lm(`Adjusted R2 Value` ~ Community*Month, data = adj) %>% anova
 # saving in case the figures need to be modified (gzip after)
 core_dis <- dis(OTU_core, meta)
 write.table(core_dis, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# core_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/core-dis.tsv.gz", sep = "\t", header = T)
+#core_dis <- read.table("./data/core-dis.tsv.gz", sep = "\t", header = T)
 rare_dis <- dis(OTU_rare, meta)
 write.table(rare_dis, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# rare_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/rare-dis.tsv.gz", sep = "\t", header = T)
+#rare_dis <- read.table("./data/rare-dis.tsv.gz", sep = "\t", header = T)
 full_dis <- dis(OTU_full, meta)
 write.table(full_dis, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-# full_dis <- read.table("/home/ahalhed/red-squirrel/R-env/data/full-dis.tsv", sep = "\t", header = T)
+#full_dis <- read.table("./data/full-dis.tsv.gz", sep = "\t", header = T)
 
-# mutate jaccard distance df to include date columns
+# mutate the distance df to include date columns
 core_dis <- core_dis %>%
   mutate(CollectionDate.x = as_date(.$CollectionDate.x),
          CollectionDate.y = as_date(.$CollectionDate.y))
@@ -233,31 +232,38 @@ full_dis <- full_dis %>%
 # core
 core_dis <- gr(core_dis)
 core_dis$int <- INT(core_dis)
+core_dis <- core_dis %>%
+  mutate(Individual = word(core_dis$LocationIndividual, 1, sep = ","),
+         Location = word(core_dis$LocationIndividual, 2, sep = ", "))
 # rare
 rare_dis <- gr(rare_dis)
 rare_dis$int <- INT(rare_dis)
+rare_dis <- rare_dis %>%
+  mutate(Individual = word(rare_dis$LocationIndividual, 1, sep = ","),
+         Location = word(rare_dis$LocationIndividual, 2, sep = ", "))
 # full
 full_dis <- gr(full_dis)
 full_dis$int <- INT(full_dis)
-# Warning message:
-# tz(): Don't know how to compute timezone for object of class factor; returning "UTC". This warning will become an error in the next major version of lubridate. 
+full_dis <- full_dis %>%
+  mutate(Individual = word(full_dis$LocationIndividual, 1, sep = ","),
+         Location = word(full_dis$LocationIndividual, 2, sep = ", "))
 
 # break up different groups
 # core
-core_dsSL <- filter(core_dis, Location %in% "Different Squirrel, Same Location")
-core_dsDL <- filter(core_dis, Location %in% "Different Squirrel, Different Location")
-core_ssSL <- filter(core_dis, Location %in% "Same Squirrel, Same Location")
-core_ssDL <- filter(core_dis, Location %in% "Same Squirrel, Different Location")
+core_dsSL <- filter(core_dis, LocationIndividual %in% "Different Squirrel, Same Location")
+core_dsDL <- filter(core_dis, LocationIndividual %in% "Different Squirrel, Different Location")
+core_ssSL <- filter(core_dis, LocationIndividual %in% "Same Squirrel, Same Location")
+core_ssDL <- filter(core_dis, LocationIndividual %in% "Same Squirrel, Different Location")
 # rare
-rare_dsSL <- filter(rare_dis, Location %in% "Different Squirrel, Same Location")
-rare_dsDL <- filter(rare_dis, Location %in% "Different Squirrel, Different Location")
-rare_ssSL <- filter(rare_dis, Location %in% "Same Squirrel, Same Location")
-rare_ssDL <- filter(rare_dis, Location %in% "Same Squirrel, Different Location")
+rare_dsSL <- filter(rare_dis, LocationIndividual %in% "Different Squirrel, Same Location")
+rare_dsDL <- filter(rare_dis, LocationIndividual %in% "Different Squirrel, Different Location")
+rare_ssSL <- filter(rare_dis, LocationIndividual %in% "Same Squirrel, Same Location")
+rare_ssDL <- filter(rare_dis, LocationIndividual %in% "Same Squirrel, Different Location")
 # full
-full_dsSL <- filter(full_dis, Location %in% "Different Squirrel, Same Location")
-full_dsDL <- filter(full_dis, Location %in% "Different Squirrel, Different Location")
-full_ssSL <- filter(full_dis, Location %in% "Same Squirrel, Same Location")
-full_ssDL <- filter(full_dis, Location %in% "Same Squirrel, Different Location")
+full_dsSL <- filter(full_dis, LocationIndividual %in% "Different Squirrel, Same Location")
+full_dsDL <- filter(full_dis, LocationIndividual %in% "Different Squirrel, Different Location")
+full_ssSL <- filter(full_dis, LocationIndividual %in% "Same Squirrel, Same Location")
+full_ssDL <- filter(full_dis, LocationIndividual %in% "Same Squirrel, Different Location")
 
 # bind the four together (10% of different location, different location)
 linesC <- rbind(core_ssDL, core_dsSL) %>%
@@ -277,29 +283,20 @@ rm(linesC, linesR, linesF,
    full_ssDL, full_ssSL, full_dsDL, full_dsSL)
 
 # peripheral by year
-rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
-  geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Aitchison Distance",
-       color = "Samples Being Compared") + 
-  scale_colour_viridis_d() +
-  scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
+rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, linetype = Location)) +
+  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance")
+rareYP
+# core by year
+coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, linetype = Location)) +
+  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance")
 
 # core by year
-coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
-  geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Aitchison Distance",
-       color = "Samples Being Compared") + 
-  scale_colour_viridis_d() +
-  scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
-
-# core by year
-fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, color = Location, linetype = Location)) +
-  geom_smooth(method='loess', formula= y~x) + 
-  labs(x = "Days between Sample Collection", y = "Aitchison Distance",
-       color = "Samples Being Compared") + 
-  ggtitle("Full Microbial Community") +
-  scale_colour_viridis_d() +
-  scale_linetype_manual("Samples Being Compared", values=c(1,2,4,3))
+fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location)) +
+  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance") + 
+  ggtitle("Full Microbial Community")
 
 # export figure 4
 pdf("./plots/figure4.pdf", height = 10, width = 12)
