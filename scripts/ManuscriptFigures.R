@@ -286,7 +286,7 @@ rm(linesC, linesR, linesF,
 rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, linetype = Location)) +
   geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
   labs(x = "Days between Sample Collection", y = "Aitchison Distance")
-rareYP
+
 # core by year
 coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, linetype = Location)) +
   geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
