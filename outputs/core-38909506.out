@@ -24,4 +24,4 @@ This is vegan 2.5-6
 ✖ dplyr::lag()    masks stats::lag()
 `summarise()` regrouping output by 'otu' (override with `.groups` argument)
 `summarise()` ungrouping output (override with `.groups` argument)
-slurmstepd: error: *** JOB 38699667 ON gra826 CANCELLED AT 2020-09-26T02:39:50 DUE TO TIME LIMIT ***
+slurmstepd: error: Detected 1 oom-kill event(s) in step 38909506.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.

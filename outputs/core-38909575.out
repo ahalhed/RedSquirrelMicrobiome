@@ -24,4 +24,5 @@ This is vegan 2.5-6
 ✖ dplyr::lag()    masks stats::lag()
 `summarise()` regrouping output by 'otu' (override with `.groups` argument)
 `summarise()` ungrouping output (override with `.groups` argument)
-slurmstepd: error: *** JOB 38652950 ON gra810 CANCELLED AT 2020-09-24T13:56:22 DUE TO TIME LIMIT ***
+/var/spool/slurmd/job38909575/slurm_script: line 15: 177269 Killed                  Rscript /home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/scripts/core.R
+slurmstepd: error: Detected 1 oom-kill event(s) in step 38909575.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.

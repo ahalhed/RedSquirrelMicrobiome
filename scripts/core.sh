@@ -1,7 +1,8 @@
 #!/bin/bash
 #SBATCH --account=def-cottenie
-#SBATCH --time=0-12:00:00
-#SBATCH --mem-per-cpu 64G
+#SBATCH --time=7-00:00:00
+#SBATCH --mem-per-cpu 96G
+#SBATCH --gres=gpu:t4:1
 #SBATCH --job-name=core
 #SBATCH --output=./outputs/%x-%j.out
 
