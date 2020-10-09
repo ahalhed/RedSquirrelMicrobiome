@@ -24,4 +24,3 @@ This is vegan 2.5-6
 ✖ dplyr::lag()    masks stats::lag()
 `summarise()` regrouping output by 'otu' (override with `.groups` argument)
 `summarise()` ungrouping output (override with `.groups` argument)
-slurmstepd: error: Detected 1 oom-kill event(s) in step 38909506.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.
