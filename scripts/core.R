@@ -7,14 +7,11 @@ library(tidyverse)
 
 theme_set(theme_bw())
 
-nReads <- 4000  #data needs to rarefied
-
+nReads <- 4000                                                            # input dataset needs to be rarified and the rarifaction depth included 
 otu <- read_qza("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza")$data
 map <- read_q2metadata("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv") # this is metadata
 #~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020
 #otu <- otu[which(rownames(otu) %in% occ_abun[which(occ_abun$fill == "core"),]$otu),]
-
-# code from: https://github.com/ShadeLab/PAPER_Shade_CurrOpinMicro
 otu_PA <- 1*((otu>0)==1)                                               # presence-absence data
 otu_occ <- rowSums(otu_PA)/ncol(otu_PA)                                # occupancy calculation
 otu_rel <- apply(decostand(otu, method="total", MARGIN=2),1, mean)     # mean relative abundance
@@ -43,7 +40,7 @@ otu_ranked <- occ_abun %>%
             rank=Index) %>%
   arrange(desc(rank))
 
-# Calculating the contribution of ranked OTUs to the Bray-Curtis similarity
+# Calculating the contribution of ranked OTUs to the BC similarity
 BCaddition <- NULL
 
 # calculating BC dissimilarity based on the 1st ranked OTU
@@ -56,19 +53,19 @@ df_s <- data.frame(x_names,x)
 names(df_s)[2] <- 1 
 BCaddition <- rbind(BCaddition,df_s)
 # calculating BC dissimilarity based on additon of ranked OTUs from 2nd to 500th. Can be set to the entire length of OTUs in the dataset, however it might take some time if more than 5000 OTUs are included.
-for(i in 2:23425){                              
+for(i in 2:500){                              
   otu_add=otu_ranked$otu[i]                       
   add_matrix <- as.matrix(otu[otu_add,])
   add_matrix <- t(add_matrix)
   start_matrix <- rbind(start_matrix, add_matrix)
-  x <- apply(combn(ncol(start_matrix), 2), 2, function(x) sum(abs(start_matrix[,x[1]]- start_matrix[,x[2]]))/(2*nReads))
+  x <- apply(combn(ncol(start_matrix), 2), 2, function(x) sum(abs(start_matrix[,x[1]]-start_matrix[,x[2]]))/(2*nReads))
   x_names <- apply(combn(ncol(start_matrix), 2), 2, function(x) paste(colnames(start_matrix)[x], collapse=' - '))
   df_a <- data.frame(x_names,x)
   names(df_a)[2] <- i 
   BCaddition <- left_join(BCaddition, df_a, by=c('x_names'))
 }
 # calculating the BC dissimilarity of the whole dataset (not needed if the second loop is already including all OTUs) 
-x <-  apply(combn(ncol(otu), 2), 2, function(x) sum(abs(start_matrix[,x[1]]- start_matrix[,x[2]]))/(2*nReads))   
+x <-  apply(combn(ncol(otu), 2), 2, function(x) sum(abs(otu[,x[1]]-otu[,x[2]]))/(2*nReads))   
 x_names <- apply(combn(ncol(otu), 2), 2, function(x) paste(colnames(otu)[x], collapse=' - '))
 df_full <- data.frame(x_names,x)
 names(df_full)[2] <- length(rownames(otu))
@@ -105,18 +102,14 @@ elbow <- which.max(BC_ranked$fo_diffs)
 
 #B) Final increase in BC similarity of equal or greater then 2% 
 lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
+
 #Creating occupancy abundance plot
 occ_abun$fill <- 'no'
-# correcting the NA issue with the cbinds
-occ_abun$fill[occ_abun$otu %in% cbind(BC_ranked, otu_ranked)$otu[cbind(BC_ranked, otu_ranked)$IncreaseBC>=1.02]] <- 'core'
+occ_abun$fill[occ_abun$otu %in% otu_ranked$otu[1:last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))]] <- 'core'
 # add 95% occupancy threshold for core
-occ_abun$candidacy <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
+occ_abun$Community <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
                              ifelse(occ_abun$otu_occ < 0.95 & occ_abun$fill == "core", "Core Candidate",
                                     "Confirmed Rare"))
-# core/rare community only for figure 1
-# only want to highlight these two in the figure
-occ_abun$Community <- ifelse(occ_abun$candidacy == "Confirmed core", "Core Taxon", "Rare Taxon")
-
 # add a taxonomy column
 tax <- read_qza("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza")$data %>%
   rename("otu" = "Feature.ID")
@@ -142,4 +135,4 @@ occ_abunT <- tax %>%
 
 # exporting the data frame with which are core
 # to load into manuscript figure file
-write.table(occ_abunT, file = "./data/core2.csv", sep = ",", quote = F, row.names = F)
+write.table(occ_abunT, file = "./data/core.csv", sep = ",", quote = F, row.names = F)
