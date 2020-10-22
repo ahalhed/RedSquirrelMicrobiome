@@ -192,7 +192,7 @@ fig3 <- ggplot(adj, aes(Month, `Adjusted R2 Value`, colour = Community)) +
   geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
   scale_color_viridis_d() + facet_grid(~VariableType) +
-  labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year") 
+  labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
 # exporting figure 3
 pdf("./plots/figure3.pdf", width = 15)
 fig3
@@ -282,20 +282,35 @@ rm(linesC, linesR, linesF,
    rare_ssDL, rare_ssSL, rare_dsDL, rare_dsSL,
    full_ssDL, full_ssSL, full_dsDL, full_dsSL)
 
-# peripheral by year
-rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, linetype = Location)) +
-  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
-  labs(x = "Days between Sample Collection", y = "Aitchison Distance")
+# rare by year
+# changing the order of facets/lines
+linesYR$Individual_f = factor(linesYR$Individual, levels=c('Same Squirrel','Different Squirrel'))
+linesYR$Location_f = factor(linesYR$Location, levels=c('Same Location','Different Location'))
+# generate plot
+rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, linetype = Location_f)) +
+  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual_f) +
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance", 
+       linetype = "Sampling Location")
 
 # core by year
-coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, linetype = Location)) +
-  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
-  labs(x = "Days between Sample Collection", y = "Aitchison Distance")
+# changing the order of facets/lines
+linesYC$Individual_f = factor(linesYC$Individual, levels=c('Same Squirrel','Different Squirrel'))
+linesYC$Location_f = factor(linesYC$Location, levels=c('Same Location','Different Location'))
+# generate plot
+coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, linetype = Location_f)) +
+  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual_f) +
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance", 
+       linetype = "Sampling Location")
 
-# core by year
-fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location)) +
-  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual) +
-  labs(x = "Days between Sample Collection", y = "Aitchison Distance") + 
+# full by year
+# changing the order of facets/lines
+linesYF$Individual_f = factor(linesYF$Individual, levels=c('Same Squirrel','Different Squirrel'))
+linesYF$Location_f = factor(linesYF$Location, levels=c('Same Location','Different Location'))
+# generate plot
+fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location_f)) +
+  geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual_f) +
+  labs(x = "Days between Sample Collection", y = "Aitchison Distance", 
+       linetype = "Sampling Location") + 
   ggtitle("Full Microbial Community")
 
 # export figure 4
