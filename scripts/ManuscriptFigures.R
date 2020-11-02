@@ -179,31 +179,35 @@ dev.off()
 # read in the data
 # values taken from output files from monthly PCNM analyses
 # pivot the data of interest into long format
-adj <- read.csv("./data/A-FullAdjR2.csv", # this is the advantage of read.csv instead of read_csv 
-                na.strings = ("NS")) %>% 
-  # take the grid/date labels and adjusted R squared column for core/peripheral
-  select(Grid, Year, Month, VariableType, CoreR2Adj, RareR2Adj, FullR2Adj) %>%
-  # rename columns (don't need to know the values are R2Adj)
-  rename("Core" = "CoreR2Adj", "Rare" = "RareR2Adj", "Full" = "FullR2Adj") %>%
-  # pivot to long format
-  pivot_longer(-c(VariableType, Grid, Year, Month), names_to = "Community", values_to = "Adjusted R2 Value")
+adj <- read_csv("./data/AdjR2.csv")
 
-fig3 <- ggplot(adj, aes(Month, `Adjusted R2 Value`, colour = Community)) +
+# create plot for just significant points
+fig3 <- adj[which(adj$Significant == "Yes"),] %>%
+  ggplot(aes(Month, R2Adj, colour = Community)) +
   geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
   scale_color_viridis_d() + facet_grid(~VariableType) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
+# and for all points
+fig3All <- ggplot(adj, aes(Month, R2Adj, colour = Community)) +
+  geom_smooth(method = "lm", aes(linetype = Community)) + 
+  geom_jitter(aes(shape = as.character(Year))) + 
+  scale_color_viridis_d() + facet_grid(~VariableType) +
+  labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
+
 # exporting figure 3
 pdf("./plots/figure3.pdf", width = 15)
 fig3
+fig3All
 dev.off()
 # exporting figure 3 with equations
 pdf("./plots/figure3eq.pdf", width = 15)
 fig3 + stat_regline_equation()
+fig3All + stat_regline_equation()
 dev.off()
 
 # is there a significant difference in the R2adj values based on the month and community of origin?
-lm(`Adjusted R2 Value` ~ Community*Month, data = adj) %>% anova
+lm(R2Adj ~ Community*Month, data = adj) %>% anova
 
 ## Figure 4 - LOESS regression
 # calculate Aitchison dissimilarity (euclidean distance on CLR transformed OTU table)
