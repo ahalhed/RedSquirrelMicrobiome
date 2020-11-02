@@ -206,7 +206,10 @@ fig3 + stat_regline_equation()
 fig3All + stat_regline_equation()
 dev.off()
 
-# is there a significant difference in the R2adj values based on the month and community of origin?
+print("is there a significant difference in the R2adj values based on the month and community of origin?")
+print("Significant Adjusted R-squared Values")
+adj[which(adj$Significant == "Yes"),] %>% lm(R2Adj ~ Community*Month, data = .) %>% anova
+print("All Adjusted R-squared Values")
 lm(R2Adj ~ Community*Month, data = adj) %>% anova
 
 ## Figure 4 - LOESS regression
