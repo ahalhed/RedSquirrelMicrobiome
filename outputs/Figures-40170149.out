@@ -68,30 +68,34 @@ No. corrected values:  11401016
 [1] "Subset the OTU table to find core and rare OTUs"
 null device 
           1 
+Parsed with column specification:
+cols(
+  Grid = col_character(),
+  Year = col_double(),
+  Month = col_double(),
+  VariableType = col_character(),
+  Community = col_character(),
+  R2Adj = col_double(),
+  Significant = col_character(),
+  P = col_double()
+)
 `geom_smooth()` using formula 'y ~ x'
-Warning messages:
-1: Removed 111 rows containing non-finite values (stat_smooth). 
-2: Removed 111 rows containing missing values (geom_point). 
+`geom_smooth()` using formula 'y ~ x'
 null device 
           1 
 `geom_smooth()` using formula 'y ~ x'
-Warning messages:
-1: Removed 111 rows containing non-finite values (stat_smooth). 
-2: Removed 111 rows containing non-finite values (stat_regline_equation). 
-3: Removed 111 rows containing missing values (geom_point). 
+`geom_smooth()` using formula 'y ~ x'
 null device 
           1 
 Analysis of Variance Table
 
-Response: Adjusted R2 Value
-                Df  Sum Sq  Mean Sq F value    Pr(>F)    
-Community        2 0.23909 0.119543 11.9838 4.524e-05 ***
-Month            1 0.00011 0.000112  0.0112    0.9161    
-Community:Month  2 0.00394 0.001969  0.1974    0.8214    
-Residuals       57 0.56860 0.009975                      
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-pdf 
-  2 
-pdf 
-  2 
+Response: R2Adj
+                 Df Sum Sq   Mean Sq F value Pr(>F)
+Community         2 0.0002 0.0001125  0.0053 0.9947
+Month             1 0.0010 0.0010312  0.0483 0.8263
+Community:Month   2 0.0005 0.0002679  0.0125 0.9875
+Residuals       168 3.5877 0.0213554               
+null device 
+          1 
+null device 
+          1 
