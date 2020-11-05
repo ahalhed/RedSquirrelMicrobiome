@@ -199,7 +199,7 @@ dev.off()
 
 print("is there a significant difference in the R2adj values based on the month and community of origin?")
 print("All Adjusted R-squared Values")
-lm(R2Adj ~ Community*Month, data = adj) %>% anova
+lm(R2Adj ~ VariableType*Community*Month, data = adj) %>% anova
 
 ## Figure 4 - LOESS regression
 # calculate Aitchison dissimilarity (euclidean distance on CLR transformed OTU table)
