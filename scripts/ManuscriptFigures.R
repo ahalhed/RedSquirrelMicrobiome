@@ -172,7 +172,7 @@ dev.off()
 
 
 ## Figure 2 - spatial pattern example
-# See code from _____ for creating the ordisurf plots (need to pick a month to include).
+# See code from month-AG08.R for creating the ordisurf plots (May 2008).
 
 ## Figure 3 - Adjusted R2
 
@@ -181,15 +181,8 @@ dev.off()
 # pivot the data of interest into long format
 adj <- read_csv("./data/AdjR2.csv")
 
-# create plot for just significant points
-fig3 <- adj[which(adj$Significant == "Yes"),] %>%
-  ggplot(aes(Month, R2Adj, colour = Community)) +
-  geom_smooth(method = "lm", aes(linetype = Community)) + 
-  geom_jitter(aes(shape = as.character(Year))) + 
-  scale_color_viridis_d() + facet_grid(~VariableType) +
-  labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
-# and for all points
-fig3All <- ggplot(adj, aes(Month, R2Adj, colour = Community)) +
+# create plot for all adjusted R2 points
+fig3 <- ggplot(adj, aes(Month, R2Adj, colour = Community)) +
   geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
   scale_color_viridis_d() + facet_grid(~VariableType) +
@@ -198,31 +191,26 @@ fig3All <- ggplot(adj, aes(Month, R2Adj, colour = Community)) +
 # exporting figure 3
 pdf("./plots/figure3.pdf", width = 15)
 fig3
-fig3All
 dev.off()
 # exporting figure 3 with equations
 pdf("./plots/figure3eq.pdf", width = 15)
 fig3 + stat_regline_equation()
-fig3All + stat_regline_equation()
 dev.off()
 
 print("is there a significant difference in the R2adj values based on the month and community of origin?")
-print("Significant Adjusted R-squared Values")
-adj[which(adj$Significant == "Yes"),] %>% lm(R2Adj ~ Community*Month, data = .) %>% anova
 print("All Adjusted R-squared Values")
 lm(R2Adj ~ Community*Month, data = adj) %>% anova
 
 ## Figure 4 - LOESS regression
 # calculate Aitchison dissimilarity (euclidean distance on CLR transformed OTU table)
-# saving in case the figures need to be modified (gzip after)
 core_dis <- dis(OTU_core, meta)
-write.table(core_dis, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
+#write.table(core_dis, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 #core_dis <- read.table("./data/core-dis.tsv.gz", sep = "\t", header = T)
 rare_dis <- dis(OTU_rare, meta)
-write.table(rare_dis, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
+#write.table(rare_dis, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 #rare_dis <- read.table("./data/rare-dis.tsv.gz", sep = "\t", header = T)
 full_dis <- dis(OTU_full, meta)
-write.table(full_dis, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
+#write.table(full_dis, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 #full_dis <- read.table("./data/full-dis.tsv.gz", sep = "\t", header = T)
 
 # mutate the distance df to include date columns
