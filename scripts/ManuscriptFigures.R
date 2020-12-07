@@ -324,3 +324,18 @@ dev.off()
 pdf("./plots/supp4full.pdf")
 fullYP
 dev.off()
+
+# table 1 fig
+table1 <- data.frame(sampleSize = c(218, 47, 23, 240, 124, 189, 47, 21),
+                     samplingDays = c(81, 26, 12, 90, 58, 63, 25, 25),
+                     maximumDistance = c(930.1, 621, 768.4, 811.2, 737.9, 772.2, 919.4, 846),
+                     numberOTUs = c(22536, 14881, 8536, 22750, 19174, 20146, 15166, 10319))
+pdf("./plots/table1fig.pdf")
+ggplot(table1, aes(maximumDistance, numberOTUs,
+                   size = sampleSize, color = samplingDays)) +
+  geom_point() + scale_color_viridis_c() +
+  labs(x = "Maximum Distance Between Samples (Metres)",
+       y = "Number of OTUs in Replicate", size = "Number of Samples",
+       color = "Number of Sampling Days") +
+  theme(legend.position = "bottom", legend.box = "vertical")
+dev.off()
