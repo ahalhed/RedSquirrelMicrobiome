@@ -199,13 +199,13 @@ dev.off()
 
 print("is there a significant difference in the R2adj values based on the month and community of origin?")
 print("All Adjusted R-squared Values - both Spatial and Environmental")
-lm(R2Adj ~ VariableType*Community*Month, data = adj) %>% anova
+lm(R2Adj ~ VariableType*Community*Month, data = adj) %>% summary
 print("All Adjusted R-squared Values - Environmental Only")
 adj[which(adj$VariableType=="Environmental"),] %>% 
-  lm(R2Adj ~ Community*Month, data = .) %>% anova
+  lm(R2Adj ~ Community*Month, data = .) %>% summary
 print("All Adjusted R-squared Values - Spatial only")
 adj[which(adj$VariableType=="Spatial"),] %>% 
-  lm(R2Adj ~ Community*Month, data = .) %>% anova
+  lm(R2Adj ~ Community*Month, data = .) %>% summary
 
 ## Figure 4 - LOESS regression
 # calculate Aitchison dissimilarity (euclidean distance on CLR transformed OTU table)
