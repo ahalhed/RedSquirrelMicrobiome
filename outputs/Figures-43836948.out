@@ -87,38 +87,83 @@ null device
           1 
 [1] "is there a significant difference in the R2adj values based on the month and community of origin?"
 [1] "All Adjusted R-squared Values - both Spatial and Environmental"
-Analysis of Variance Table
 
-Response: R2Adj
-                              Df Sum Sq  Mean Sq F value  Pr(>F)  
-VariableType                   1 0.0991 0.099065  4.7312 0.03107 *
-Community                      2 0.0002 0.000113  0.0054 0.99464  
-Month                          1 0.0010 0.001031  0.0492 0.82465  
-VariableType:Community         2 0.0436 0.021805  1.0414 0.35531  
-VariableType:Month             1 0.0418 0.041777  1.9952 0.15971  
-Community:Month                2 0.0005 0.000268  0.0128 0.98729  
-VariableType:Community:Month   2 0.0112 0.005605  0.2677 0.76548  
-Residuals                    162 3.3920 0.020939                  
+Call:
+lm(formula = R2Adj ~ VariableType * Community * Month, data = adj)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.42412 -0.05859 -0.00745  0.05566  0.70046 
+
+Coefficients:
+                                        Estimate Std. Error t value Pr(>|t|)  
+(Intercept)                              0.21945    0.08948   2.453   0.0152 *
+VariableTypeSpatial                     -0.26146    0.12654  -2.066   0.0404 *
+CommunityFull                           -0.08950    0.12654  -0.707   0.4804  
+CommunityRare                           -0.08954    0.12654  -0.708   0.4802  
+Month                                   -0.01881    0.01684  -1.117   0.2657  
+VariableTypeSpatial:CommunityFull        0.18339    0.17895   1.025   0.3070  
+VariableTypeSpatial:CommunityRare        0.16253    0.17895   0.908   0.3651  
+VariableTypeSpatial:Month                0.03335    0.02381   1.400   0.1633  
+CommunityFull:Month                      0.01137    0.02381   0.477   0.6337  
+CommunityRare:Month                      0.01135    0.02381   0.477   0.6343  
+VariableTypeSpatial:CommunityFull:Month -0.02340    0.03367  -0.695   0.4882  
+VariableTypeSpatial:CommunityRare:Month -0.01839    0.03367  -0.546   0.5857  
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1447 on 162 degrees of freedom
+Multiple R-squared:  0.05501,	Adjusted R-squared:  -0.009157 
+F-statistic: 0.8573 on 11 and 162 DF,  p-value: 0.5834
+
 [1] "All Adjusted R-squared Values - Environmental Only"
-Analysis of Variance Table
 
-Response: R2Adj
-                Df  Sum Sq   Mean Sq F value Pr(>F)
-Community        2 0.01973 0.0098644  0.3334 0.7174
-Month            1 0.02797 0.0279679  0.9454 0.3338
-Community:Month  2 0.00635 0.0031763  0.1074 0.8983
-Residuals       81 2.39622 0.0295830               
+Call:
+lm(formula = R2Adj ~ Community * Month, data = .)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.31918 -0.07472 -0.02965  0.05216  0.70046 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)  
+(Intercept)          0.21945    0.10635   2.063   0.0423 *
+CommunityFull       -0.08950    0.15041  -0.595   0.5535  
+CommunityRare       -0.08954    0.15041  -0.595   0.5533  
+Month               -0.01881    0.02001  -0.940   0.3502  
+CommunityFull:Month  0.01137    0.02830   0.402   0.6890  
+CommunityRare:Month  0.01135    0.02830   0.401   0.6895  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.172 on 81 degrees of freedom
+Multiple R-squared:  0.02206,	Adjusted R-squared:  -0.03831 
+F-statistic: 0.3654 on 5 and 81 DF,  p-value: 0.8708
+
 [1] "All Adjusted R-squared Values - Spatial only"
-Analysis of Variance Table
 
-Response: R2Adj
-                Df  Sum Sq   Mean Sq F value Pr(>F)
-Community        2 0.02411 0.0120536  0.9804 0.3796
-Month            1 0.01484 0.0148406  1.2071 0.2752
-Community:Month  2 0.00539 0.0026967  0.2193 0.8035
-Residuals       81 0.99583 0.0122942               
+Call:
+lm(formula = R2Adj ~ Community * Month, data = .)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.42412 -0.04124  0.00332  0.05830  0.30298 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)
+(Intercept)         -0.042009   0.068562  -0.613    0.542
+CommunityFull        0.093889   0.096961   0.968    0.336
+CommunityRare        0.072996   0.096961   0.753    0.454
+Month                0.014541   0.012901   1.127    0.263
+CommunityFull:Month -0.012026   0.018245  -0.659    0.512
+CommunityRare:Month -0.007044   0.018245  -0.386    0.700
+
+Residual standard error: 0.1109 on 81 degrees of freedom
+Multiple R-squared:  0.04263,	Adjusted R-squared:  -0.01647 
+F-statistic: 0.7213 on 5 and 81 DF,  p-value: 0.6093
+
+null device 
+          1 
 null device 
           1 
 null device 
