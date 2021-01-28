@@ -99,18 +99,14 @@ qiime feature-table filter-samples \
   --o-filtered-table filtered-table.qza
 # 541922 rows in this table
 
-# June 26, 2020 - additing the removal of singletons
-qiime feature-table filter-features \
-  --i-table filtered-table.qza \
-  --p-min-samples 2 \
-  --o-filtered-table filtered-table-no-singletons.qza
-# 162934 rows in this table
-# June 26, 2020 - dropping the samples with less than 10
+# June 26, 2020 - dropping features in less than 10samples
 qiime feature-table filter-features \
   --i-table filtered-table.qza \
   --p-min-samples 10 \
   --o-filtered-table filtered-table-10.qza
 # 23425 rows in this table
+# labelled as FilteredOTUtable.qza on GitHub repo
+
 # filter representative sequences for this group
 qiime feature-table filter-seqs \
   --i-data rep-seqs.qza \
