@@ -178,7 +178,7 @@ fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, shape = plot)) + #, color
        color = "Community", shape = "Community")
 
 # export plot 1 to a file
-tiff("plots/ManuscriptFigures/figure1.tiff", width = 169, height = 90, units = 'mm', res = 300)
+tiff("plots/ManuscriptFigures/figure1.tiff", width = 169, height = 90, units = 'mm', res = 400)
 fig1
 dev.off()
 
@@ -193,16 +193,16 @@ d_AG <- dist(XY_AG)
 AG <- pcnm(d_AG)
 
 # generate figure 2
-tiff("plots/ManuscriptFigures/figure2.tiff", width = 240, height = 80, units = 'mm', res = 300)
+tiff("plots/ManuscriptFigures/figure2.tiff", width = 240, height = 80, units = 'mm', res = 400)
 par(mfrow=c(1,4))
 # core
 ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, col = "black", main = "PCNM 14")
 mtext("A", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
 # rare
-ordisurf(XY_AG, scores(AG, choi=8), bubble = 4, main = "PCNM 8")
-ordisurf(XY_AG, scores(AG, choi=7), bubble = 4, main = "PCNM 7")
-ordisurf(XY_AG, scores(AG, choi=2), bubble = 4, main = "PCNM 2")
+ordisurf(XY_AG, scores(AG, choi=8), bubble = 4, col = "black", main = "PCNM 8")
 mtext("B", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
+ordisurf(XY_AG, scores(AG, choi=7), bubble = 4, col = "black", main = "PCNM 7")
+ordisurf(XY_AG, scores(AG, choi=2), bubble = 4, col = "black", main = "PCNM 2")
 dev.off()
 
 ## Figure 3 - Adjusted R2
@@ -220,7 +220,7 @@ fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
 
 # exporting figure 3
-tiff("plots/ManuscriptFigures/figure3.tiff", width = 240, height = 240, units = 'mm', res = 300)
+tiff("plots/ManuscriptFigures/figure3.tiff", width = 240, height = 240, units = 'mm', res = 400)
 fig3
 dev.off()
 
@@ -342,28 +342,12 @@ fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location_f)) +
   ggtitle("Full Microbial Community")
 
 # export figure 4
-tiff("plots/ManuscriptFigures/figure4.tiff", width = 240, height = 240, units = 'mm', res = 300)
+tiff("plots/ManuscriptFigures/figure4.tiff", width = 240, height = 240, units = 'mm', res = 400)
 ggarrange(coreYP, rareYP, labels = c("A", "B"),
           nrow=2, common.legend = T)
 dev.off()
 
 # putting full in a supplemental figure
-tiff("plots/ManuscriptFigures/supp4full.tiff", width = 80, height = 80, units = 'mm', res = 300)
+tiff("plots/ManuscriptFigures/supp4full.tiff", width = 110, height = 80, units = 'mm', res = 400)
 fullYP
-dev.off()
-
-# table 1 fig
-table1 <- data.frame(sampleSize = c(218, 47, 23, 240, 124, 189, 47, 21),
-                     samplingDays = c(81, 26, 12, 90, 58, 63, 25, 25),
-                     maximumDistance = c(930.1, 621, 768.4, 811.2, 737.9, 772.2, 919.4, 846),
-                     numberOTUs = c(22536, 14881, 8536, 22750, 19174, 20146, 15166, 10319))
-
-tiff("plots/ManuscriptFigures/table1fig.tiff", width = 80, height = 80, units = 'mm', res = 300)
-ggplot(table1, aes(maximumDistance, numberOTUs,
-                   size = sampleSize, color = samplingDays)) +
-  geom_point() + scale_color_grey() +
-  labs(x = "Maximum Distance Between Samples (Metres)",
-       y = "Number of OTUs in Replicate", size = "Number of Samples",
-       color = "Number of Sampling Days") +
-  theme(legend.position = "bottom", legend.box = "vertical")
 dev.off()
