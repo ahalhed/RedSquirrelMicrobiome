@@ -1,7 +1,7 @@
 #---
-#title: "Plots4Ch2"
+#title: "Squirrel Manuscript Figures"
 #author: "Alicia Halhed"
-#date: "22/06/2020"
+#date: "21/01/2021"
 #output: html_document
 #---
 # set working directory to output the plots into
@@ -194,6 +194,7 @@ AG <- pcnm(d_AG)
 
 # generate figure 2
 tiff("plots/ManuscriptFigures/figure2.tiff", width = 240, height = 80, units = 'mm', res = 300)
+par(mfrow=c(1,4))
 # core
 ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, col = "black", main = "PCNM 14")
 mtext("A", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
@@ -347,7 +348,7 @@ ggarrange(coreYP, rareYP, labels = c("A", "B"),
 dev.off()
 
 # putting full in a supplemental figure
-tiff("plots/supp4full.tiff", width = 80, height = 80, units = 'mm', res = 300)
+tiff("plots/ManuscriptFigures/supp4full.tiff", width = 80, height = 80, units = 'mm', res = 300)
 fullYP
 dev.off()
 
@@ -356,6 +357,7 @@ table1 <- data.frame(sampleSize = c(218, 47, 23, 240, 124, 189, 47, 21),
                      samplingDays = c(81, 26, 12, 90, 58, 63, 25, 25),
                      maximumDistance = c(930.1, 621, 768.4, 811.2, 737.9, 772.2, 919.4, 846),
                      numberOTUs = c(22536, 14881, 8536, 22750, 19174, 20146, 15166, 10319))
+
 tiff("plots/ManuscriptFigures/table1fig.tiff", width = 80, height = 80, units = 'mm', res = 300)
 ggplot(table1, aes(maximumDistance, numberOTUs,
                    size = sampleSize, color = samplingDays)) +
