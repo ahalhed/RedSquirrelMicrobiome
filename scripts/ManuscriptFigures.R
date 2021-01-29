@@ -11,14 +11,14 @@
 setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/")
 # attaching required packages for full analysis
 # qiime2R to create phyloseq object
-library(qiime2R)
 library(phyloseq)
-library(vegan)
 library(zCompositions)
 #devtools::install_github('ggloor/CoDaSeq/CoDaSeq')
 library(CoDaSeq)
 library(lubridate)
 library(ggpubr)
+library(qiime2R)
+library(vegan)
 library(tidyverse)
 # set theme for ggplots
 theme_set(theme_bw())
@@ -83,6 +83,17 @@ INT <- function(df) {
   return(df4)
 }
 
+XY_month <- function(metadata, grid, year, month) {
+  m <- rownames_to_column(metadata, var = "SampleID")
+  df1 <- subset(m, Grid == grid, 
+                select = c("SampleID", "Location.X", "Location.Y", "Year", "Month"))
+  df2 <- subset(df1, Year == year, 
+                select = c("SampleID", "Location.X", "Location.Y", "Month"))
+  df3 <- subset(df2, Month == month, 
+                select = c("SampleID", "Location.X", "Location.Y"))
+  df4 <- column_to_rownames(remove_rownames(df3), var = "SampleID")
+  return(df4)
+}
 
 ## get the data
 print("Read in the Data")
@@ -139,7 +150,7 @@ print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
 occ_abun <- read.csv("./data/core.csv")
 # new column for just core and rare
-occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core Taxon", "Rare Taxon")
+occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Rare")
 # get the OTUs identified as core contributors to beta diversity
 # and greater than 95% occupancy (confirmed core)
 cOTU <- occ_abun[which(occ_abun$Community == "Confirmed Core"),]
@@ -155,24 +166,42 @@ rm(tax, tax1, tax2)
 ## Figure 1 - Core Community Cutoff
 # This plot shows the fraction of the OTUs included in the core microbiome
 # create the framework for the plot
-fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, shape = plot, color = plot)) + #, color = plot
+fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, shape = plot)) + #, color = plot
   geom_point() +
   # log transform the x axis
   scale_x_log10() +
-  # manually specifying viridis colors (yellow wasn't nice to look at)
-  scale_color_manual(values=c("#440154FF", "#29AF7FFF")) +
+  # add 95% threshold
+  annotate("text", x = 0.00001, y = 0.98, label = ">95% Occupancy") +
+  geom_hline(yintercept = 0.95, linetype = "dashed", size = 0.5) +
   # add axis labels
   labs(x = "Mean Relative Abundance of Each OTU (log10)", y = "Occupancy (Proportion of Samples)",
        color = "Community", shape = "Community")
 
 # export plot 1 to a file
-pdf(file = "./plots/figure1.pdf", width = 14)
+tiff("plots/ManuscriptFigures/figure1.tiff", width = 169, height = 90, units = 'mm', res = 300)
 fig1
 dev.off()
 
 
 ## Figure 2 - spatial pattern example
-# See code from month-AG08.R for creating the ordisurf plots (May 2008).
+## AG 2008
+# get XY data
+XY_AG <- XY_month(meta, "AG", 2008, 5)
+# euclidean distances
+d_AG <- dist(XY_AG)
+# PCNM
+AG <- pcnm(d_AG)
+# Error in scores.default(x, choices = choices, display = display, ...) : cannot find scores
+
+# figures
+# core
+par(mfrow=c(1,1))
+ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, main = "PCNM 14")
+# rare
+par(mfrow=c(2,2))
+ordisurf(XY_AG, scores(AG, choi=8), bubble = 4, main = "PCNM 8")
+ordisurf(XY_AG, scores(AG, choi=7), bubble = 4, main = "PCNM 7")
+ordisurf(XY_AG, scores(AG, choi=2), bubble = 4, main = "PCNM 2")
 
 ## Figure 3 - Adjusted R2
 
@@ -182,19 +211,15 @@ dev.off()
 adj <- read_csv("./data/AdjR2.csv")
 
 # create plot for all adjusted R2 points
-fig3 <- ggplot(adj, aes(Month, R2Adj, colour = Community)) +
+fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
   geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
-  scale_color_viridis_d() + facet_grid(~VariableType) +
+  scale_color_grey() + facet_grid(VariableType~.) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
 
 # exporting figure 3
-pdf("./plots/figure3.pdf", width = 15)
+tiff("plots/ManuscriptFigures/figure3.tiff", width = 240, height = 240, units = 'mm', res = 300)
 fig3
-dev.off()
-# exporting figure 3 with equations
-pdf("./plots/figure3eq.pdf", width = 15)
-fig3 + stat_regline_equation()
 dev.off()
 
 print("is there a significant difference in the R2adj values based on the month and community of origin?")
@@ -315,7 +340,7 @@ fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location_f)) +
   ggtitle("Full Microbial Community")
 
 # export figure 4
-pdf("./plots/figure4.pdf", height = 10, width = 12)
+tiff("plots/ManuscriptFigures/figure1.tiff", width = 240, height = 240, units = 'mm', res = 300)
 ggarrange(coreYP, rareYP, labels = c("A", "B"),
           nrow=2, common.legend = T)
 dev.off()
