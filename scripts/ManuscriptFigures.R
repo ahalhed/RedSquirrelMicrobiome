@@ -191,17 +191,18 @@ XY_AG <- XY_month(meta, "AG", 2008, 5)
 d_AG <- dist(XY_AG)
 # PCNM
 AG <- pcnm(d_AG)
-# Error in scores.default(x, choices = choices, display = display, ...) : cannot find scores
 
-# figures
+# generate figure 2
+tiff("plots/ManuscriptFigures/figure2.tiff", width = 240, height = 80, units = 'mm', res = 300)
 # core
-par(mfrow=c(1,1))
-ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, main = "PCNM 14")
+ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, col = "black", main = "PCNM 14")
+mtext("A", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
 # rare
-par(mfrow=c(2,2))
 ordisurf(XY_AG, scores(AG, choi=8), bubble = 4, main = "PCNM 8")
 ordisurf(XY_AG, scores(AG, choi=7), bubble = 4, main = "PCNM 7")
 ordisurf(XY_AG, scores(AG, choi=2), bubble = 4, main = "PCNM 2")
+mtext("B", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
+dev.off()
 
 ## Figure 3 - Adjusted R2
 
@@ -340,13 +341,13 @@ fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location_f)) +
   ggtitle("Full Microbial Community")
 
 # export figure 4
-tiff("plots/ManuscriptFigures/figure1.tiff", width = 240, height = 240, units = 'mm', res = 300)
+tiff("plots/ManuscriptFigures/figure4.tiff", width = 240, height = 240, units = 'mm', res = 300)
 ggarrange(coreYP, rareYP, labels = c("A", "B"),
           nrow=2, common.legend = T)
 dev.off()
 
 # putting full in a supplemental figure
-pdf("./plots/supp4full.pdf")
+tiff("plots/supp4full.tiff", width = 80, height = 80, units = 'mm', res = 300)
 fullYP
 dev.off()
 
@@ -355,10 +356,10 @@ table1 <- data.frame(sampleSize = c(218, 47, 23, 240, 124, 189, 47, 21),
                      samplingDays = c(81, 26, 12, 90, 58, 63, 25, 25),
                      maximumDistance = c(930.1, 621, 768.4, 811.2, 737.9, 772.2, 919.4, 846),
                      numberOTUs = c(22536, 14881, 8536, 22750, 19174, 20146, 15166, 10319))
-pdf("./plots/table1fig.pdf")
+tiff("plots/ManuscriptFigures/table1fig.tiff", width = 80, height = 80, units = 'mm', res = 300)
 ggplot(table1, aes(maximumDistance, numberOTUs,
                    size = sampleSize, color = samplingDays)) +
-  geom_point() + scale_color_viridis_c() +
+  geom_point() + scale_color_grey() +
   labs(x = "Maximum Distance Between Samples (Metres)",
        y = "Number of OTUs in Replicate", size = "Number of Samples",
        color = "Number of Sampling Days") +
