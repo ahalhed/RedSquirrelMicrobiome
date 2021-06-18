@@ -10,8 +10,7 @@ theme_set(theme_bw())
 nReads <- 4000                                                            # input dataset needs to be rarified and the rarifaction depth included 
 otu <- read_qza("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza")$data
 map <- read_q2metadata("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv") # this is metadata
-#~/OneDrive - University of Guelph/Alicia's Thesis/red-squirrel-w2020
-#otu <- otu[which(rownames(otu) %in% occ_abun[which(occ_abun$fill == "core"),]$otu),]
+
 otu_PA <- 1*((otu>0)==1)                                               # presence-absence data
 otu_occ <- rowSums(otu_PA)/ncol(otu_PA)                                # occupancy calculation
 otu_rel <- apply(decostand(otu, method="total", MARGIN=2),1, mean)     # mean relative abundance
@@ -107,9 +106,9 @@ lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
 occ_abun$fill <- 'no'
 occ_abun$fill[occ_abun$otu %in% otu_ranked$otu[1:last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))]] <- 'core'
 # add 95% occupancy threshold for core
-occ_abun$Community <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
-                             ifelse(occ_abun$otu_occ < 0.95 & occ_abun$fill == "core", "Core Candidate",
-                                    "Confirmed Rare"))
+#occ_abun$Community <- ifelse(occ_abun$otu_occ >= 0.95 & occ_abun$fill == "core", "Confirmed Core",
+#                             ifelse(occ_abun$otu_occ < 0.95 & occ_abun$fill == "core", "Core Candidate",
+#                                    "Confirmed Rare"))
 # add a taxonomy column
 tax <- read_qza("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza")$data %>%
   rename("otu" = "Feature.ID")
