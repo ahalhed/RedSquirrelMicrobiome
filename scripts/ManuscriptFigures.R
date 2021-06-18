@@ -150,7 +150,7 @@ print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
 occ_abun <- read.csv("./data/core.csv")
 # new column for just core and rare
-occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Rare")
+occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Non-core")
 # get the OTUs identified as core contributors to beta diversity
 # and greater than 95% occupancy (confirmed core)
 cOTU <- occ_abun[which(occ_abun$Community == "Confirmed Core"),]
