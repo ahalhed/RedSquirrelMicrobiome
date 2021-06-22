@@ -1,4 +1,4 @@
-# RedSquirrelSpatial
+# RedSquirrelMicrobiome
 Repository for scripts associated with Alicia's North American red squirrel microbiome project.
 
 ## What can you find in this directory?
