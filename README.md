@@ -10,7 +10,10 @@ There is a single QIIME2 script in this directory, labelled *rs-q2.sh*. This par
 The remaining files in the scripts folder are a combination of shell and R scripts; corresponding scripts have the same naming but different extensions. All of these files, with the exception *rs-q2.sh*, are post-QIIME2 analysis in R. 
 
 ### Plots
-In addition to STDOUT, discussed below, most scripts output a variety of figures corresponding to different steps of the analysis. The labelling of these files is consistent with the type of plot, microbial community (full (no added label), core, or rare), and grid/year combination.
+In addition to STDOUT, discussed below, most scripts output a variety of figures corresponding to different steps of the analysis. The labelling of these files is consistent with the type of plot, microbial community (full (no added label), core, or rare (non-core)), and grid/year combination.
 
 ### Output files
 Files labelled with the ".out" extension are text files containing the STDOUT from all SHARCNET batch jobs. These files are named according to the grid/year combination whose spatial analysis STDOUT is contained within the file and for the SHARCNET job number.
+
+### Data files
+These are small data files generated as part of some analyses. An OTU table used in the analyses is in this folder.
