@@ -1,5 +1,5 @@
 # RedSquirrelSpatial
-Files for red squirrel microbiome spatial analysis.
+Repository for scripts associated with Alicia's North American red squirrel microbiome project.
 
 ## What can you find in this directory?
 The four character alphanumeric identifier in each filename (AG08, for example) corresponds to the sampling grid and collection year for the samples of interest in that script. There are 8 possible combinations (3 years, 6 grids). Files labelled with "core" were run with a community matrix containing only the core OTUs (present in >95% of collected samples and comprising a minimum of 0.1% of the observed microbial abundance). Those labelled "rare" were run with a community matrix containing those OTUs NOT present in the core microbiome.
