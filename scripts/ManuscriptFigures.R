@@ -210,7 +210,10 @@ dev.off()
 # read in the data
 # values taken from output files from monthly PCNM analyses
 # pivot the data of interest into long format
-adj <- read_csv("./data/AdjR2.csv")
+adj <- read_csv("./data/AdjR2.csv") 
+adj <- adj %>%
+  mutate(VariableType = str_replace_all(VariableType,"Environmental","Host Factor"),
+         Community = str_replace_all(Community, "Rare", "Non-core"))
 
 # create plot for all adjusted R2 points
 fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
