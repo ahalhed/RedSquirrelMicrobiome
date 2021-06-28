@@ -212,14 +212,15 @@ dev.off()
 # pivot the data of interest into long format
 adj <- read_csv("./data/AdjR2.csv") 
 adj <- adj %>%
-  mutate(Community = str_replace_all(Community, "Rare", "Non-core")) %>%
-  .[which(.$Community != "Full" & .$VariableType != "Environmental" ),]
+  mutate(VariableType = str_replace_all(VariableType, "Environmental", "Host factors"),
+         Community = str_replace_all(Community, "Rare", "Non-core")) %>%
+  .[which(.$Community != "Full"),]
 
 # create plot for all adjusted R2 points
 fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
   geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
-  scale_color_grey() +
+  scale_color_grey() + facet_grid(~VariableType) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
 
 # exporting figure 3
