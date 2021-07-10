@@ -225,7 +225,7 @@ fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
 
 # exporting figure 3
 tiff("plots/ManuscriptFigures/figure3.tiff", width = 240, height = 120, units = 'mm', res = 400)
-fig3
+fig3 + theme(text = element_text(size = 20))
 dev.off()
 
 print("is there a significant difference in the R2adj values based on the month and community of origin?")
@@ -322,7 +322,7 @@ linesYR$Location_f = factor(linesYR$Location, levels=c('Same Location','Differen
 rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, linetype = Location_f)) +
   geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual_f) +
   labs(x = "Days between Sample Collection", y = "Aitchison Distance", 
-       linetype = "Sampling Location")
+       linetype = "Sampling Location") + theme(text = element_text(size = 20))
 
 # core by year
 # changing the order of facets/lines
@@ -332,7 +332,7 @@ linesYC$Location_f = factor(linesYC$Location, levels=c('Same Location','Differen
 coreYP <- ggplot(linesYC, aes(x = int, y = EucDis, linetype = Location_f)) +
   geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual_f) +
   labs(x = "Days between Sample Collection", y = "Aitchison Distance", 
-       linetype = "Sampling Location")
+       linetype = "Sampling Location") + theme(text = element_text(size = 20))
 
 # full by year
 # changing the order of facets/lines
@@ -343,7 +343,7 @@ fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location_f)) +
   geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual_f) +
   labs(x = "Days between Sample Collection", y = "Aitchison Distance", 
        linetype = "Sampling Location") + 
-  ggtitle("Full Microbial Community")
+  ggtitle("Full Microbial Community") + theme(text = element_text(size = 20))
 
 # export figure 4
 tiff("plots/ManuscriptFigures/figure4.tiff", width = 240, height = 240, units = 'mm', res = 400)
