@@ -1,4 +1,4 @@
-setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelSpatial/")
+setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/")
 #if (!requireNamespace("devtools", quietly = TRUE)){install.packages("devtools")}
 #devtools::install_github("jbisanz/qiime2R")
 library(qiime2R)
