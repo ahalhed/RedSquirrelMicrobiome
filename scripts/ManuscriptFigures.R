@@ -178,10 +178,9 @@ fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, shape = plot)) + #, color
        color = "Community", shape = "Community")
 
 # export plot 1 to a file
-tiff("plots/ManuscriptFigures/figure1.tiff", width = 90, height = 169, units = 'mm', res = 400)
-fig1
+tiff("plots/ManuscriptFigures/figure1.tiff", width = 259, height = 169, units = 'mm', res = 400)
+fig1 + theme(text = element_text(size = 20))
 dev.off()
-
 
 ## Figure 2 - spatial pattern example
 ## AG 2008
