@@ -178,7 +178,7 @@ fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, shape = plot)) + #, color
        color = "Community", shape = "Community")
 
 # export plot 1 to a file
-tiff("plots/ManuscriptFigures/figure1.tiff", width = 169, height = 90, units = 'mm', res = 400)
+tiff("plots/ManuscriptFigures/figure1.tiff", width = 90, height = 169, units = 'mm', res = 400)
 fig1
 dev.off()
 
