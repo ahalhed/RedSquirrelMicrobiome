@@ -144,13 +144,13 @@ OTUimp <- cmultRepl(otu_table(ps), label=0, method="CZM") # all OTUs
 # compute the aitchison values
 OTU_full <- codaSeq.clr(OTUimp) %>% as.data.frame
 
-## Core and rare divide
+## Core/non-core divide
 print("Finding core microbiome")
 print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
 occ_abun <- read.csv("./data/core.csv")
 # new column for just core and rare
-occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Satellite")
+occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Non-core")
 # get the OTUs identified as core contributors to beta diversity
 # and greater than 95% occupancy (confirmed core)
 cOTU <- occ_abun[which(occ_abun$Community == "Confirmed Core"),]
@@ -212,14 +212,15 @@ dev.off()
 adj <- read_csv("./data/AdjR2.csv") 
 adj <- adj %>%
   mutate(VariableType = str_replace_all(VariableType, "Environmental", "Host factors"),
-         Community = str_replace_all(Community, "Rare", "Satellite")) %>%
+         Community = str_replace_all(Community, "Rare", "Non-core")) %>%
   .[which(.$Community != "Full"),]
 
 # create plot for all adjusted R2 points
 fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
   geom_smooth(method = "lm", aes(linetype = Community)) + 
   geom_jitter(aes(shape = as.character(Year))) + 
-  scale_color_grey() + facet_grid(~VariableType) +
+  scale_color_manual(values=c("grey20", "black")) + 
+  facet_grid(~VariableType) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
 
 # exporting figure 3
