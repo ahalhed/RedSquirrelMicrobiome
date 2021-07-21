@@ -58,8 +58,7 @@ qiime metadata tabulate \
 # to look at a visualization
 qiime tools view tabulated-metadata.qzv
 
-# de novo OTU clustering
-# the original publication selected de nove clustering at 99%, so that is what I am doing too
+# de novo OTU clustering at 99% identity
 qiime vsearch cluster-features-de-novo \
   --i-table table.qza \
   --i-sequences rep-seqs.qza \
@@ -99,7 +98,7 @@ qiime feature-table filter-samples \
   --o-filtered-table filtered-table.qza
 # 541922 rows in this table
 
-# June 26, 2020 - dropping features in less than 10samples
+# June 26, 2020 - dropping features in less than 10 samples
 qiime feature-table filter-features \
   --i-table filtered-table.qza \
   --p-min-samples 10 \
