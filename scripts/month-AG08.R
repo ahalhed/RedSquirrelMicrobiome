@@ -91,9 +91,8 @@ OTUimp <- cmultRepl(otu_table(ps), label=0, method="CZM") # all OTUs
 # compute the aitchison values
 OTUclr <- codaSeq.clr(OTUimp)
 
-## Core and rare divide
-print("Finding core microbiome")
-print("Extract 95% Occupancy from BC Similarity Core")
+## Core and non-core divide
+print("Extract Core")
 # find OTUs with at least one occurrence in 95% of samples
 cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/data/core.csv") %>%
   # get the OTUs identified as core contributors to beta diversity
@@ -101,9 +100,9 @@ cOTU <- read.csv("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicr
   # subset these ones to high occupancy OTUs
   .[which(.$otu_occ > 0.95),]
 # make the new data frames
-print("Subset the OTU table to find core and rare OTUs")
+print("Subset the OTU table to find core and non-core OTUs")
 OTU_core <- OTUclr[, cOTU$otu]
-OTU_rare <- select(as.data.frame(OTUclr), -one_of(cOTU$otu))
+OTU_nc <- select(as.data.frame(OTUclr), -one_of(cOTU$otu))
 
 ## XY data
 print("Accessing the XY data by month")
@@ -130,7 +129,7 @@ lapply(dist_list, max_dist)
 print("Build the community object (OTU table) for grid/year/month")
 commFull <- lapply(XY_list, comm_obj, c=OTUclr)
 commCore <- lapply(XY_list, comm_obj, c=OTU_core)
-commRare <- lapply(XY_list, comm_obj, c=OTU_rare)
+commNC <- lapply(XY_list, comm_obj, c=OTU_nc)
 ## metadata
 # sample ID's are rownames
 # get the metadata subset
@@ -142,7 +141,7 @@ met_list <- lapply(XY_list, met_month, meta=rs_q2_metadata)
 ## Clean up 1
 # Remove objects we're done with
 print("Removing pobjects that are no longer needed")
-rm(rs_q2_metadata, cOTU, OTUclr, ps, OTU_core, OTU_rare)
+rm(rs_q2_metadata, cOTU, OTUclr, ps, OTU_core, OTU_nc)
 # not removing the Months because they're small and not the same across all
 
 
@@ -251,15 +250,15 @@ rm(vdist,pbcd, commCore)
 rm(abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 
 
-# Rare OTUs
-print("Analysis for Rare OTUs")
-print("Variance partitioning - Rare OTUs")
-vp_mod1_list <- mapply(varpart, commRare, scores_list, data=met_list, 
+# non-core OTUs
+print("Analysis for non-core OTUs")
+print("Variance partitioning - non-core OTUs")
+vp_mod1_list <- mapply(varpart, commNC, scores_list, data=met_list, 
                        MoreArgs = list(~.),
                        SIMPLIFY = FALSE)
 vp_mod1_list
 # plot the partitioning
-pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/plots/rare_AG2008_vp_mod1M.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/plots/nc_AG2008_vp_mod1M.pdf")
 # make plot
 # plotted in numerical order by month
 lapply(vp_mod1_list, plot)
@@ -268,10 +267,10 @@ dev.off()
 rm(vp_mod1_list)
 
 # test with RDA
-print("Testing with RDA (full model) - rare OTUS")
+print("Testing with RDA (full model) - non-core OTUS")
 # create a tiny anonymous function to include formula syntax in call
 abFrac <- mapply(function(x,data) rda(x~., data), 
-                 commRare, met_list, SIMPLIFY=FALSE)
+                 commNC, met_list, SIMPLIFY=FALSE)
 abFrac # Full model
 # anova
 lapply(abFrac, anova, step=200, perm.max=1000)
@@ -279,10 +278,10 @@ lapply(abFrac, anova, step=200, perm.max=1000)
 lapply(abFrac, RsquareAdj)
 
 # Test fraction [a] using partial RDA:
-print("Testing with partial RDA (fraction [a]) - rare OTUS")
+print("Testing with partial RDA (fraction [a]) - non-core OTUS")
 # create a tiny anonymous function to include formula syntax in call
 aFrac <- mapply(function(x,y,data) rda(x~.+Condition(scores(y)), data), 
-                commRare, pcnm_list, met_list, SIMPLIFY=FALSE)
+                commNC, pcnm_list, met_list, SIMPLIFY=FALSE)
 aFrac
 # anova
 lapply(aFrac, anova, step=200, perm.max=1000)
@@ -290,60 +289,60 @@ lapply(aFrac, anova, step=200, perm.max=1000)
 lapply(aFrac, RsquareAdj)
 
 # forward selection for parsimonious model
-print("Forward selection for parsimonious model - rare OTUs")
+print("Forward selection for parsimonious model - non-core OTUs")
 # env variables
-print("Environmental variables - rare OTUs")
+print("Environmental variables - non-core OTUs")
 # create a tiny anonymous function to include formula syntax in call
 abFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  commRare, met_list, SIMPLIFY=FALSE) # Reduced model
+                  commNC, met_list, SIMPLIFY=FALSE) # Reduced model
 
 step.env <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                    abFrac0, abFrac, SIMPLIFY=FALSE)
 step.env # an rda model, with the final model predictor variables
 
-print("Summary of environmental selection process - rare OTUs")
+print("Summary of environmental selection process - non-core OTUs")
 lapply(step.env, function(x) x$anova)
-print("ANOVA on full environmental selection - rare OTUs")
+print("ANOVA on full environmental selection - non-core OTUs")
 lapply(step.env, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/plots/rare_AG2008_step_envM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/plots/nc_AG2008_step_envM.pdf")
 # make plot
 lapply(step.env, plot)
 dev.off()
 
 # spatial variables
-print("Spatial variables - rare OTU")
+print("Spatial variables - non-core OTU")
 pcnm_df <- lapply(pcnm_list, function(x) as.data.frame(scores(x)))
 bcFrac <- mapply(function(x,data) rda(x~., data), 
-                 commRare, pcnm_df, SIMPLIFY=FALSE) # Full model
+                 commNC, pcnm_df, SIMPLIFY=FALSE) # Full model
 bcFrac0 <- mapply(function(x,data) rda(x~1, data), 
-                  commRare, pcnm_df, SIMPLIFY=FALSE) # Reduced model
+                  commNC, pcnm_df, SIMPLIFY=FALSE) # Reduced model
 step.space <- mapply(function(x,y) ordiR2step(x, scope = formula(y)), 
                      bcFrac0, bcFrac, SIMPLIFY=FALSE)
 step.space
 
 # summary of selection process
-print("Summary of spatial selection process - rare OTU")
+print("Summary of spatial selection process - non-core OTU")
 lapply(step.space, function(x) x$anova)
-print("ANOVA on full spatial selection - rare OTU")
+print("ANOVA on full spatial selection - non-core OTU")
 lapply(step.space, anova)
 
 # save plot
-pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/plots/rare_AG2008_step_spaceM.pdf")
+pdf(file = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/plots/nc_AG2008_step_spaceM.pdf")
 # make plot
 lapply(step.space, plot)
 dev.off()
 
-print("Partition Bray-Curtis dissimilarities - rare OTUs")
-vdist <- lapply(commRare, vegdist)
+print("Partition Bray-Curtis dissimilarities - non-core OTUs")
+vdist <- lapply(commNC, vegdist)
 pbcd <- mapply(function(x,y,z) varpart(x, ~., y, data = z),
                vdist, scores_list, met_list, SIMPLIFY=FALSE)
 pbcd
 
 #cleanup
 # remove objects to be replaced
-rm(vdist, pbcd, commRare)
+rm(vdist, pbcd, commNC)
 rm(abFrac, aFrac,abFrac0, step.env, pcnm_df, bcFrac, bcFrac0, step.space)
 
 # analysis for all OTUs
