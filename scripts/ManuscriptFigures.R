@@ -149,15 +149,15 @@ print("Finding core microbiome")
 print("Extract 95% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
 occ_abun <- read.csv("./data/core.csv")
-# new column for just core and rare
+# new column for just core and non-core
 occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Non-core")
 # get the OTUs identified as core contributors to beta diversity
 # and greater than 95% occupancy (confirmed core)
 cOTU <- occ_abun[which(occ_abun$Community == "Confirmed Core"),]
 # make the new data frames
-print("Subset the OTU table to find core and rare OTUs")
+print("Subset the OTU table to find core and non-core OTUs")
 OTU_core <- select(OTU_full, one_of(cOTU$otu))
-OTU_rare <- select(OTU_full, -one_of(cOTU$otu))
+OTU_nc <- select(OTU_full, -one_of(cOTU$otu))
 
 # Removing objects that are no longer needed
 rm(tax, tax1, tax2)
@@ -197,7 +197,7 @@ par(mfrow=c(1,4))
 # core
 ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, col = "black", main = "PCNM 14")
 mtext("A", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
-# rare
+# non-core
 ordisurf(XY_AG, scores(AG, choi=8), bubble = 4, col = "black", main = "PCNM 8")
 mtext("B", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
 ordisurf(XY_AG, scores(AG, choi=7), bubble = 4, col = "black", main = "PCNM 7")
@@ -209,11 +209,8 @@ dev.off()
 # read in the data
 # values taken from output files from monthly PCNM analyses
 # pivot the data of interest into long format
-adj <- read_csv("./data/AdjR2.csv") 
-adj <- adj %>%
-  mutate(VariableType = str_replace_all(VariableType, "Environmental", "Host factors"),
-         Community = str_replace_all(Community, "Rare", "Non-core")) %>%
-  .[which(.$Community != "Full"),]
+adj <- read_csv("./data/Figure3Data.csv")
+adj <- adj[which(adj$Community != "Full"),]
 
 # create plot for all adjusted R2 points
 fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
@@ -243,9 +240,9 @@ adj[which(adj$VariableType=="Spatial"),] %>%
 core_dis <- dis(OTU_core, meta)
 #write.table(core_dis, file='./data/core-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 #core_dis <- read.table("./data/core-dis.tsv.gz", sep = "\t", header = T)
-rare_dis <- dis(OTU_rare, meta)
-#write.table(rare_dis, file='./data/rare-dis.tsv', quote=FALSE, sep='\t', row.names = F)
-#rare_dis <- read.table("./data/rare-dis.tsv.gz", sep = "\t", header = T)
+nc_dis <- dis(OTU_nc, meta)
+#write.table(nc_dis, file='./data/nonCore-dis.tsv', quote=FALSE, sep='\t', row.names = F)
+#nc_dis <- read.table("./data/nonCore-dis.tsv.gz", sep = "\t", header = T)
 full_dis <- dis(OTU_full, meta)
 #write.table(full_dis, file='./data/full-dis.tsv', quote=FALSE, sep='\t', row.names = F)
 #full_dis <- read.table("./data/full-dis.tsv.gz", sep = "\t", header = T)
@@ -254,7 +251,7 @@ full_dis <- dis(OTU_full, meta)
 core_dis <- core_dis %>%
   mutate(CollectionDate.x = as_date(.$CollectionDate.x),
          CollectionDate.y = as_date(.$CollectionDate.y))
-rare_dis <- rare_dis %>%
+nc_dis <- nc_dis %>%
   mutate(CollectionDate.x = as_date(.$CollectionDate.x),
          CollectionDate.y = as_date(.$CollectionDate.y))
 full_dis <- full_dis %>%
@@ -267,12 +264,12 @@ core_dis$int <- INT(core_dis)
 core_dis <- core_dis %>%
   mutate(Individual = word(core_dis$LocationIndividual, 1, sep = ","),
          Location = word(core_dis$LocationIndividual, 2, sep = ", "))
-# rare
-rare_dis <- gr(rare_dis)
-rare_dis$int <- INT(rare_dis)
-rare_dis <- rare_dis %>%
-  mutate(Individual = word(rare_dis$LocationIndividual, 1, sep = ","),
-         Location = word(rare_dis$LocationIndividual, 2, sep = ", "))
+# non-core
+nc_dis <- gr(nc_dis)
+nc_dis$int <- INT(nc_dis)
+nc_dis <- nc_dis %>%
+  mutate(Individual = word(nc_dis$LocationIndividual, 1, sep = ","),
+         Location = word(nc_dis$LocationIndividual, 2, sep = ", "))
 # full
 full_dis <- gr(full_dis)
 full_dis$int <- INT(full_dis)
@@ -286,11 +283,11 @@ core_dsSL <- filter(core_dis, LocationIndividual %in% "Different Squirrel, Same 
 core_dsDL <- filter(core_dis, LocationIndividual %in% "Different Squirrel, Different Location")
 core_ssSL <- filter(core_dis, LocationIndividual %in% "Same Squirrel, Same Location")
 core_ssDL <- filter(core_dis, LocationIndividual %in% "Same Squirrel, Different Location")
-# rare
-rare_dsSL <- filter(rare_dis, LocationIndividual %in% "Different Squirrel, Same Location")
-rare_dsDL <- filter(rare_dis, LocationIndividual %in% "Different Squirrel, Different Location")
-rare_ssSL <- filter(rare_dis, LocationIndividual %in% "Same Squirrel, Same Location")
-rare_ssDL <- filter(rare_dis, LocationIndividual %in% "Same Squirrel, Different Location")
+# non-core
+nc_dsSL <- filter(nc_dis, LocationIndividual %in% "Different Squirrel, Same Location")
+nc_dsDL <- filter(nc_dis, LocationIndividual %in% "Different Squirrel, Different Location")
+nc_ssSL <- filter(nc_dis, LocationIndividual %in% "Same Squirrel, Same Location")
+nc_ssDL <- filter(nc_dis, LocationIndividual %in% "Same Squirrel, Different Location")
 # full
 full_dsSL <- filter(full_dis, LocationIndividual %in% "Different Squirrel, Same Location")
 full_dsDL <- filter(full_dis, LocationIndividual %in% "Different Squirrel, Different Location")
@@ -300,8 +297,8 @@ full_ssDL <- filter(full_dis, LocationIndividual %in% "Same Squirrel, Different 
 # bind the four together (10% of different location, different location)
 linesC <- rbind(core_ssDL, core_dsSL) %>%
   rbind(., core_ssSL) %>% rbind(., core_dsDL %>% sample_frac(.1))
-linesR <- rbind(rare_ssDL, rare_dsSL) %>%
-  rbind(., rare_ssSL) %>% rbind(., rare_dsDL %>% sample_frac(.1))
+linesR <- rbind(nc_ssDL, nc_dsSL) %>%
+  rbind(., nc_ssSL) %>% rbind(., nc_dsDL %>% sample_frac(.1))
 linesF <- rbind(full_ssDL, full_dsSL) %>%
   rbind(., full_ssSL) %>% rbind(., full_dsDL %>% sample_frac(.1))
 # within each of the years
@@ -311,15 +308,15 @@ linesYF <- linesF[which(linesF$Year.x == linesF$Year.y),]
 # remove objects no longer needed
 rm(linesC, linesR, linesF,
    core_dsSL, core_dsDL, core_ssSL, core_ssDL,
-   rare_ssDL, rare_ssSL, rare_dsDL, rare_dsSL,
+   nc_ssDL, nc_ssSL, nc_dsDL, nc_dsSL,
    full_ssDL, full_ssSL, full_dsDL, full_dsSL)
 
-# rare by year
+# non-core by year
 # changing the order of facets/lines
 linesYR$Individual_f = factor(linesYR$Individual, levels=c('Same Squirrel','Different Squirrel'))
 linesYR$Location_f = factor(linesYR$Location, levels=c('Same Location','Different Location'))
 # generate plot
-rareYP <- ggplot(linesYR, aes(x = int, y = EucDis, linetype = Location_f)) +
+ncYP <- ggplot(linesYR, aes(x = int, y = EucDis, linetype = Location_f)) +
   geom_smooth(method='loess', formula= y~x, color="black") + facet_grid(~ Individual_f) +
   labs(x = "Days between Sample Collection", y = "Aitchison Distance", 
        linetype = "Sampling Location") + theme(text = element_text(size = 20))
@@ -347,7 +344,7 @@ fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location_f)) +
 
 # export figure 4
 tiff("plots/ManuscriptFigures/figure4.tiff", width = 240, height = 240, units = 'mm', res = 400)
-ggarrange(coreYP, rareYP, labels = c("A", "B"),
+ggarrange(coreYP, ncYP, labels = c("A", "B"),
           nrow=2, common.legend = T)
 dev.off()
 
