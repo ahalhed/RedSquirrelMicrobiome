@@ -146,13 +146,13 @@ OTU_full <- codaSeq.clr(OTUimp) %>% as.data.frame
 
 ## Core/non-core divide
 print("Finding core microbiome")
-print("Extract 95% Occupancy from BC Similarity Core")
+print("Extract 75% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
-occ_abun <- read.csv("./data/core.csv")
+occ_abun <- read.csv("./data/core.csv") #../RedSquirrelSpatial
 # new column for just core and non-core
 occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Non-core")
 # get the OTUs identified as core contributors to beta diversity
-# and greater than 95% occupancy (confirmed core)
+# and greater than 75% occupancy (confirmed core)
 cOTU <- occ_abun[which(occ_abun$Community == "Confirmed Core"),]
 # make the new data frames
 print("Subset the OTU table to find core and non-core OTUs")
