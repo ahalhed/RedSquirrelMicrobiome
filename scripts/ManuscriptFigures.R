@@ -8,7 +8,7 @@
 # run on graham cluster interactively
 # salloc --time=0-00:30:00 --mem=8G --account=def-cottenie
 # module load nixpkgs/16.09 gcc/7.3.0 r/3.6.0
-setwd("/home/ahalhed/MSc/Red-Squirrel-MicrobiomeDATA/")
+setwd("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/R-env/RedSquirrelMicrobiome/")
 # attaching required packages for full analysis
 # qiime2R to create phyloseq object
 library(phyloseq)
@@ -98,13 +98,13 @@ XY_month <- function(metadata, grid, year, month) {
 ## get the data
 print("Read in the Data")
 print("Building phyloseq object")
-ps <- qza_to_phyloseq(features = "filtered-table-10.qza",
-                      tree = "/trees/rooted_tree.qza",
-                      metadata = "RS_meta.tsv") %>%
+ps <- qza_to_phyloseq(features = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/filtered-table-10.qza",
+                      tree = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/trees/rooted_tree.qza",
+                      metadata = "/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/input/RS_meta.tsv") %>%
   phyloseq(otu_table(t(otu_table(.)), taxa_are_rows = F), phy_tree(.), sample_data(.))
 # taxonomy only
 # phyloseq didn't like the initial labelling from SILVA
-tax <- read_qza("taxonomy/SILVA-taxonomy-10.qza")$data %>%
+tax <- read_qza("/home/ahalhed/projects/def-cottenie/Microbiome/RedSquirrelMicrobiome/taxonomy/SILVA-taxonomy-10.qza")$data %>%
   column_to_rownames(var = "Feature.ID")
 # so I'm correcting that here to make it work
 tax$Taxon <- tax$Taxon %>%
@@ -132,7 +132,7 @@ ps <- merge_phyloseq(ps, tax2)
 
 # based on the meta function from the microbiome package
 # I don't want to load a whole package for one function
-print("Read the metadata")
+print("Read in the metadata")
 meta <- as(sample_data(ps), "data.frame")
 rownames(meta) <- sample_names(ps)
 
@@ -148,7 +148,7 @@ OTU_full <- codaSeq.clr(OTUimp) %>% as.data.frame
 print("Finding core microbiome")
 print("Extract 75% Occupancy from BC Similarity Core")
 # read in occupancy/abundance information
-occ_abun <- read.csv("core.csv")
+occ_abun <- read.csv("./data/core.csv") #../RedSquirrelSpatial
 # new column for just core and non-core
 occ_abun$plot <- ifelse(occ_abun$Community == "Confirmed Core", "Core", "Non-core")
 # get the OTUs identified as core contributors to beta diversity
@@ -178,7 +178,7 @@ fig1 <- ggplot(occ_abun, aes(y = otu_occ, x = otu_rel, shape = plot)) + #, color
        color = "Community", shape = "Community")
 
 # export plot 1 to a file
-tiff("../Red-Squirrel-Microbiome/plots/figure1.tiff", width = 259, height = 169, units = 'mm', res = 400)
+tiff("plots/ManuscriptFigures/figure1.tiff", width = 259, height = 169, units = 'mm', res = 400)
 fig1 + theme(text = element_text(size = 20))
 dev.off()
 
@@ -192,10 +192,10 @@ d_AG <- dist(XY_AG)
 AG <- pcnm(d_AG)
 
 # generate figure 2
-tiff("Red-Squirrel-Microbiome/plots/figure2.tiff", width = 240, height = 80, units = 'mm', res = 400)
+tiff("plots/ManuscriptFigures/figure2.tiff", width = 240, height = 80, units = 'mm', res = 400)
 par(mfrow=c(1,4))
 # core
-ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, col = "red", main = "PCNM 14")
+ordisurf(XY_AG, scores(AG, choi=14), bubble = 4, col = "black", main = "PCNM 14")
 mtext("A", side=3, line=1.5, at=-2.5, adj=0, cex=1) 
 # non-core
 ordisurf(XY_AG, scores(AG, choi=8), bubble = 4, col = "black", main = "PCNM 8")
@@ -221,7 +221,7 @@ fig3 <- ggplot(adj, aes(Month, R2Adj, color = Community)) +
   labs(y = expression(paste("Adjusted R"^"2")), shape = "Collection Year")
 
 # exporting figure 3
-tiff("Red-Squirrel-Microbiome/plots/figure3.tiff", width = 240, height = 120, units = 'mm', res = 400)
+tiff("plots/ManuscriptFigures/figure3.tiff", width = 240, height = 120, units = 'mm', res = 400)
 fig3 + theme(text = element_text(size = 20))
 dev.off()
 
@@ -343,12 +343,12 @@ fullYP <- ggplot(linesYF, aes(x = int, y = EucDis, linetype = Location_f)) +
   ggtitle("Full Microbial Community") + theme(text = element_text(size = 20))
 
 # export figure 4
-tiff("Red-Squirrel-Microbiome/plots/figure4.tiff", width = 240, height = 240, units = 'mm', res = 400)
+tiff("plots/ManuscriptFigures/figure4.tiff", width = 240, height = 240, units = 'mm', res = 400)
 ggarrange(coreYP, ncYP, labels = c("A", "B"),
           nrow=2, common.legend = T)
 dev.off()
 
 # putting full in a supplemental figure
-tiff("Red-Squirrel-Microbiome/plots/supp4full.tiff", width = 110, height = 80, units = 'mm', res = 400)
+tiff("plots/ManuscriptFigures/supp4full.tiff", width = 110, height = 80, units = 'mm', res = 400)
 fullYP
 dev.off()
